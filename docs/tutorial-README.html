@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Tutorial: README - Documentation</title>
+
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#ChatEngineCore">ChatEngineCore</a></li></ul><h3>Mixins</h3><ul><li data-sidebar="uploadcare"><a href="uploadcare.html">uploadcare</a><ul><li><a href="Chat.html">Chat</a><ul class='members'></ul><ul class='methods'><li data-type='method'><a href="uploadcare.html#.uploadcare%2522.%2522bind">uploadcare.bind</a></li></ul><ul class='events'><li data-type='event'><a href="uploadcare.html#.event:$uploadcare%2522.%2522upload">$uploadcare.upload</a></li></ul></ul></li><li data-sidebar="typingIndicator"><a href="typingIndicator.html">typingIndicator</a><ul><li><a href="Chat.html">Chat</a><ul class='members'></ul><ul class='methods'><li data-type='method'><a href="typingIndicator.html#.typingindicator%2522.%2522startTyping">typingindicator.startTyping</a></li><li data-type='method'><a href="typingIndicator.html#.typingindicator%2522.%2522stopTyping">typingindicator.stopTyping</a></li></ul><ul class='events'><li data-type='event'><a href="typingIndicator.html#.event:$typingIndiciator%2522.%2522startTyping">$typingIndiciator.startTyping</a></li></ul></ul></li></ul><h3>Tutorials</h3><ul><li data-sidebar="README"><a href="tutorial-README.html">README</a><ul class='members'></ul></li><li data-sidebar="index"><a href="tutorial-index_.html">index</a><ul class='members'></ul></li></ul><h3>Classes</h3><ul><li data-sidebar="RootEmitter"><a href="RootEmitter.html">RootEmitter</a><ul class='members'></ul><ul class='methods'><li data-type='method'><a href="RootEmitter.html#on">on</a></li><li data-type='method'><a href="RootEmitter.html#off">off</a></li><li data-type='method'><a href="RootEmitter.html#onAny">onAny</a></li><li data-type='method'><a href="RootEmitter.html#once">once</a></li></ul></li><li data-sidebar="Event"><a href="Event.html">Event</a><ul class='members'><li data-type='member'><a href="Event.html#channel">channel</a></li></ul></li><li data-sidebar="Emitter"><a href="Emitter.html">Emitter</a><ul class='members'></ul><ul class='methods'><li data-type='method'><a href="Emitter.html#plugin">plugin</a></li><li data-type='method'><a href="Emitter.html#on">on</a></li><li data-type='method'><a href="Emitter.html#off">off</a></li><li data-type='method'><a href="Emitter.html#onAny">onAny</a></li><li data-type='method'><a href="Emitter.html#once">once</a></li></ul></li><li data-sidebar="Chat"><a href="Chat.html">Chat</a><ul class='members'><li data-type='member'><a href="Chat.html#channel">channel</a></li><li data-type='member'><a href="Chat.html#users">users</a></li></ul><ul class='methods'><li data-type='method'><a href="Chat.html#history">history</a></li><li data-type='method'><a href="Chat.html#emit">emit</a></li><li data-type='method'><a href="Chat.html#leave">leave</a></li><li data-type='method'><a href="Chat.html#plugin">plugin</a></li><li data-type='method'><a href="Chat.html#on">on</a></li><li data-type='method'><a href="Chat.html#off">off</a></li><li data-type='method'><a href="Chat.html#onAny">onAny</a></li><li data-type='method'><a href="Chat.html#once">once</a></li></ul><ul class='events'><li data-type='event'><a href="Chat.html#event:$%2522.%2522ready">$.ready</a></li><li data-type='event'><a href="Chat.html#event:$%2522.%2522join">$.join</a></li><li data-type='event'><a href="Chat.html#event:$%2522.%2522online">$.online</a></li><li data-type='event'><a href="Chat.html#event:$%2522.%2522state">$.state</a></li><li data-type='event'><a href="Chat.html#event:$%2522.%2522leave">$.leave</a></li><li data-type='event'><a href="Chat.html#event:$%2522.%2522disconnect">$.disconnect</a></li><li data-type='event'><a href="Chat.html#event:$%2522.%2522offline">$.offline</a></li></ul></li><li data-sidebar="User"><a href="User.html">User</a><ul class='members'><li data-type='member'><a href="User.html#uuid">uuid</a></li><li data-type='member'><a href="User.html#chats">chats</a></li><li data-type='member'><a href="User.html#feed">feed</a></li><li data-type='member'><a href="User.html#direct">direct</a></li></ul><ul class='methods'><li data-type='method'><a href="User.html#state">state</a></li><li data-type='method'><a href="User.html#plugin">plugin</a></li><li data-type='method'><a href="User.html#on">on</a></li><li data-type='method'><a href="User.html#off">off</a></li><li data-type='method'><a href="User.html#onAny">onAny</a></li><li data-type='method'><a href="User.html#once">once</a></li></ul></li><li data-sidebar="Me"><a href="Me.html">Me</a><ul class='members'><li data-type='member'><a href="Me.html#uuid">uuid</a></li><li data-type='member'><a href="Me.html#chats">chats</a></li><li data-type='member'><a href="Me.html#feed">feed</a></li><li data-type='member'><a href="Me.html#direct">direct</a></li></ul><ul class='methods'><li data-type='method'><a href="Me.html#update">update</a></li><li data-type='method'><a href="Me.html#state">state</a></li><li data-type='method'><a href="Me.html#plugin">plugin</a></li><li data-type='method'><a href="Me.html#on">on</a></li><li data-type='method'><a href="Me.html#off">off</a></li><li data-type='method'><a href="Me.html#onAny">onAny</a></li><li data-type='method'><a href="Me.html#once">once</a></li></ul></li><li data-sidebar="ChatEngine"><a href="ChatEngine.html">ChatEngine</a><ul class='members'><li data-type='member'><a href="ChatEngine.html#.users">users</a></li><li data-type='member'><a href="ChatEngine.html#.globalChat">globalChat</a></li><li data-type='member'><a href="ChatEngine.html#.me">me</a></li><li data-type='member'><a href="ChatEngine.html#.pubnub">pubnub</a></li><li data-type='member'><a href="ChatEngine.html#.Chat">Chat</a></li><li data-type='member'><a href="ChatEngine.html#.User">User</a></li></ul><ul class='methods'><li data-type='method'><a href="ChatEngine.html#.connect">connect</a></li><li data-type='method'><a href="ChatEngine.html#on">on</a></li><li data-type='method'><a href="ChatEngine.html#off">off</a></li><li data-type='method'><a href="ChatEngine.html#onAny">onAny</a></li><li data-type='method'><a href="ChatEngine.html#once">once</a></li></ul></li></ul>
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">Tutorial: README</h1>
+    
+
+    <section>
+
+<header>
+    
+
+    <h2>README</h2>
+</header>
+
+<article>
+    <h1>PubNub Chat Engine Tutorial</h1><p>Hey there and welcome to the PubNub Chat Engine tutorial. Today we'll be walking through the steps to build a super charged chat application
+with PubNub Chat Engine.</p>
+<h2>What is PubNub Chat Engine</h2><p>The PubNub Chat Engine is a new Javascript framework that sits on top of the PubNub SDK. The PubNub JS SDK is a low level toolset for creating realtime Javascript applications. PubNub Chat Engine wraps those tools into handy features made especially for chat applications.</p>
+<h2>What is PubNub?</h2><p>PubNub is a global data stream network that helps anybody create real time applications. PubNub makes it easy for one computer to talk to another, which is the basis for chat!</p>
+<hr>
+<h1>Set up tutorial with index.html, bootstrap, jQuery</h1><p>Let's get started. In this tutorial, we'll be using:</p>
+<ul>
+<li>NodeJS</li>
+<li>Twitter Bootstrap</li>
+<li>jQuery</li>
+<li>PubNub Chat Engine</li>
+</ul>
+<p>If you're not familiar with these, don't worry. They'll be helpful links along
+the way.</p>
+<h2>Install NodeJS</h2><p>&quot;Hey, I thought we were building a front end app!?&quot;&quot; We are, but if you haven't been keeping up to date, you might not have noticed that NodeJS has become the go-to option for working with javascript packages.</p>
+<p>In this tutorial I'll be using NodeJS v6.11 which is the latest version as of this time of writing.</p>
+<p>If you're using NVM (Node Version Manager), you can install this version by running:</p>
+<pre class="prettyprint source"><code>nvm install v6.11</code></pre><p>If you need help installing NodeJS, check out <a href="https://nodejs.org/en/download/package-manager/">this handy list of guides for every OS</a>.</p>
+<p>You can verify that you're running the correct version of NodeJS with by running:</p>
+<pre class="prettyprint source"><code>node -v</code></pre><h2>Create a new NPM project</h2><p>Since we'll be installing dependencies, it's helpful to create a new <code>package.json</code> to keep track of all of the packages we're going to install.</p>
+<p>In your project directory, run this command to create a new package. Complete the interactive set up guide and we'll be ready to go.</p>
+<pre class="prettyprint source"><code>npm init</code></pre><p>That'll create a <code>package.json</code> in your poject directory.</p>
+<pre class="prettyprint source lang-json"><code>{
+  &quot;name&quot;: &quot;chat-engine-tutorial&quot;,
+  &quot;version&quot;: &quot;0.0.1&quot;,
+  &quot;description&quot;: &quot;An example PubNub Chat Engine Tutorial&quot;,
+  &quot;main&quot;: &quot;index.js&quot;,
+  &quot;author&quot;: &quot;Ian Jennings&quot;
+}</code></pre><h2>Install Twitter Bootstrap</h2><p>Twitter Bootstrap will make it easy for us to create user interface elements for our chat application.</p>
+<p>In fact, when using PubNub Chat Engine, creating the UI and hooking it up to the framework is about all you have to do.</p>
+<p>We'll use bootstrap 3 since it's the latest stable version. You can install it using npm by running:</p>
+<pre class="prettyprint source"><code>npm install bootstrap@3 --save</code></pre><h2>Install jQuery</h2><p>jQuery will provide us with some simple utilities for Javascript that will make programming our chat application easier. You can install it using npm by running:</p>
+<pre class="prettyprint source lang-sh"><code>npm install jquery --save</code></pre><blockquote>
+<p>You don't have to use jQuery with PubNub Chat Engine. We could use Angular, React, or just vanilla Javscript. The <a href="https://github.com/pubnub/chat-engine-examples">Chat Engine Examples</a> page has examples for these other frameworks.</p>
+</blockquote>
+<h2>Install PubNub Chat Engine</h2><p>Alright, now for the part you've probably never done before! Install PubNub Chat Engine by running:</p>
+<pre class="prettyprint source lang-sh"><code>npm install chat-engine@0.2.1 --save</code></pre><p>This will install the PubNub Chat Engine Javascript SDK into your <code>node_modules</code> directory.</p>
+<h2>Install http-server globally</h2><p>Finally, we need a way to run our app. Sure, we could just load them with the <code>file://</code> protocol, but that creates all sorts of security issues and problems in the future. It's better to start with <code>localhost</code>.</p>
+<p>Install <code>http-server</code> globally using npm:</p>
+<pre class="prettyprint source lang-sh"><code>npm install http-server -g</code></pre><p>This allows us to run a small http server on <code>localhost</code> that will serve our files properly.</p>
+<h1>Build an example page and load dependencies</h1><p>Alright, now it's time for the fun stuff. Let's create an example page.</p>
+<p>Create a new page called <code>index.html</code> and paste the following page in. It will load the CSS, JS, and there's even a small script to test that all the libraries have been loaded.</p>
+<pre class="prettyprint source lang-html"><code>&lt;html>
+  &lt;head>
+    &lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; href=&quot;node_modules/bootstrap/dist/css/bootstrap.css&quot; />
+  &lt;/head>
+  &lt;body>
+    &lt;div class=&quot;container&quot;>
+        &lt;div class=&quot;row&quot;>
+            &lt;div class=&quot;col-lg-12&quot;>
+                &lt;h1>Does it work?&lt;/h1>
+                &lt;div class=&quot;alert alert-info&quot;>Let's find out.&lt;/div>
+            &lt;/div>
+        &lt;/div>
+    &lt;/div>
+    &lt;script type=&quot;text/javascript&quot; src=&quot;node_modules/jquery/dist/jquery.js&quot;>&lt;/script>
+    &lt;script type=&quot;text/javascript&quot; src=&quot;node_modules/bootstrap/dist/js/bootstrap.js&quot;>&lt;/script>
+    &lt;script type=&quot;text/javascript&quot; src=&quot;node_modules/chat-engine/dist/chat-engine.js&quot;>&lt;/script>
+    &lt;script type=&quot;text/javascript&quot;>
+    if(typeof $ == &quot;undefined&quot;) {
+      alert('Failed to load jQuery!');
+    }
+    if(typeof ChatEngineCore == &quot;undefined&quot;) {
+      alert('Failed to load PubNub Chat Engine');
+    }
+    if($ && ChatEngineCore) {
+      alert('It works!');
+    }
+    &lt;/script>
+  &lt;/body>
+&lt;/html></code></pre><p>Once you've pasted this code, run the <code>http-server</code> command in your terminal and load the webpage in your browser.</p>
+<pre class="prettyprint source lang-sh"><code>http-server
+Starting up http-server, serving ./
+Available on:
+  http://127.0.0.1:8080
+  http://192.168.0.8:8080
+Hit CTRL-C to stop the server</code></pre><p>Load http://127.0.0.1:8080 in your browser and see if the webpage looks like this screenshot:</p>
+<p><img src="assets/README-988df6e2.png" alt=""></p>
+<p>If you get an error alert, make sure you ran all the previous setup instructions properly. If the design does not look correct, make sure you installed the correct version of Twitter Bootstrap.</p>
+<hr>
+<h2>Configure PubNub keys and how to get them</h2><p>Update <code>index.html</code> to look like this:</p>
+<pre class="prettyprint source lang-html"><code>&lt;html>
+  &lt;head>
+    &lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; href=&quot;node_modules/bootstrap/dist/css/bootstrap.css&quot; />
+  &lt;/head>
+  &lt;body>
+    &lt;div class=&quot;container&quot;>
+    &lt;/div>
+    &lt;script type=&quot;text/javascript&quot; src=&quot;node_modules/jquery/dist/jquery.js&quot;>&lt;/script>
+    &lt;script type=&quot;text/javascript&quot; src=&quot;node_modules/bootstrap/dist/js/bootstrap.js&quot;>&lt;/script>
+    &lt;script type=&quot;text/javascript&quot; src=&quot;node_modules/chat-engine/dist/chat-engine.js&quot;>&lt;/script>
+    &lt;script type=&quot;text/javascript&quot; src=&quot;app.js&quot;>&lt;/script>
+  &lt;/body>
+&lt;/html></code></pre><p>Create a new file called <code>app.js</code> in the local dir. In <code>app.js</code>:.</p>
+<pre class="prettyprint source lang-js"><code>console.log(ChatEngineCore);</code></pre><p>Now we're all set up to create an app!</p>
+<h1>Me / Connect / Configure</h1><p>In <code>app.js</code> add the following lines:</p>
+<pre class="prettyprint source lang-js"><code>const ChatEngine = ChatEngineCore.create({
+    publishKey: 'YOUR_PUB_KEY',
+    subscribeKey: 'YOUR_SUB_KEY'
+});</code></pre><p>This is the PubNub Chat Engine initialization. All you need to supply is the first parameter; a set of PubNub publish and subscribe keys.</p>
+<blockquote>
+<p>This paramter is actually a PubNub initialization. You can read more about all possible parameters <a href="https://www.pubnub.com/docs/web-javascript/api-reference#init">here</a></p>
+<p>When using PubNub Chat Engine with the <code>&lt;script&gt;</code> tag, you can get the package from <code>window.ChatEngineCore</code>.</p>
+<p>You can use the NodeJS package with <a href="https://webpack.github.io/">WebPack</a> and <code>require</code> as well.</p>
+<p>See that <code>const</code> declaration? This tutorial (and PubNub Chat Engine) are in
+<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/New_in_JavaScript/ECMAScript_2015_support_in_Mozilla">es6</a>.</p>
+</blockquote>
+<h2>How to Get Your PubNub Keys</h2><p>Navigate to http://admin.pubnub.com and login or create an account. Don't worry, it's free!</p>
+<p>https://admin.pubnub.com</p>
+<p>Click &quot;New App.&quot;</p>
+<p><img src="assets/README-ddad3667.png" alt=""></p>
+<p>Give your new app a name and click &quot;Create.&quot;</p>
+<p><img src="assets/README-a6e543f2.png" alt=""></p>
+<p>Click on your keyset.</p>
+<p><img src="assets/README-84f858cd.png" alt=""></p>
+<p>Copy and paste those keys into your <code>app.js</code>.</p>
+<pre class="prettyprint source lang-js"><code>const ChatEngine = ChatEngineCore.create({
+    publishKey: 'YOUR_PUB_KEY',
+    subscribeKey: 'YOUR_SUB_KEY'
+});</code></pre><p><img src="assets/README-943bee9f.png" alt=""></p>
+<p>Scroll down and enable PubNub Presence.</p>
+<p><img src="assets/README-29b7db60.png" alt=""></p>
+<blockquote>
+<p>Not yet supported.
+Enable PubNub Access Manager.
+<img src="assets/README-ad7eda0b.png" alt=""></p>
+</blockquote>
+<p>Scroll down and enable PubNub Storage and Playback. &quot;Retention&quot; is how long messages will be stored in chatrooms.</p>
+<p><img src="assets/README-755671fd.png" alt=""></p>
+<p>Click &quot;Save Changes.&quot;</p>
+<p><img src="assets/README-8e5db3c0.png" alt=""></p>
+<h2>Start the Chat Engine</h2><p>In <code>app.js</code>, add the line:</p>
+<pre class="prettyprint source lang-js"><code>let me = ChatEngine.connect('ian');</code></pre><p>This connects to the PubNub Data Stream network on behalf of the browser running the code.</p>
+<h3>ChatEngine.connect()</h3><p>The function returns a <code>User</code> and connect to a global <code>Chat</code>. The paramter <code>ian</code> is a unique identifier for the new <code>User</code>.</p>
+<p>PubNub Chat Engine is an object oriented framework, so when you see <code>User</code> and <code>Chat</code>, it represents an actual object within the SDK.</p>
+<ul>
+<li><strong><em>User</em></strong> - A client. The browser window.</li>
+<li><strong><em>Chat</em></strong> - A chatroom that a <code>User</code> can join.</li>
+</ul>
+<h3>Me</h3><p>The <code>User</code> returned by the <code>connect()</code> method represents this browser window. We call that <code>User</code> <code>me</code>.</p>
+<h2>Chats</h2><p>But what about chat rooms?</p>
+<p>In <code>app.js</code>, add the following:</p>
+<pre class="prettyprint source lang-js"><code>let chat = new ChatEngine.Chat('tutorial-chat');</code></pre><p>This creates a new <code>Chat</code> object. The <code>Chat</code> object represents a chatroom that connects one client to another.</p>
+<p>The <code>Chat</code> state is synchronized between all connected clients. When this client runs <code>new ChatEngine.Chat()</code>, it connects to the PubNub network and gets information about that chat room.</p>
+<p>For example, <code>chat.users</code> contains a list of all the other <code>User</code>s online in the chat. That list of users will update automatically.</p>
+<p>The client (<code>me</code>) joins <code>Chat</code>s automatically when they are created on the client.</p>
+<blockquote>
+<p>Remember, those other <code>User</code>s are <code>me</code> on someone else's computer. A real practice in empathy.</p>
+</blockquote>
+<h3>See who else is online</h3><p>A list of all the clients who have joined the chatroom is available from <code>chat.users</code>.</p>
+<pre class="prettyprint source lang-js"><code>console.log(chat.users);</code></pre><p>It returns a list of <code>Users</code> who have also joined this chat.</p>
+<pre class="prettyprint source lang-js"><code>{
+  ian: {},
+  nick: {}
+}</code></pre><p>When a new <code>User</code> comes online, the <code>Chat</code> emits the <code>$.online</code> event.</p>
+<pre class="prettyprint source lang-js"><code>chat.on('$.online', (newUser) -> {
+  console.log('new user', newUser);
+});</code></pre><p>Chat Engine specific events begin with <code>$</code>.</p>
+<p>For example, you can find out when you're connected to a chatroom by subscribing to the <code>$.ready</code> event.</p>
+<h2>Working with Chats and Users in jQuery</h2><p>Let's combine the information above into a small app that logs when you and other users come online.</p>
+<p><img src="assets/README-c71c143b.png" alt=""></p>
+<p>First, we'll create a function to log messages into HTML.</p>
+<p>Add the following to the <code>&lt;body&gt;</code> of <code>index.html</code> to build a place-holder for our log.</p>
+<pre class="prettyprint source lang-html"><code>&lt;div class=&quot;container&quot;>
+  &lt;div class=&quot;row&quot;>
+      &lt;div class=&quot;col-sm-6 col-sm-offset-3&quot;>
+        &lt;div class=&quot;list-group&quot; id=&quot;log&quot;>
+        &lt;/div>
+      &lt;/div>
+  &lt;/div>
+&lt;/div></code></pre><p>Next, we'll create a function that adds  <code>username: text</code> as a line in the log.</p>
+<pre class="prettyprint source lang-js"><code>const appendMessage = (username, text) => {
+
+  let message =
+    $(`&lt;div class=&quot;list-group-item&quot; />`)
+      .append($('&lt;strong>').text(username + ': '))
+      .append($('&lt;span>').text(text));
+
+  $('#log').append(message);
+
+  $(&quot;#log&quot;).animate({ scrollTop: $('#log').prop(&quot;scrollHeight&quot;) }, &quot;slow&quot;);
+
+};</code></pre><p>Then, listen for the <code>$.ready</code> event to find out when the client is connected to the <code>Chat</code>.</p>
+<pre class="prettyprint source lang-js"><code>chat.on('$.ready', (payload) => {
+  appendMessage('Status', 'Connected to chat!');
+});</code></pre><p>We can also subscribe to the <code>$.online</code> event to find out when other <code>User</code>s are online.</p>
+<pre class="prettyprint source lang-js"><code>chat.on('$.online', (payload) => {
+  appendMessage('Status', payload.user.uuid + ' has come online!');
+});</code></pre><p>You should see a message showing that <code>ian</code> has come online and that connection has been established.</p>
+<p><img src="assets/README-c71c143b.png" alt=""></p>
+<h1>Chat room event overview and how it works</h1><p>But what about custom messages? The life-blood of chat! Custom messages sent by each user.</p>
+<p>Let's define a custom event so we can send and recieve text messages between windows.</p>
+<h2>Broadcasting Events</h2><p>First, let's <code>emit()</code> a simple text string as a <code>message</code> event over the <code>Chat</code>.</p>
+<pre class="prettyprint source lang-js"><code>chat.emit('message', 'Hey, this is Ian!');</code></pre><p>This will broadcast the <code>message</code> event over the internet to all other clients.</p>
+<h2>Subscribing to Events</h2><p>You can subscribe to custom events by supplying an event name as first parameter in ```on()````.</p>
+<pre class="prettyprint source lang-js"><code>chat.on('message', (payload) => {
+  appendMessage(payload.sender.uuid, payload.data);
+});</code></pre><p>Anytime your or any other client uses the <code>emit()</code> function with the same event name, it will fire the callback defined in <code>on()</code> on every client subscribed to it.</p>
+<h2>Event Payload</h2><p>Notice how we use <code>payload.sender.uuid</code> and <code>payload.data</code> in the callback?</p>
+<p>The <code>payload</code> value is auto-magically populated with handy references to the <code>Chat</code> and <code>User</code> related to this event.</p>
+<p>The property <code>payload.chat</code> is the <code>Chat</code> that event was broadcast broadcast on, and the <code>payload.user</code> is the <code>User</code> that broadcast the message. You can find the actual message contents supplied to <code>emit()</code> within the <code>payload.data</code> property.</p>
+<blockquote>
+<p>The <code>User</code> and <code>Chat</code> properties are both fully interactive instances. Therefor, you can do things like <code>payload.chat.emit('message')</code> to automatically reply to a message.</p>
+</blockquote>
+<h2>Adding a Textbox</h2><p>Let's build a textbox that will let us send our own message.</p>
+<p>We'll add this line under the <code>#log</code> container.</p>
+<pre class="prettyprint source lang-html"><code>&lt;input type=&quot;text&quot; class=&quot;form-control&quot; id=&quot;message&quot; placeholder=&quot;Your message here...&quot;></code></pre><p>And then wrap the <code>chat.emit()</code> code in a jQuery function.</p>
+<pre class="prettyprint source lang-js"><code>$(&quot;#message&quot;).keypress(function(event) {
+
+    if (event.which == 13) {
+        chat.emit('message', $(&quot;#message&quot;).val());
+        $(&quot;#message&quot;).val('');
+        event.preventDefault();
+    }
+
+});</code></pre><p>This function fires every time a key is pressed on the message input text area.</p>
+<p>If the key is <code>13</code> (Enter or Return), we use <code>chat.emit()</code> to broadcast the value of the the text input to all other clients.</p>
+<p>The text input is then cleared and we user <code>event.preventDefault()</code> to prevent the enter or return key from bubbling (allowing other things to happen).</p>
+<h2>Send a Message</h2><p>Now, when you type in the message input and hit &quot;Enter&quot;, the message is sent over the network to all other machines!</p>
+<p>Try it with two browsers!</p>
+<p><img src="assets/README-316b8bd1.gif" alt=""></p>
+<p>But hey, it looks like every message is sent by &quot;ian&quot;. Shouldn't different browsers have different names? How do we differentiate between clients?</p>
+<h2>Add Usernames and State</h2><p>In order to give every user a unique name, let's create a function that returns a random animal.</p>
+<pre class="prettyprint source lang-js"><code>const getUsername = () => {
+
+  const animals = ['pigeon', 'seagull', 'bat', 'owl', 'sparrows', 'robin', 'bluebird', 'cardinal', 'hawk', 'fish', 'shrimp', 'frog', 'whale', 'shark', 'eel', 'seal', 'lobster', 'octopus', 'mole', 'shrew', 'rabbit', 'chipmunk', 'armadillo', 'dog', 'cat', 'lynx', 'mouse', 'lion', 'moose', 'horse', 'deer', 'raccoon', 'zebra', 'goat', 'cow', 'pig', 'tiger', 'wolf', 'pony', 'antelope', 'buffalo', 'camel', 'donkey', 'elk', 'fox', 'monkey', 'gazelle', 'impala', 'jaguar', 'leopard', 'lemur', 'yak', 'elephant', 'giraffe', 'hippopotamus', 'rhinoceros', 'grizzlybear'];
+
+  return animals[Math.floor(Math.random() * animals.length)];
+
+};</code></pre><p>We can call <code>getUsername()</code> to get a random animal name. This will be our new username.</p>
+<p>Remember when we defined <code>me</code> and supplied <code>ian</code> as the first parameter of <code>ChatEngine.connect()</code>? Well, we can supply whatever we want to use as the <code>User</code> identifier there. Let's use our new function!</p>
+<pre class="prettyprint source lang-js"><code>let me = ChatEngine.connect(getUsername());</code></pre><p>Now every time we load the page, we'll have a different username.</p>
+<p><img src="assets/README-98498584.png" alt=""></p>
+<p>But what if we want to add other information? Like a profile? Let's give each <code>User</code> a unique username color.</p>
+<pre class="prettyprint source lang-js"><code>const getColor = () => {
+
+  const colors =   [&quot;AliceBlue&quot;,&quot;AntiqueWhite&quot;,&quot;Aqua&quot;,&quot;Aquamarine&quot;,&quot;Azure&quot;,&quot;Beige&quot;,&quot;Bisque&quot;,&quot;Black&quot;,&quot;BlanchedAlmond&quot;,&quot;Blue&quot;,&quot;BlueViolet&quot;,&quot;Brown&quot;,&quot;BurlyWood&quot;,&quot;CadetBlue&quot;,&quot;Chartreuse&quot;,&quot;Chocolate&quot;,&quot;Coral&quot;,&quot;CornflowerBlue&quot;,&quot;Cornsilk&quot;,&quot;Crimson&quot;,&quot;Cyan&quot;,&quot;DarkBlue&quot;,&quot;DarkCyan&quot;,&quot;DarkGoldenRod&quot;,&quot;DarkGray&quot;,&quot;DarkGrey&quot;,&quot;DarkGreen&quot;,&quot;DarkKhaki&quot;,&quot;DarkMagenta&quot;,&quot;DarkOliveGreen&quot;,&quot;Darkorange&quot;,&quot;DarkOrchid&quot;,&quot;DarkRed&quot;,&quot;DarkSalmon&quot;,&quot;DarkSeaGreen&quot;,&quot;DarkSlateBlue&quot;,&quot;DarkSlateGray&quot;,&quot;DarkSlateGrey&quot;,&quot;DarkTurquoise&quot;,&quot;DarkViolet&quot;,&quot;DeepPink&quot;,&quot;DeepSkyBlue&quot;,&quot;DimGray&quot;,&quot;DimGrey&quot;,&quot;DodgerBlue&quot;,&quot;FireBrick&quot;,&quot;FloralWhite&quot;,&quot;ForestGreen&quot;,&quot;Fuchsia&quot;,&quot;Gainsboro&quot;,&quot;GhostWhite&quot;,&quot;Gold&quot;,&quot;GoldenRod&quot;,&quot;Gray&quot;,&quot;Grey&quot;,&quot;Green&quot;,&quot;GreenYellow&quot;,&quot;HoneyDew&quot;,&quot;HotPink&quot;,&quot;IndianRed&quot;,&quot;Indigo&quot;,&quot;Ivory&quot;,&quot;Khaki&quot;,&quot;Lavender&quot;,&quot;LavenderBlush&quot;,&quot;LawnGreen&quot;,&quot;LemonChiffon&quot;,&quot;LightBlue&quot;,&quot;LightCoral&quot;,&quot;LightCyan&quot;,&quot;LightGoldenRodYellow&quot;,&quot;LightGray&quot;,&quot;LightGrey&quot;,&quot;LightGreen&quot;,&quot;LightPink&quot;,&quot;LightSalmon&quot;,&quot;LightSeaGreen&quot;,&quot;LightSkyBlue&quot;,&quot;LightSlateGray&quot;,&quot;LightSlateGrey&quot;,&quot;LightSteelBlue&quot;,&quot;LightYellow&quot;,&quot;Lime&quot;,&quot;LimeGreen&quot;,&quot;Linen&quot;,&quot;Magenta&quot;,&quot;Maroon&quot;,&quot;MediumAquaMarine&quot;,&quot;MediumBlue&quot;,&quot;MediumOrchid&quot;,&quot;MediumPurple&quot;,&quot;MediumSeaGreen&quot;,&quot;MediumSlateBlue&quot;,&quot;MediumSpringGreen&quot;,&quot;MediumTurquoise&quot;,&quot;MediumVioletRed&quot;,&quot;MidnightBlue&quot;,&quot;MintCream&quot;,&quot;MistyRose&quot;,&quot;Moccasin&quot;,&quot;NavajoWhite&quot;,&quot;Navy&quot;,&quot;OldLace&quot;,&quot;Olive&quot;,&quot;OliveDrab&quot;,&quot;Orange&quot;,&quot;OrangeRed&quot;,&quot;Orchid&quot;,&quot;PaleGoldenRod&quot;,&quot;PaleGreen&quot;,&quot;PaleTurquoise&quot;,&quot;PaleVioletRed&quot;,&quot;PapayaWhip&quot;,&quot;PeachPuff&quot;,&quot;Peru&quot;,&quot;Pink&quot;,&quot;Plum&quot;,&quot;PowderBlue&quot;,&quot;Purple&quot;,&quot;Red&quot;,&quot;RosyBrown&quot;,&quot;RoyalBlue&quot;,&quot;SaddleBrown&quot;,&quot;Salmon&quot;,&quot;SandyBrown&quot;,&quot;SeaGreen&quot;,&quot;SeaShell&quot;,&quot;Sienna&quot;,&quot;Silver&quot;,&quot;SkyBlue&quot;,&quot;SlateBlue&quot;,&quot;SlateGray&quot;,&quot;SlateGrey&quot;,&quot;Snow&quot;,&quot;SpringGreen&quot;,&quot;SteelBlue&quot;,&quot;Tan&quot;,&quot;Teal&quot;,&quot;Thistle&quot;,&quot;Tomato&quot;,&quot;Turquoise&quot;,&quot;Violet&quot;,&quot;Wheat&quot;,&quot;White&quot;,&quot;WhiteSmoke&quot;,&quot;Yellow&quot;,&quot;YellowGreen&quot;];
+
+  return colors[Math.floor(Math.random() * colors.length)];
+
+};</code></pre><p>We'll edit the <code>connect()</code> function again, but this time we're going to use the second parameter.</p>
+<pre class="prettyprint source lang-js"><code>let me = ChatEngine.connect(getUsername(), {color: getColor()});</code></pre><p>This parameter represents the <code>User</code> state.</p>
+<h1>plugin for random usernames</h1><h1>state</h1><h1>Build a chat room</h1><h1>Send a user a private message</h1><h1>See when a user does something somewhere else</h1><h1>Get the history of a room</h1><h1>Make another event type (add an image via a url)</h1><h1>Add a plugin</h1><h1>Make your own plugin</h1>
+</article>
+
+</section>
+
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.1</a> on Wed Jul 19 2017 13:50:29 GMT-0700 (PDT) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/linenumber.js"></script>
+</body>
+</html>
