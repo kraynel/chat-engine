@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Tutorial: index - Documentation</title>
+    <title>Tutorial: getting-started-pubnub - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -27,7 +27,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">Tutorial: index</h1>
+    <h1 class="page-title">Tutorial: getting-started-pubnub</h1>
     
 
     <section>
@@ -35,39 +35,34 @@
 <header>
     
 
-    <h2>index</h2>
+    <h2>getting-started-pubnub</h2>
 </header>
 
 <article>
-    <html>
-  <head>
-    <link rel="stylesheet" type="text/css" href="node_modules/bootstrap/dist/css/bootstrap.css" />
-    <style type="text/css">
-      body {
-        padding-top: 20px;
-      }
-      #log {
-        height: 250px;
-        overflow-y: auto;
-      }
-    </style>
-  </head>
-  <body>
-    <div class="container">
-      <div class="row">
-          <div class="col-sm-6 col-sm-offset-3">
-            <div class="list-group" id="log"></div>
-            <input type="text" class="form-control" id="message" placeholder="Your message here...">
-          </div>
-      </div>
-    </div>
-    <script type="text/javascript" src="node_modules/jquery/dist/jquery.js"></script>
-    <script type="text/javascript" src="node_modules/bootstrap/dist/js/bootstrap.js"></script>
-    <script type="text/javascript" src="node_modules/chat-engine/dist/chat-engine.js"></script>
-    <script type="text/javascript" src="app.js"></script>
-  </body>
-</html>
-
+    <h2>How to Get Your PubNub Keys</h2><p>Navigate to http://admin.pubnub.com and login or create an account. Don't worry, it's free!</p>
+<p>https://admin.pubnub.com</p>
+<p>Click &quot;New App.&quot;</p>
+<p><img src="assets/README-ddad3667.png" alt=""></p>
+<p>Give your new app a name and click &quot;Create.&quot;</p>
+<p><img src="assets/README-a6e543f2.png" alt=""></p>
+<p>Click on your keyset.</p>
+<p><img src="assets/README-84f858cd.png" alt=""></p>
+<p>Copy and paste those keys into your <code>app.js</code>.</p>
+<pre class="prettyprint source lang-js"><code>const ChatEngine = ChatEngineCore.create({
+    publishKey: 'YOUR_PUB_KEY',
+    subscribeKey: 'YOUR_SUB_KEY'
+});</code></pre><p><img src="assets/README-943bee9f.png" alt=""></p>
+<p>Scroll down and enable PubNub Presence.</p>
+<p><img src="assets/README-29b7db60.png" alt=""></p>
+<blockquote>
+<p>Not yet supported.
+Enable PubNub Access Manager.
+<img src="assets/README-ad7eda0b.png" alt=""></p>
+</blockquote>
+<p>Scroll down and enable PubNub Storage and Playback. &quot;Retention&quot; is how long messages will be stored in chatrooms.</p>
+<p><img src="assets/README-755671fd.png" alt=""></p>
+<p>Click &quot;Save Changes.&quot;</p>
+<p><img src="assets/README-8e5db3c0.png" alt=""></p>
 </article>
 
 </section>

@@ -3,7 +3,7 @@
         "template": "./docdash",  // same as -t templates/default
         "destination": "./docs/",          // same as -d ./out/
         "recurse": true,                  // same as -r
-        "tutorials": "./tutorials/chat-engine-tutorial", // same as -u path/to/tutorials
+        "tutorials": "./guide/", // same as -u path/to/tutorials
         "readme": "./README.md"
     },
     "docdash": {
