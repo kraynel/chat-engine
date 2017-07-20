@@ -17,8 +17,8 @@
     "source": {
         "include": [
             "src/index.js",
-            "node_modules/chat-engine-uploadcare/src/plugin.js",
-            "node_modules/chat-engine-typing-indicator/src/plugin.js"
+            "../chat-engine-uploadcare/src/plugin.js",
+            "../chat-engine-typing-indicator/src/plugin.js"
         ]
     },
     "plugins": [
