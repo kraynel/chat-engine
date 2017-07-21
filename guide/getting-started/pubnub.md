@@ -6,15 +6,15 @@ https://admin.pubnub.com
 
 Click "New App."
 
-![](assets/README-ddad3667.png)
+![](/guide/getting-started/assets/README-ddad3667.png)
 
 Give your new app a name and click "Create."
 
-![](assets/README-a6e543f2.png)
+![](/guide/getting-started/assets/README-a6e543f2.png)
 
 Click on your keyset.
 
-![](assets/README-84f858cd.png)
+![](/guide/getting-started/assets/README-84f858cd.png)
 
 Copy and paste those keys into your ```app.js```.
 
@@ -25,21 +25,21 @@ const ChatEngine = ChatEngineCore.create({
 });
 ```
 
-![](assets/README-943bee9f.png)
+![](/guide/getting-started/assets/README-943bee9f.png)
 
 
 Scroll down and enable PubNub Presence.
 
-![](assets/README-29b7db60.png)
+![](/guide/getting-started/assets/README-29b7db60.png)
 
 > Not yet supported.
-> Enable PubNub Access Manager.
-> ![](assets/README-ad7eda0b.png)
+Enable PubNub Access Manager.
+![](/guide/getting-started/assets/README-ad7eda0b.png)
 
 Scroll down and enable PubNub Storage and Playback. "Retention" is how long messages will be stored in chatrooms.
 
-![](assets/README-755671fd.png)
+![](/guide/getting-started/assets/README-755671fd.png)
 
 Click "Save Changes."
 
-![](assets/README-8e5db3c0.png)
+![](/guide/getting-started/assets/README-8e5db3c0.png)

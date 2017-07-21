@@ -658,3 +658,9 @@ span.param-type, .params td .param-type, .param-type dd {
 [data-sidebar="RootEmitter"], [data-sidebar="Emitter"], [data-sidebar="Event"] {
     display: none;
 }
+
+article img {
+  max-width: 100%;
+  padding: 10px;
+  border: 1px solid #efefef;
+}

@@ -111,7 +111,7 @@ Hit CTRL-C to stop the server
 
 Load http://127.0.0.1:8080 in your browser and see if the webpage looks like this screenshot:
 
-![](assets/README-988df6e2.png)
+![](guide/getting-started/assets/README-988df6e2.png)
 
 If you get an error alert, make sure you ran all the previous setup instructions properly. If the design does not look correct, make sure you installed the correct version of Twitter Bootstrap.
 
@@ -242,7 +242,7 @@ For example, you can find out when you're connected to a chatroom by subscribing
 
 Let's combine the information above into a small app that logs when you and other users come online.
 
-![](assets/README-c71c143b.png)
+![](guide/getting-started/assets/README-c71c143b.png)
 
 First, we'll create a function to log messages into HTML.
 
@@ -294,7 +294,7 @@ chat.on('$.online', (payload) => {
 
 You should see a message showing that ```ian``` has come online and that connection has been established.
 
-![](assets/README-c71c143b.png)
+![](guide/getting-started/assets/README-c71c143b.png)
 
 # Chat room event overview and how it works
 
@@ -370,7 +370,7 @@ Now, when you type in the message input and hit "Enter", the message is sent ove
 
 Try it with two browsers!
 
-![](assets/README-316b8bd1.gif)
+![](guide/getting-started/assets/README-316b8bd1.gif)
 
 But hey, it looks like every message is sent by "ian". Shouldn't different browsers have different names? How do we differentiate between clients?
 
@@ -398,7 +398,7 @@ let me = ChatEngine.connect(getUsername());
 
 Now every time we load the page, we'll have a different username.
 
-![](assets/README-98498584.png)
+![](guide/getting-started/assets/README-98498584.png)
 
 But what if we want to add other information? Like a profile? Let's give each ```User``` a unique username color.
 
