@@ -435,17 +435,34 @@ function buildMemberNav(items, itemHeading, itemsSeen, linktoFn, loopAgain, clas
 
                 if(loopAgain) {
 
-                    classes.forEach(function(item) {
+                    if(item.children) {
 
-                        var subMenu = renderIn(docdash, members, methods, events, item.name);
+                        itemsNav += '<ul>';
+                        // tutorials
+                        item.children.forEach(function(item) {
 
-                        if(subMenu.count) {
-                            itemsNav += '<ul><li>' + linktoFn(item.longname, item.name.replace(/^module:/, ''));
-                            itemsNav += subMenu.html;
-                            itemsNav += '</ul>';
-                        }
+                            itemsNav += '<li data-sidebar="'+item.name+'">' + linktoFn('', item.name);
+                            itemsNav += '</li>';
 
-                    });
+                        });
+                        itemsNav += '</ul>';
+
+                    } else {
+
+                        // plugins
+                        classes.forEach(function(item) {
+
+                            var subMenu = renderIn(docdash, members, methods, events, item.name);
+
+                            if(subMenu.count) {
+                                itemsNav += '<ul><li>' + linktoFn(item.longname, item.name.replace(/^module:/, ''));
+                                itemsNav += subMenu.html;
+                                itemsNav += '</ul>';
+                            }
+
+                        });
+
+                    }
 
                 } else {
 
@@ -514,7 +531,7 @@ function buildNav(members) {
     }
     nav += buildMemberNav(members.mixins, 'Mixins', seen, linkto, true, members.classes);
 
-    nav += buildMemberNav(members.tutorials, 'Tutorials', seenTutorials, linktoTutorial);
+    nav += buildMemberNav(members.tutorials, 'Tutorials', seenTutorials, linktoTutorial, true, members.children);
     nav += buildMemberNav(members.classes, 'Classes', seen, linkto);
 
     nav += buildMemberNav(members.modules, 'Modules', {}, linkto);

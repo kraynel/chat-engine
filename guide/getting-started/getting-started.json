@@ -1,0 +1,19 @@
+ {
+     "getting-started": {
+         "title": "Getting Started",
+         "children": {
+             "install": {
+                 "title": "Installing Node"
+             },
+             "node": {
+                 "title": "Set Up NodeJS"
+             },
+             "pubnub": {
+                 "title": "Set Up PubNub"
+             },
+             "full": {
+                 "title": "Everything Else"
+             }
+         }
+     }
+ }
