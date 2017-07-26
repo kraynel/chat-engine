@@ -529,7 +529,6 @@ function buildNav(members) {
             nav += '<h3>Global</h3><ul>' + globalNav + '</ul>';
         }
     }
-    nav += buildMemberNav(members.mixins, 'Mixins', seen, linkto, true, members.classes);
 
     nav += buildMemberNav(members.tutorials, 'Tutorials', seenTutorials, linktoTutorial, true, members.children);
     nav += buildMemberNav(members.classes, 'Classes', seen, linkto);
@@ -539,6 +538,8 @@ function buildNav(members) {
     // nav += buildMemberNav(members.events, 'Events', seen, linkto);
     nav += buildMemberNav(members.namespaces, 'Namespaces', seen, linkto);
     nav += buildMemberNav(members.interfaces, 'Interfaces', seen, linkto);
+
+    nav += buildMemberNav(members.mixins, 'Plugins', seen, linkto, true, members.classes);
 
     return nav;
 }

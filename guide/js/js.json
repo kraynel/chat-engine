@@ -1,9 +1,12 @@
  {
-     "examples": {
+     "js": {
          "title": "Javacsript Examples",
          "children": {
              "chat": {
                  "title": "Chat"
+             },
+             "friends": {
+                 "title": "Friends List"
              }
          }
      }

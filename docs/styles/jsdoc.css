@@ -669,7 +669,6 @@ article img {
 }
 
 iframe {
-  border: none;
+  border: 3px dashed #efefef;
   max-width: 100%;
-  border: 1px solid #efefef;
 }
