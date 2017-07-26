@@ -7,6 +7,12 @@
              },
              "friends": {
                  "title": "Friends List"
+             },
+             "online": {
+                 "title": "Online List"
+             },
+             "facebook": {
+                 "title": "Facebook Auth"
              }
          }
      }
