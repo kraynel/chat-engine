@@ -523,6 +523,7 @@ function buildNav(members) {
     var nav = '<h2><a href="index.html">Home</a></h2>';
     var seen = {};
     var seenTutorials = {};
+    nav += buildMemberNav(members.tutorials, 'Guides', seenTutorials, linktoTutorial, true, members.children);
 
     if (members.globals.length) {
         var globalNav = '';
@@ -543,7 +544,7 @@ function buildNav(members) {
         }
     }
 
-    nav += buildMemberNav(members.tutorials, 'Guides', seenTutorials, linktoTutorial, true, members.children);
+
     nav += buildMemberNav(members.classes, 'Classes', seen, linkto);
 
     nav += buildMemberNav(members.modules, 'Modules', {}, linkto);

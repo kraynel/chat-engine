@@ -94,5 +94,13 @@
                  "title": "Kitchen Sink"
              }
          }
+     },
+     "nodejs": {
+         "title": "NodeJS",
+         "children": {
+             "chatbot": {
+                 "title": "Chat Bot"
+             }
+         }
      }
  }
