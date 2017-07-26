@@ -61,5 +61,27 @@
                  "title": "Facebook Auth"
              }
          }
+     },
+     "angular": {
+         "title": "Angular Examples",
+         "children": {
+             "ng-simple": {
+                 "title": "Simple"
+             },
+             "ng-flowtron": {
+                 "title": "Flowtron"
+             }
+         }
+     },
+     "react": {
+         "title": "React Examples",
+         "children": {
+             "react-simple": {
+                 "title": "Web"
+             },
+             "react-native": {
+                 "title": "Native"
+             }
+         }
      }
  }
