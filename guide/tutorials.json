@@ -1,0 +1,53 @@
+ {
+     "getting-started": {
+         "title": "Getting Started",
+         "children": {
+             "install": {
+                 "title": "Installing Node"
+             },
+             "node": {
+                 "title": "Set Up NodeJS"
+             },
+             "pubnub": {
+                 "title": "Set Up PubNub"
+             },
+             "configure": {
+                 "title": "Configure the SDK"
+             },
+             "full": {
+                 "title": "Everything Else"
+             }
+         }
+     },
+     "concepts": {
+         "title": "Concepts",
+         "children": {
+             "user": {
+                 "title": "Users"
+             },
+             "me": {
+                 "title": "Me"
+             },
+             "chats": {
+                 "title": "Chats"
+             }
+         }
+     },
+     "js": {
+         "title": "Javacsript Examples",
+         "children": {
+             "chat": {
+                 "title": "Chat"
+             },
+             "friends": {
+                 "title": "Friends List"
+             },
+             "online": {
+                 "title": "Online List"
+             },
+             "facebook": {
+                 "title": "Facebook Auth"
+             }
+         }
+     }
+ }

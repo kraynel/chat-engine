@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Tutorial: Installing Node - Documentation</title>
+    <title>Tutorial: Me - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -27,7 +27,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">Tutorial: Installing Node</h1>
+    <h1 class="page-title">Tutorial: Me</h1>
     
 
     <section>
@@ -35,12 +35,19 @@
 <header>
     
 
-    <h2>Installing Node</h2>
+    <h2>Me</h2>
 </header>
 
 <article>
-    <h2>Install PubNub Chat Engine</h2><p>Alright, now for the part you've probably never done before! Install PubNub Chat Engine by running:</p>
-<pre class="prettyprint source lang-sh"><code>npm install chat-engine@0.2.1 --save</code></pre><p>This will install the PubNub Chat Engine Javascript SDK into your <code>node_modules</code> directory.</p>
+    <p>To authorize this client as a Chat Engine User, use the <code>connect</code> function.</p>
+<pre class="prettyprint source lang-js"><code>let me = ChatEngine.connect('ian');</code></pre><p>This connects to the PubNub Data Stream network on behalf of the browser running the code.</p>
+<h3>ChatEngine.connect()</h3><p>The function returns a <code>User</code> and connect to a global <code>Chat</code>. The paramter <code>ian</code> is a unique identifier for the new <code>User</code>.</p>
+<p>PubNub Chat Engine is an object oriented framework, so when you see <code>User</code> and <code>Chat</code>, it represents an actual object within the SDK.</p>
+<ul>
+<li><strong><em>User</em></strong> - A client. The browser window.</li>
+<li><strong><em>Chat</em></strong> - A chatroom that a <code>User</code> can join.</li>
+</ul>
+<h3>Me</h3><p>The <code>User</code> returned by the <code>connect()</code> method represents this browser window. We call that <code>User</code> <code>me</code>.</p>
 </article>
 
 </section>

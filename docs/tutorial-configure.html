@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Tutorial: Installing Node - Documentation</title>
+    <title>Tutorial: Configure the SDK - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -27,7 +27,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">Tutorial: Installing Node</h1>
+    <h1 class="page-title">Tutorial: Configure the SDK</h1>
     
 
     <section>
@@ -35,12 +35,24 @@
 <header>
     
 
-    <h2>Installing Node</h2>
+    <h2>Configure the SDK</h2>
 </header>
 
 <article>
-    <h2>Install PubNub Chat Engine</h2><p>Alright, now for the part you've probably never done before! Install PubNub Chat Engine by running:</p>
-<pre class="prettyprint source lang-sh"><code>npm install chat-engine@0.2.1 --save</code></pre><p>This will install the PubNub Chat Engine Javascript SDK into your <code>node_modules</code> directory.</p>
+    <p>Start by checking that Chat Engine has been loaded properly.</p>
+<pre class="prettyprint source lang-js"><code>console.log(ChatEngineCore);</code></pre><p>Now we're all set up to create an app!</p>
+<h1>Me / Connect / Configure</h1><p>In <code>app.js</code> add the following lines:</p>
+<pre class="prettyprint source lang-js"><code>const ChatEngine = ChatEngineCore.create({
+    publishKey: 'YOUR_PUB_KEY',
+    subscribeKey: 'YOUR_SUB_KEY'
+});</code></pre><p>This is the PubNub Chat Engine initialization. All you need to supply is the first parameter; a set of PubNub publish and subscribe keys.</p>
+<blockquote>
+<p>This paramter is actually a PubNub initialization. You can read more about all possible parameters <a href="https://www.pubnub.com/docs/web-javascript/api-reference#init">here</a></p>
+<p>When using PubNub Chat Engine with the <code>&lt;script&gt;</code> tag, you can get the package from <code>window.ChatEngineCore</code>.</p>
+<p>You can use the NodeJS package with <a href="https://webpack.github.io/">WebPack</a> and <code>require</code> as well.</p>
+<p>See that <code>const</code> declaration? This tutorial (and PubNub Chat Engine) are in
+<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/New_in_JavaScript/ECMAScript_2015_support_in_Mozilla">es6</a>.</p>
+</blockquote>
 </article>
 
 </section>
