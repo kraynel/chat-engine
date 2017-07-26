@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Tutorial: Simple - Documentation</title>
+    <title>desktopNotifcations - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -27,24 +27,680 @@
 
 <div id="main">
     
-    <h1 class="page-title">Tutorial: Simple</h1>
+    <h1 class="page-title">desktopNotifcations</h1>
     
 
-    <section>
+    
+
+
+
+
+<section>
 
 <header>
     
-
-    <h2>Simple</h2>
+        <h2>
+        desktopNotifcations
+        </h2>
+        
+    
 </header>
 
 <article>
-    <iframe src="https://chat-engine-examples.surge.sh/jquery/simple/index.html" width="100%" height="400px"></iframe>
+    <div class="container-overview">
+    
+        
 
-<script src="http://gist-it.appspot.com/github/pubnub/chat-engine-examples/blob/master/jquery/simple/index.html?footer=0"></script>
+<dl class="details">
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="chat-engine-desktop-notifications_src_plugin.js.html">chat-engine-desktop-notifications/src/plugin.js</a>, <a href="chat-engine-desktop-notifications_src_plugin.js.html#line1">line 1</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+        
+
+        
+            <h3>Example</h3>
+            
+    <pre class="prettyprint"><code>room.chat.plugin(ChatEngineCore.plugin['chat-engine-desktop-notifications']({
+    title: (event) => {
+        return 'Message In ' + room.name
+    },
+    message: (event) => {
+        return event.data.text;
+    },
+    icon: (event) => {
+        return '/examples/flowtron/logo@2x.png';
+    },
+    callback: (event) => {
+        window.focus();
+    }
+}));</code></pre>
+
+        
+    
+    </div>
+
+    
+
+    
+        <h3 class="subsection-title">Requires</h3>
+
+        <ul>
+            <li><a href="ChatEngine.html">ChatEngine</a></li>
+        </ul>
+    
+
+    
+
+     
+
+    
+
+    
+
+    
+
+    
+        <h3 class="subsection-title">Type Definitions</h3>
+
+        
+                
+
+    
+
+    <h4 class="name" id="~callback">
+
+    <span class="type-signature"></span>callback<span class="signature">(event)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="chat-engine-desktop-notifications_src_plugin.js.html">chat-engine-desktop-notifications/src/plugin.js</a>, <a href="chat-engine-desktop-notifications_src_plugin.js.html#line60">line 60</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description">
+    <p>Fired when the desktop notification is clicked on by the user.</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>event</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            
+                
+
+    
+
+    <h4 class="name" id="~icon">
+
+    <span class="type-signature"></span>icon<span class="signature">(event)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="chat-engine-desktop-notifications_src_plugin.js.html">chat-engine-desktop-notifications/src/plugin.js</a>, <a href="chat-engine-desktop-notifications_src_plugin.js.html#line138">line 138</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description">
+    <p>Provides a template function to generate a notification icon.</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>event</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            
+                
+
+    
+
+    <h4 class="name" id="~message">
+
+    <span class="type-signature"></span>message<span class="signature">(event)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="chat-engine-desktop-notifications_src_plugin.js.html">chat-engine-desktop-notifications/src/plugin.js</a>, <a href="chat-engine-desktop-notifications_src_plugin.js.html#line144">line 144</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description">
+    <p>Provides a template function to generate a notification message.</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>event</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            
+                
+
+    
+
+    <h4 class="name" id="~title">
+
+    <span class="type-signature"></span>title<span class="signature">(title)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="chat-engine-desktop-notifications_src_plugin.js.html">chat-engine-desktop-notifications/src/plugin.js</a>, <a href="chat-engine-desktop-notifications_src_plugin.js.html#line132">line 132</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description">
+    <p>Provides a template function to generate a notification title.</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>title</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            
+    
+
+    
 </article>
 
 </section>
+
+
+
 
 </div>
 

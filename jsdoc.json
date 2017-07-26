@@ -18,7 +18,8 @@
         "include": [
             "src/index.js",
             "../chat-engine-uploadcare/src/plugin.js",
-            "../chat-engine-typing-indicator/src/plugin.js"
+            "../chat-engine-typing-indicator/src/plugin.js",
+            "../chat-engine-desktop-notifications/src/plugin.js"
         ]
     },
     "plugins": [
