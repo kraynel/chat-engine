@@ -418,7 +418,7 @@ function buildMemberNav(items, itemHeading, itemsSeen, linktoFn, loopAgain, clas
     if (items && items.length) {
         var itemsNav = '';
 
-        if(itemHeading == 'Tutorials') {
+        if(itemHeading == 'Guides') {
             for(var i in items) {
                 if(items[i].name == "concepts") {
                     items.unshift(items[i]);
@@ -543,7 +543,7 @@ function buildNav(members) {
         }
     }
 
-    nav += buildMemberNav(members.tutorials, 'Tutorials', seenTutorials, linktoTutorial, true, members.children);
+    nav += buildMemberNav(members.tutorials, 'Guides', seenTutorials, linktoTutorial, true, members.children);
     nav += buildMemberNav(members.classes, 'Classes', seen, linkto);
 
     nav += buildMemberNav(members.modules, 'Modules', {}, linkto);
