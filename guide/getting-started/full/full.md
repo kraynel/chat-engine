@@ -127,49 +127,9 @@ Create a new file called ```app.js``` in the local dir. In ```app.js```:.
 
 In ```app.js```, add the line:
 
-## Chats
+[chats concept]
 
-But what about chat rooms?
-
-In ```app.js```, add the following:
-
-```js
-let chat = new ChatEngine.Chat('tutorial-chat');
-```
-This creates a new ```Chat``` object. The ```Chat``` object represents a chatroom that connects one client to another.
-
-The ```Chat``` state is synchronized between all connected clients. When this client runs ```new ChatEngine.Chat()```, it connects to the PubNub network and gets information about that chat room.
-
-For example, ```chat.users``` contains a list of all the other ```User```s online in the chat. That list of users will update automatically.
-
-The client (```me```) joins ```Chat```s automatically when they are created on the client.
-
-> Remember, those other ```User```s are ```me``` on someone else's computer. A real practice in empathy.
-
-### See who else is online
-
-A list of all the clients who have joined the chatroom is available from ```chat.users```.
-
-```js
-console.log(chat.users);
-```
-
-It returns a list of ```Users``` who have also joined this chat.
-
-```js
-{
-  ian: {},
-  nick: {}
-}
-```
-
-When a new ```User``` comes online, the ```Chat``` emits the ```$.online``` event.
-
-```js
-chat.on('$.online', (newUser) -> {
-  console.log('new user', newUser);
-});
-```
+[online list concept]
 
 Chat Engine specific events begin with ```$```.
 
@@ -237,39 +197,8 @@ You should see a message showing that ```ian``` has come online and that connect
 
 But what about custom messages? The life-blood of chat! Custom messages sent by each user.
 
-Let's define a custom event so we can send and recieve text messages between windows.
-
-## Broadcasting Events
-
-First, let's ```emit()``` a simple text string as a ```message``` event over the ```Chat```.
-
-```js
-chat.emit('message', 'Hey, this is Ian!');
-```
-
-This will broadcast the ```message``` event over the internet to all other clients.
-
-## Subscribing to Events
-
-You can subscribe to custom events by supplying an event name as first parameter in ```on()````.
-
-```js
-chat.on('message', (payload) => {
-  appendMessage(payload.sender.uuid, payload.data);
-});
-```
-
-Anytime your or any other client uses the ```emit()``` function with the same event name, it will fire the callback defined in ```on()``` on every client subscribed to it.
-
-## Event Payload
-
-Notice how we use ```payload.sender.uuid``` and ```payload.data``` in the callback?
-
-The ```payload``` value is auto-magically populated with handy references to the ```Chat``` and ```User``` related to this event.
-
-The property ```payload.chat``` is the ```Chat``` that event was broadcast broadcast on, and the ```payload.user``` is the ```User ``` that broadcast the message. You can find the actual message contents supplied to ```emit()``` within the ```payload.data``` property.
-
-> The ```User``` and ```Chat``` properties are both fully interactive instances. Therefor, you can do things like ```payload.chat.emit('message')``` to automatically reply to a message.
+[events concept]
+[payload concept]
 
 ## Adding a Textbox
 
@@ -313,49 +242,9 @@ But hey, it looks like every message is sent by "ian". Shouldn't different brows
 
 ## Add Usernames and State
 
-In order to give every user a unique name, let's create a function that returns a random animal.
+[username concept (part of me)]
 
-```js
-const getUsername = () => {
-
-  const animals = ['pigeon', 'seagull', 'bat', 'owl', 'sparrows', 'robin', 'bluebird', 'cardinal', 'hawk', 'fish', 'shrimp', 'frog', 'whale', 'shark', 'eel', 'seal', 'lobster', 'octopus', 'mole', 'shrew', 'rabbit', 'chipmunk', 'armadillo', 'dog', 'cat', 'lynx', 'mouse', 'lion', 'moose', 'horse', 'deer', 'raccoon', 'zebra', 'goat', 'cow', 'pig', 'tiger', 'wolf', 'pony', 'antelope', 'buffalo', 'camel', 'donkey', 'elk', 'fox', 'monkey', 'gazelle', 'impala', 'jaguar', 'leopard', 'lemur', 'yak', 'elephant', 'giraffe', 'hippopotamus', 'rhinoceros', 'grizzlybear'];
-
-  return animals[Math.floor(Math.random() * animals.length)];
-
-};
-```
-
-We can call ```getUsername()``` to get a random animal name. This will be our new username.
-
-Remember when we defined ```me``` and supplied ```ian``` as the first parameter of ```ChatEngine.connect()```? Well, we can supply whatever we want to use as the ```User``` identifier there. Let's use our new function!
-
-```js
-let me = ChatEngine.connect(getUsername());
-```
-
-Now every time we load the page, we'll have a different username.
-
-![](/guide/getting-started/assets/README-98498584.png)
-
-But what if we want to add other information? Like a profile? Let's give each ```User``` a unique username color.
-
-```js
-const getColor = () => {
-
-  const colors =   ["AliceBlue","AntiqueWhite","Aqua","Aquamarine","Azure","Beige","Bisque","Black","BlanchedAlmond","Blue","BlueViolet","Brown","BurlyWood","CadetBlue","Chartreuse","Chocolate","Coral","CornflowerBlue","Cornsilk","Crimson","Cyan","DarkBlue","DarkCyan","DarkGoldenRod","DarkGray","DarkGrey","DarkGreen","DarkKhaki","DarkMagenta","DarkOliveGreen","Darkorange","DarkOrchid","DarkRed","DarkSalmon","DarkSeaGreen","DarkSlateBlue","DarkSlateGray","DarkSlateGrey","DarkTurquoise","DarkViolet","DeepPink","DeepSkyBlue","DimGray","DimGrey","DodgerBlue","FireBrick","FloralWhite","ForestGreen","Fuchsia","Gainsboro","GhostWhite","Gold","GoldenRod","Gray","Grey","Green","GreenYellow","HoneyDew","HotPink","IndianRed","Indigo","Ivory","Khaki","Lavender","LavenderBlush","LawnGreen","LemonChiffon","LightBlue","LightCoral","LightCyan","LightGoldenRodYellow","LightGray","LightGrey","LightGreen","LightPink","LightSalmon","LightSeaGreen","LightSkyBlue","LightSlateGray","LightSlateGrey","LightSteelBlue","LightYellow","Lime","LimeGreen","Linen","Magenta","Maroon","MediumAquaMarine","MediumBlue","MediumOrchid","MediumPurple","MediumSeaGreen","MediumSlateBlue","MediumSpringGreen","MediumTurquoise","MediumVioletRed","MidnightBlue","MintCream","MistyRose","Moccasin","NavajoWhite","Navy","OldLace","Olive","OliveDrab","Orange","OrangeRed","Orchid","PaleGoldenRod","PaleGreen","PaleTurquoise","PaleVioletRed","PapayaWhip","PeachPuff","Peru","Pink","Plum","PowderBlue","Purple","Red","RosyBrown","RoyalBlue","SaddleBrown","Salmon","SandyBrown","SeaGreen","SeaShell","Sienna","Silver","SkyBlue","SlateBlue","SlateGray","SlateGrey","Snow","SpringGreen","SteelBlue","Tan","Teal","Thistle","Tomato","Turquoise","Violet","Wheat","White","WhiteSmoke","Yellow","YellowGreen"];
-
-  return colors[Math.floor(Math.random() * colors.length)];
-
-};
-```
-
-We'll edit the ```connect()``` function again, but this time we're going to use the second parameter.
-
-```js
-let me = ChatEngine.connect(getUsername(), {color: getColor()});
-```
-
-This parameter represents the ```User``` state.
+[state concept]
 
 # plugin for random usernames
 

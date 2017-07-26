@@ -28,8 +28,20 @@
              "me": {
                  "title": "Me"
              },
+             "state": {
+                 "title": "State"
+             },
              "chats": {
                  "title": "Chats"
+             },
+             "events": {
+                 "title": "Events"
+             },
+             "payload": {
+                 "title": "Event Payload"
+             },
+             "online-list": {
+                 "title": "Online List"
              }
          }
      },
