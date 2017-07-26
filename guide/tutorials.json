@@ -46,7 +46,7 @@
          }
      },
      "js": {
-         "title": "Javacsript Examples",
+         "title": "Javacsript",
          "children": {
              "chat": {
                  "title": "Chat"
@@ -63,7 +63,7 @@
          }
      },
      "angular": {
-         "title": "Angular Examples",
+         "title": "Angular",
          "children": {
              "ng-simple": {
                  "title": "Simple"
@@ -74,13 +74,24 @@
          }
      },
      "react": {
-         "title": "React Examples",
+         "title": "React",
          "children": {
              "react-simple": {
                  "title": "Web"
              },
              "react-native": {
                  "title": "Native"
+             }
+         }
+     },
+     "jquery": {
+         "title": "jQuery",
+         "children": {
+             "jq-simple": {
+                 "title": "Simple"
+             },
+             "jq-kitchen": {
+                 "title": "Kitchen Sink"
              }
          }
      }
