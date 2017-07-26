@@ -1,0 +1,10 @@
+ {
+     "examples": {
+         "title": "Javacsript Examples",
+         "children": {
+             "chat": {
+                 "title": "Chat"
+             }
+         }
+     }
+ }
