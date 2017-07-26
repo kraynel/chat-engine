@@ -418,6 +418,19 @@ function buildMemberNav(items, itemHeading, itemsSeen, linktoFn, loopAgain, clas
     if (items && items.length) {
         var itemsNav = '';
 
+        if(itemHeading == 'Tutorials') {
+            for(var i in items) {
+                if(items[i].name == "concepts") {
+                    items.unshift(items[i]);
+                }
+            }
+            for(var i in items) {
+                if(items[i].name == "getting-started") {
+                    items.unshift(items[i]);
+                }
+            }
+        }
+
         items.forEach(function(item) {
 
             var methods = find({kind:'function', memberof: item.longname});
