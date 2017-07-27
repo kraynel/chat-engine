@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Tutorial: Me - Documentation</title>
+    <title>desktopNotifications - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -27,41 +27,128 @@
 
 <div id="main">
     
-    <h1 class="page-title">Tutorial: Me</h1>
+    <h1 class="page-title">desktopNotifications</h1>
     
 
-    <section>
+    
+
+
+
+
+<section>
 
 <header>
     
-
-    <h2>Me</h2>
+        <h2>
+        desktopNotifications
+        </h2>
+        
+    
 </header>
 
 <article>
-    <p>To authorize this client as a Chat Engine User, use the <code>connect</code> function.</p>
-<pre class="prettyprint source lang-js"><code>let me = ChatEngine.connect('ian');</code></pre><p>This connects to the PubNub Data Stream network on behalf of the browser running the code.</p>
-<h3>ChatEngine.connect()</h3><p>The function returns a <code>User</code> and connect to a global <code>Chat</code>. The paramter <code>ian</code> is a unique identifier for the new <code>User</code>.</p>
-<p>PubNub Chat Engine is an object oriented framework, so when you see <code>User</code> and <code>Chat</code>, it represents an actual object within the SDK.</p>
-<ul>
-<li><strong><em>User</em></strong> - A client. The browser window.</li>
-<li><strong><em>Chat</em></strong> - A chatroom that a <code>User</code> can join.</li>
-</ul>
-<h3>Me</h3><p>The <code>User</code> returned by the <code>connect()</code> method represents this browser window. We call that <code>User</code> <code>me</code>.</p>
-<h2>Usernames</h2><p>In order to give every user a unique name, let's create a function that returns a random animal.</p>
-<pre class="prettyprint source lang-js"><code>const getUsername = () => {
+    <div class="container-overview">
+    
+        
 
-  const animals = ['pigeon', 'seagull', 'bat', 'owl', 'sparrows', 'robin', 'bluebird', 'cardinal', 'hawk', 'fish', 'shrimp', 'frog', 'whale', 'shark', 'eel', 'seal', 'lobster', 'octopus', 'mole', 'shrew', 'rabbit', 'chipmunk', 'armadillo', 'dog', 'cat', 'lynx', 'mouse', 'lion', 'moose', 'horse', 'deer', 'raccoon', 'zebra', 'goat', 'cow', 'pig', 'tiger', 'wolf', 'pony', 'antelope', 'buffalo', 'camel', 'donkey', 'elk', 'fox', 'monkey', 'gazelle', 'impala', 'jaguar', 'leopard', 'lemur', 'yak', 'elephant', 'giraffe', 'hippopotamus', 'rhinoceros', 'grizzlybear'];
+<dl class="details">
 
-  return animals[Math.floor(Math.random() * animals.length)];
+    
 
-};</code></pre><p>We can call <code>getUsername()</code> to get a random animal name. This will be our new username.</p>
-<p>Remember when we defined <code>me</code> and supplied <code>ian</code> as the first parameter of <code>ChatEngine.connect()</code>? Well, we can supply whatever we want to use as the <code>User</code> identifier there. Let's use our new function!</p>
-<pre class="prettyprint source lang-js"><code>let me = ChatEngine.connect(getUsername());</code></pre><p>Now every time we load the page, we'll have a different username.</p>
-<p><img src="/guide/getting-started/assets/README-98498584.png" alt=""></p>
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="chat-engine-desktop-notifications_src_plugin.js.html">chat-engine-desktop-notifications/src/plugin.js</a>, <a href="chat-engine-desktop-notifications_src_plugin.js.html#line1">line 1</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+        
+
+        
+            <h3>Example</h3>
+            
+    <pre class="prettyprint"><code>room.chat.plugin(ChatEngineCore.plugin['chat-engine-desktop-notifications']({
+    title: (event) => {
+        return 'Message In ' + room.name
+    },
+    message: (event) => {
+        return event.data.text;
+    },
+    icon: (event) => {
+        return '/examples/flowtron/logo@2x.png';
+    },
+    callback: (event) => {
+        window.focus();
+    }
+}));</code></pre>
+
+        
+    
+    </div>
+
+    
+
+    
+        <h3 class="subsection-title">Requires</h3>
+
+        <ul>
+            <li><a href="ChatEngine.html">ChatEngine</a></li>
+        </ul>
+    
+
+    
+
+     
+
+    
+
+    
+
+    
+
+    
+
+    
 </article>
 
 </section>
+
+
+
 
 </div>
 

@@ -291,8 +291,6 @@ function renderMember(member) {
 
     var itemsNav = '';
 
-    console.log(member.name)
-
     // if (!member.scope === 'static') return;
     itemsNav += "<li data-type='member'>";
     itemsNav += linkto(member.longname, member.name.replace('"."', '.'));
@@ -551,6 +549,7 @@ function buildNav(members) {
     nav += buildMemberNav(members.externals, 'Externals', seen, linktoExternal);
     // nav += buildMemberNav(members.events, 'Events', seen, linkto);
     nav += buildMemberNav(members.namespaces, 'Plugins', seen, linkto, true, members.classes);
+
     nav += buildMemberNav(members.interfaces, 'Interfaces', seen, linkto);
 
     nav += buildMemberNav(members.mixins, 'Mixins', seen, linkto);
