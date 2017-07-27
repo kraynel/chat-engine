@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Class: plugin</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Class: plugin</h1>
+
+    
+
+
+
+
+<section>
+
+<header>
+    
+        <h2><span class="attribs"><span class="type-signature"></span></span>
+            <span class="ancestors"><a href="module-desktop-notifications.html">desktop-notifications</a>~</span>plugin<span class="signature">(config)</span><span class="type-signature"></span></h2>
+        
+    
+</header>
+
+<article>
+    <div class="container-overview">
+    
+        
+
+    
+
+    
+    <h4 class="name" id="plugin"><span class="type-signature"></span>new plugin<span class="signature">(config)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>config</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The config object</p>
+                <h6>Properties</h6>
+                
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>title</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The title of the desktop notification</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>message</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="module-desktop-notifications.html#~message">module:desktop-notifications~message</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>[description]</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+            </td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="chat-engine-desktop-notifications_src_plugin.js.html">chat-engine-desktop-notifications/src/plugin.js</a>, <a href="chat-engine-desktop-notifications_src_plugin.js.html#line29">line 29</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>room.chat.plugin(ChatEngineCore.plugin['chat-engine-desktop-notifications']({
+    title: (event) => {
+        return 'Message In ' + room.name
+    },
+    message: (event) => {
+        return event.data.text;
+    },
+    icon: (event) => {
+        return '/examples/flowtron/logo@2x.png';
+    },
+    callback: (event) => {
+        window.focus();
+    }
+}));</code></pre>
+
+
+
+    
+    </div>
+
+    
+
+    
+
+    
+
+     
+
+    
+
+    
+
+    
+
+    
+
+    
+</article>
+
+</section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-desktop-notifications.html">desktop-notifications</a></li></ul><h3>Classes</h3><ul><li><a href="Chat.html">Chat</a></li><li><a href="ChatEngine.html">ChatEngine</a></li><li><a href="Emitter.html">Emitter</a></li><li><a href="Event.html">Event</a></li><li><a href="Me.html">Me</a></li><li><a href="module-desktop-notifications-plugin.html">plugin</a></li><li><a href="RootEmitter.html">RootEmitter</a></li><li><a href="User.html">User</a></li></ul><h3>Events</h3><ul><li><a href="Chat.html#event:$%2522.%2522disconnect">$"."disconnect</a></li><li><a href="Chat.html#event:$%2522.%2522join">$"."join</a></li><li><a href="Chat.html#event:$%2522.%2522leave">$"."leave</a></li><li><a href="Chat.html#event:$%2522.%2522offline">$"."offline</a></li><li><a href="Chat.html#event:$%2522.%2522online">$"."online</a></li><li><a href="Chat.html#event:$%2522.%2522ready">$"."ready</a></li><li><a href="Chat.html#event:$%2522.%2522state">$"."state</a></li><li><a href="typingIndicator.html#.event:$typingIndiciator%2522.%2522startTyping">$typingIndiciator"."startTyping</a></li><li><a href="uploadcare.html#.event:$uploadcare%2522.%2522upload">$uploadcare"."upload</a></li></ul><h3>Namespaces</h3><ul><li><a href="emoji.html">emoji</a></li><li><a href="typingIndicator.html">typingIndicator</a></li><li><a href="uploadcare.html">uploadcare</a></li></ul><h3>Tutorials</h3><ul><li><a href="tutorial-angular.html">Angular</a></li><li><a href="tutorial-concepts.html">Concepts</a></li><li><a href="tutorial-getting-started.html">Getting Started</a></li><li><a href="tutorial-jquery.html">jQuery</a></li><li><a href="tutorial-js.html">Javacsript</a></li><li><a href="tutorial-nodejs.html">NodeJS</a></li><li><a href="tutorial-react.html">React</a></li></ul><h3>Global</h3><ul><li><a href="global.html#ChatEngineCore">ChatEngineCore</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.2</a> on Thu Jul 27 2017 10:53:37 GMT-0500 (CDT)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
