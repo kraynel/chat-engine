@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Tutorial: Set Up PubNub - Documentation</title>
+    <title>typing-indicator - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -27,45 +27,432 @@
 
 <div id="main">
     
-    <h1 class="page-title">Tutorial: Set Up PubNub</h1>
+    <h1 class="page-title">typing-indicator</h1>
     
 
-    <section>
+    
+
+
+
+
+<section>
 
 <header>
     
-
-    <h2>Set Up PubNub</h2>
+        
+    
 </header>
 
 <article>
-    <h2>How to Get Your PubNub Keys</h2><p>Navigate to http://admin.pubnub.com and login or create an account. Don't worry, it's free!</p>
-<p>https://admin.pubnub.com</p>
-<p>Click &quot;New App.&quot;</p>
-<p><img src="/guide/getting-started/assets/README-ddad3667.png" alt=""></p>
-<p>Give your new app a name and click &quot;Create.&quot;</p>
-<p><img src="/guide/getting-started/assets/README-a6e543f2.png" alt=""></p>
-<p>Click on your keyset.</p>
-<p><img src="/guide/getting-started/assets/README-84f858cd.png" alt=""></p>
-<p>Copy and paste those keys into your <code>app.js</code>.</p>
-<pre class="prettyprint source lang-js"><code>const ChatEngine = ChatEngineCore.create({
-    publishKey: 'YOUR_PUB_KEY',
-    subscribeKey: 'YOUR_SUB_KEY'
-});</code></pre><p><img src="/guide/getting-started/assets/README-943bee9f.png" alt=""></p>
-<p>Scroll down and enable PubNub Presence.</p>
-<p><img src="/guide/getting-started/assets/README-29b7db60.png" alt=""></p>
-<blockquote>
-<p>Not yet supported.
-Enable PubNub Access Manager.
-<img src="/guide/getting-started/assets/README-ad7eda0b.png" alt=""></p>
-</blockquote>
-<p>Scroll down and enable PubNub Storage and Playback. &quot;Retention&quot; is how long messages will be stored in chatrooms.</p>
-<p><img src="/guide/getting-started/assets/README-755671fd.png" alt=""></p>
-<p>Click &quot;Save Changes.&quot;</p>
-<p><img src="/guide/getting-started/assets/README-8e5db3c0.png" alt=""></p>
+    <div class="container-overview">
+    
+        
+
+        
+    
+    </div>
+
+    
+
+    
+        <h3 class="subsection-title">Requires</h3>
+
+        <ul>
+            <li><a href="ChatEngine.html">ChatEngine</a></li>
+        </ul>
+    
+
+    
+
+     
+
+    
+
+    
+
+    
+        <h3 class="subsection-title">Methods</h3>
+
+        
+            
+
+    
+
+    <h4 class="name" id="~typingindicator%22.%22startTyping">
+
+    <span class="type-signature">(inner) </span>typingindicator.startTyping<span class="signature">()</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Augments:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Chat.html">Chat</a>
+    </li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="chat-engine-typing-indicator_src_plugin.js.html">chat-engine-typing-indicator/src/plugin.js</a>, <a href="chat-engine-typing-indicator_src_plugin.js.html#line24">line 24</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="~typingindicator%22.%22stopTyping">
+
+    <span class="type-signature">(inner) </span>typingindicator.stopTyping<span class="signature">()</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Augments:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Chat.html">Chat</a>
+    </li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="chat-engine-typing-indicator_src_plugin.js.html">chat-engine-typing-indicator/src/plugin.js</a>, <a href="chat-engine-typing-indicator_src_plugin.js.html#line61">line 61</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+    
+
+    
+
+    
+        <h3 class="subsection-title">Events</h3>
+
+        
+            
+
+    
+
+    <h4 class="name" id="~event:$typingIndiciator%22.%22startTyping">
+
+    $typingIndiciator.startTyping</h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Augments:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Chat.html">Chat</a>
+    </li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="chat-engine-typing-indicator_src_plugin.js.html">chat-engine-typing-indicator/src/plugin.js</a>, <a href="chat-engine-typing-indicator_src_plugin.js.html#line41">line 41</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description">
+    <p>broadcast a stoptyping event</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="~event:$typingIndiciator%22.%22stopTyping">
+
+    $typingIndiciator.stopTyping</h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Augments:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Chat.html">Chat</a>
+    </li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="chat-engine-typing-indicator_src_plugin.js.html">chat-engine-typing-indicator/src/plugin.js</a>, <a href="chat-engine-typing-indicator_src_plugin.js.html#line73">line 73</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description">
+    <p>broadcast a stoptyping event</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+    
 </article>
 
 </section>
+
+
+
 
 </div>
 

@@ -305,7 +305,7 @@ function renderMethod(method) {
     var itemsNav = '';
 
     itemsNav += "<li data-type='method'>";
-    itemsNav += linkto(method.longname, method.name.replace('"."', '.'));
+    itemsNav += linkto(method.longname, method.name.replace('"."', '.') + '()');
     itemsNav += "</li>";
 
     return itemsNav;
@@ -351,8 +351,8 @@ function renderIn(docdash, members, methods, events, rootClass) {
 
         methods.forEach(function (method) {
 
-            if(method.ceextends) {
-                if(method.ceextends.indexOf(rootClass) > -1) {
+            if(method.ceextends || method.ceplugin) {
+                if(method.ceextends && method.ceextends.indexOf(rootClass) > -1) {
                     itemsNav += renderMethod(method);
                     numItems++;
                 }
@@ -460,6 +460,8 @@ function buildMemberNav(items, itemHeading, itemsSeen, linktoFn, loopAgain, clas
 
                     } else {
 
+
+
                         // plugins
                         classes.forEach(function(item) {
 
@@ -545,10 +547,10 @@ function buildNav(members) {
 
     nav += buildMemberNav(members.classes, 'Classes', seen, linkto);
 
-    nav += buildMemberNav(members.modules, 'Modules', {}, linkto);
+    nav += buildMemberNav(members.modules, 'Plugins', {}, linkto, true, members.classes);
     nav += buildMemberNav(members.externals, 'Externals', seen, linktoExternal);
     // nav += buildMemberNav(members.events, 'Events', seen, linkto);
-    nav += buildMemberNav(members.namespaces, 'Plugins', seen, linkto, true, members.classes);
+    nav += buildMemberNav(members.namespaces, 'Namespaces', seen, linkto);
 
     nav += buildMemberNav(members.interfaces, 'Interfaces', seen, linkto);
 
