@@ -272,13 +272,15 @@ function attachModuleSymbols(doclets, modules) {
                 // Only show symbols that have a description. Make an exception for classes, because
                 // we want to show the constructor-signature heading no matter what.
                 .filter(function(symbol) {
-                    return symbol.description || symbol.kind === 'class';
+                    return true;
+                    // fuck this line
+                    // return symbol.description || symbol.kind === 'class';
                 })
                 .map(function(symbol) {
                     symbol = doop(symbol);
 
                     if (symbol.kind === 'class' || symbol.kind === 'function') {
-                        symbol.name = symbol.name.replace('module:', '(require("') + '"))';
+                        symbol.name = symbol.name.replace('module:', 'require("') + '")';
                     }
 
                     return symbol;
