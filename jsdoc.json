@@ -23,7 +23,8 @@
             "../chat-engine-emoji/src/plugin.js",
             "../chat-engine-random-username/src/plugin.js",
             "../chat-engine-unread-messages/src/plugin.js",
-            "../chat-engine-gravatar/src/plugin.js"
+            "../chat-engine-gravatar/src/plugin.js",
+            "../chat-engine-markdown/src/plugin.js"
         ]
     },
     "plugins": [
