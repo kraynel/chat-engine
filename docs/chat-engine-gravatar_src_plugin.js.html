@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Tutorial: jQuery - Documentation</title>
+    <title>chat-engine-gravatar/src/plugin.js - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -27,28 +27,67 @@
 
 <div id="main">
     
-    <h1 class="page-title">Tutorial: jQuery</h1>
+    <h1 class="page-title">chat-engine-gravatar/src/plugin.js</h1>
     
 
+    
+
+
+
+    
     <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+* Update all {@link Users}'s state and add a gravatar property based on ```user.state().email```. Result assigned to ```user.state().gravatar```.
+* @module chat-engine-gravatar
+*/
 
-<header>
-    
-    <ul>
-        <li><a href="tutorial-jq-simple.html">Simple</a></li>
-    
-        <li><a href="tutorial-jq-kitchen.html">Kitchen Sink</a></li>
-    </ul>
-    
+let gravatar = require('gravatar');
 
-    <h2>jQuery</h2>
-</header>
+/**
+* @function
+* @example
+*
+* chat = new ChatEngine.Chat(new Date().getTime());
+* user = new OCF.User('ian', {email: 'ian@pubnub.com'});
+* user.plugin(gravatar());
+* console.log(user.state().gravatar());
+*/
+module.exports = (config) => {
 
-<article>
-    <p>jquery.md</p>
-</article>
+    class extension {
+        construct() {
 
-</section>
+            if(this.parent.state().email) {
+
+                /**
+                @member state()"."gravatar
+                @ceextends User
+                */
+                this.parent.update({
+                    gravatar: gravatar.url(this.parent.state().email)
+                });
+
+            }
+
+        }
+    }
+
+    return {
+        namespace: 'gravatar',
+        extends: {
+            User: extension,
+            Me: extension,
+        }
+    }
+
+}
+</code></pre>
+        </article>
+    </section>
+
+
+
 
 </div>
 
