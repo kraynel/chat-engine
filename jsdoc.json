@@ -24,7 +24,8 @@
             "../chat-engine-random-username/src/plugin.js",
             "../chat-engine-unread-messages/src/plugin.js",
             "../chat-engine-gravatar/src/plugin.js",
-            "../chat-engine-markdown/src/plugin.js"
+            "../chat-engine-markdown/src/plugin.js",
+            "../chat-engine-online-user-search/src/plugin.js"
         ]
     },
     "plugins": [

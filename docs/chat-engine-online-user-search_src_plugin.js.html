@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>chat-engine-markdown - Documentation</title>
+    <title>chat-engine-online-user-search/src/plugin.js - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -27,231 +27,97 @@
 
 <div id="main">
     
-    <h1 class="page-title">chat-engine-markdown</h1>
+    <h1 class="page-title">chat-engine-online-user-search/src/plugin.js</h1>
     
 
     
 
 
 
-
-<section>
-
-<header>
     
-        
-            
-        
-            
-        
-    
-</header>
-
-<article>
-    <div class="container-overview">
-    
-        
-            <div class="description"><p>Renders markdown from the <code>message</code> event. Looks for <code>payload.data.text</code>.</p></div>
-        
-
-        
-            
-
-
-
-
-<dl class="details">
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="chat-engine-markdown_src_plugin.js.html">chat-engine-markdown/src/plugin.js</a>, <a href="chat-engine-markdown_src_plugin.js.html#line1">line 1</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-            
-
-    
-    <h4 class="name" id="module:chat-engine-markdown">
-
-    <span class="type-signature"></span>require("chat-engine-markdown")<span class="signature">()</span><span class="type-signature"></span></h4>
-
-    
-
-
-
-
-<dl class="details">
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="chat-engine-markdown_src_plugin.js.html">chat-engine-markdown/src/plugin.js</a>, <a href="chat-engine-markdown_src_plugin.js.html#line23">line 23</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-    <h5>Example</h5>
-    
-    <pre class="prettyprint"><code>pluginchat = new ChatEngine.Chat('markdown-chat');
-pluginchat.plugin(markdown({}));
-pluginchat.on('message', (payload) => {
-
-   // payload.data.text == 'This is some &lt;em>markdown&lt;/em> &lt;strong>for sure&lt;/strong>.'
-
-});
-
-pluginchat.emit('message', {
-   text: 'This is some *markdown* **for sure**.'
-});</code></pre>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-    
-    </div>
-
-    
-
-    
-
-    
-
-     
-
-    
-
-    
-
-    
-
-    
-
-    
-</article>
-
-</section>
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+* Searches a {@link Chat} for a {@link User} with a ```state().username``` containing a given string.
+* @module chat-engine-online-user-search
+*/
+
+const dotty = require('dotty');
+
+/**
+* @function
+* @example
+* chat = new ChatEngine.Chat('markdown-chat');
+* chat.plugin(onlineUserSearch({}));
+* let foundUSers = chat.search('red');
+*/
+module.exports = (config) => {
+
+    config = config || {};
+    config.prop = config.prop || 'username';
+    config.caseSensitive = config.caseSensitive || false;
+
+    // these are new methods that will be added to the extended class
+
+    /**
+    * @method  search
+    * @ceextends Chat
+    * @param {String} needle The username to search for.
+    * @returns {Array} An array of {@link User}s that match the input string.
+    */
+    class extension {
+      search(needle) {
+
+          // an empty array of users we found
+          var returnList = [];
+
+          if(config.caseSensitive) {
+              needle = needle.toLowerCase();
+          }
+
+          // for every user that the parent chat knows about
+          for(var key in this.parent.users) {
+
+              let haystack  = this.parent.users[key].state(this.parent);
+              let target = dotty.get(haystack, config.prop);
+
+              // see if that user username includes the input text
+              if(haystack &amp;&amp; target) {
+
+                  if(!config.caseSensitive) {
+                      target = target.toLowerCase();
+                  }
+
+                  if(target.indexOf(needle) > -1) {
+
+                      // if it does, add it to the list of returned users
+                      returnList.push(this.parent.users[key]);
+
+                  }
+              }
+
+          }
+
+          // return all found users
+          return returnList;
+
+      }
+    }
+
+    // add this plugin to the Chat classes
+    return {
+      namespace: 'onlineUserSearch',
+      extends: {
+          Chat: extension,
+          GlobalChat: extension
+      }
+    }
+
+
+}
+</code></pre>
+        </article>
+    </section>
 
 
 
