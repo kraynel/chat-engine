@@ -21,7 +21,8 @@
             "../chat-engine-typing-indicator/src/plugin.js",
             "../chat-engine-desktop-notifications/src/plugin.js",
             "../chat-engine-emoji/src/plugin.js",
-            "../chat-engine-random-username/src/plugin.js"
+            "../chat-engine-random-username/src/plugin.js",
+            "../chat-engine-unread-messages/src/plugin.js"
         ]
     },
     "plugins": [
