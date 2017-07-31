@@ -19,9 +19,6 @@
      "concepts": {
          "title": "Concepts",
          "children": {
-             "user": {
-                 "title": "Users"
-             },
              "me": {
                  "title": "Me"
              },
@@ -30,6 +27,9 @@
              },
              "chats": {
                  "title": "Chats"
+             },
+             "globalChat": {
+                 "title": "Global Chat"
              },
              "events": {
                  "title": "Events"

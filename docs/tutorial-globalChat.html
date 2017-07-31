@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Tutorial: Simple - Documentation</title>
+    <title>Tutorial: Global Chat - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -27,7 +27,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">Tutorial: Simple</h1>
+    <h1 class="page-title">Tutorial: Global Chat</h1>
     
 
     <section>
@@ -35,15 +35,20 @@
 <header>
     
 
-    <h2>Simple</h2>
+    <h2>Global Chat</h2>
 </header>
 
 <article>
-    <iframe src="https://chat-engine-examples.surge.sh/angular/simple/index.html" width="100%" height="400px"></iframe>
-
-<script src="http://gist-it.appspot.com/github/pubnub/chat-engine-examples/blob/master/angular/simple/app.js?footer=0"></script>
-<script src="http://gist-it.appspot.com/github/pubnub/chat-engine-examples/blob/master/angular/simple/plugin.js?footer=0"></script>
-<script src="http://gist-it.appspot.com/github/pubnub/chat-engine-examples/blob/master/angular/simple/index.html?footer=0"></script>
+    <p>ChatEngine.globalChat is a global <a href="Chat.html">Chat</a> room that all instances of <a href="ChatEngine.html">ChatEngine</a> connect to by default.
+It is a convenience property that provides some handy utility.</p>
+<p>It makes it easy to send a message to all connected clients:</p>
+<pre class="prettyprint source"><code>ChatEngine.globalChat.send('message', 'Sale going on now!');</code></pre><p>We also get a list of all online users connected to this instance of ChatEngine.</p>
+<pre class="prettyprint source lang-js"><code>// everyone online in all chatrooms
+console.log(ChatEngine.globalChat.users);</code></pre><p>So how does it work?</p>
+<ul>
+<li>All <a href="User.html">User</a>s connect to ChatEngine.globalChat by default (during <code>connect()</code>)</li>
+<li>User.state() and Me.update() use ChatEngine.globalChat as the default input. See: <a href="tutorial-users.html">Users and State</a></li>
+</ul>
 </article>
 
 </section>
