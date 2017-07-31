@@ -1,7 +1,21 @@
 PubNub Channel Topology:
 
 ```
-"demo" == ChatEngine.globalChat.channel;
+ChatEngine.globalChat.channel
+demo
+```
+
+demo.ian.feed
+demo.ian.direct
+demo.ian.direct.private-invite
+
+demo.privChat
+demo.privChat.message
+demo.privChat.$typingIndicator.startTyping
+```
+
+
+"demo" == ;
 "ian" = new User('ian').uuid;
 
 "feed" == ian.feed.channel;
@@ -14,15 +28,5 @@ PubNub Channel Topology:
 "message" = chat.send('message');
 
 "$typingIndicator" == chat.plugin(typingIndicator()); chat.on('$typingIndicator.startTyping');
-
-demo
-
-demo.ian.feed
-demo.ian.direct
-demo.ian.direct.private-invite
-
-demo.privChat
-demo.privChat.message
-demo.privChat.$typingIndicator.startTyping
 
 ```
