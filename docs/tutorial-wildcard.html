@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Tutorial: Build a Plugin - Documentation</title>
+    <title>Tutorial: Namespaces and Wildcards - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -27,7 +27,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">Tutorial: Build a Plugin</h1>
+    <h1 class="page-title">Tutorial: Namespaces and Wildcards</h1>
     
 
     <section>
@@ -35,109 +35,26 @@
 <header>
     
 
-    <h2>Build a Plugin</h2>
+    <h2>Namespaces and Wildcards</h2>
 </header>
 
 <article>
-    <h1>Plugin.js</h1><p>Check out <a href="module-chat-engine-markdown.html">module:chat-engine-markdown</a> and <a href="module-chat-engine-typing-indicator.html">module:chat-engine-typing-indicator</a> for some examples of plugins.</p>
-<h2>What is a pugin?</h2><p>A plugin is a NodeJS module that exports a mixin like object that augments ChatEngine objects.</p>
-<h1>Plugin Anatomy</h1><p>The plugin entry file must be a file called <code>plugin.js</code> in the root directory.
-From this file you can require any other file as normal, but the entry must be
-plugin.js</p>
-<p>Every plugin must return an object containing the property <code>namespace</code> and <code>middleware</code>
-or <code>extends</code>.</p>
-<p>You can also ChatEngine objects and add new methods to them. For example,
-this plugin adds a method called <code>newMethod()</code> to the <a href="Chat.html">Chat</a> class.</p>
-<pre class="prettyprint source lang-js"><code>// newmethod/plugin.js
-module.exports - {
-    return {
-        extends: {
-            Chat: {
-                construct: (options) => {
-                    // this is called when the pugin is attached to the Chat
-                    // the Chat object is available through this.parent
-                    console.log('I am extending', this.parent, 'with options', options);
-                },
-                newMethod: () => {
-                    // this is a new method that gets attached to Chat as Chat.newMethod()
-                    console.log('New Method Fired - this Chat object is available as this.parent');
-                }
-            }
-        }
-    }
-
-}</code></pre><p>Then you can attach the plugin to a <a href="Chat.html">Chat</a> like this:</p>
-<pre class="prettyprint source lang-js"><code>// include the plugin via require
-newMethodPlugin = require('newmethod/plguin.js');
-
-// create a chat for the plugin to attach to
-chat = new ChatEngine.Chat('my-plugin-chat');
-
-// attach the plugin to the chat
-// newMethodPlugin.construct() is called and console log is fired
-chat.plugin(newMethodPlugin({
-    myparam: true
-}));
-
-// Console: I am extending ChatEngine.Chat with options {myParam: true}
-
-chat.newMethod();
-
-// Console: 'New Method Fired - this Chat object is available as this.parent</code></pre><p>When the plugin is installed, every instance of <code>ChatEngine.Chat</code> will have a new
-method called <code>newMethod()</code>. You can call the method like <code>someChat.newMethod()</code>.</p>
-<h1>Middleware</h1><p>Middleware allows you to transform payloads as they travel through the system.
-They are executed in order they are assigned.</p>
-<p>The only valid properties of the <code>middleware</code> object are <code>send</code> and <code>broadcast</code>.</p>
-<ul>
-<li><code>send</code> is executed before the payload is sent over the
-network to the rest of the connected clients.</li>
-<li><code>broadcast</code> is executed when the client receives a payload from another
-client.</li>
-</ul>
-<pre class="prettyprint source lang-js"><code>// timer/plugin.js
-module.exports = (config) => {
-
-    return {
-        middleware: {
-            send:
-                message: (payload, next) => {
-                    payload.sentTime = new Date();
-                    next(err, payload);
-                }
-            },
-            broadcast:
-                message: (payload, next) -> {
-                    payload.receiveTime = new Date();
-                    next(err, payload);
-                }
-            }
-        }
-    };
-
-}</code></pre><p>The sub properties under <code>send</code> and <code>broadcast</code> are the events
-that will trigger the transformation.</p>
-<p>For  example, the plugin above will be executed when a <code>message</code>
-event is sent from the client.</p>
-<pre class="prettyprint source lang-js"><code>// include the plugin via require
-timerPlugin = require('timer/plugin.js');
-
-chat.plugin(timerPlugin());
-
-
-// send a message
-someChat.send('message', {text: &quot;This triggers the send method before it's published over the wire.});
-
-// timerPlugin.middleware.send.message() is executed
-// payload.sentTime is added to the payload
-
-// when message is received
-// timerPlugin.middleware.broadcast.message() is executed
-someChat.on('message', (payload) => {
-
-    // payload has been modified by the broadcast() method before this was called
-    // payload.receiveTime has been added by the plugin
-    console.log(payload.receiveTime);
-
+    <h2>Namespaces</h2><p>Event names follow a pattern that helps determine where an object originated.</p>
+<h3>Custom Events</h3><p>Custom events are events you define in your framework, like <code>message</code> and <code>invite</code>. They are simply strings, but they should not include any special characters (except <code>.</code>).</p>
+<h3>$ - System Events</h3><p>System events always begin with a <code>$</code>. <code>$.ready</code> and <code>$.online</code> are examples of events emitted by ChatEninge. They are system events that are automatically emitted when specific things happen. System events are documented in the reference.</p>
+<h3>$plugin - PLugin Events</h3><p>Plugin events always begin with <code>$pluginName</code>. <code>$typingIndicator.startTyping</code> is an example of an event emitted by a plugin. The <code>$typingIndicator</code> string is a plugin namespace and <code>startTyping</code> is the plugin event. Namespacing plugins helps ensure that there is no collision between plugins.</p>
+<h3>Event Children</h3><p>Dots (<code>.</code>) in an event name indicate that the event is a child of some parent. For example <code>image.like</code> indicates that a &quot;like&quot; event was fired for a specific &quot;image&quot;. You could then subscribe to all <code>image</code> events by subscribing to the <code>image.*</code> event. See more about wildcards below.</p>
+<h2>Wildcard</h2><p>You can get notified of every event that a ChatEngine object emits by subscribing to the <code>*</code> wildcard event or using the <code>onAny</code> method.</p>
+<pre class="prettyprint source lang-js"><code>Chat.on('*', (event, payload) => {
+    console.log('something happened', event, payload);
+});
+Chat.onAny((event, payload) => {
+    console.log('something happened', event, payload);
+});</code></pre><h3>Namespaced Wildcards</h3><p>Wildcards also work within namespaces. For example, you could subscribe to all system events with <code>$.*</code> or get notified of all plugin events by subscribing to <code>$plugin.*</code>.</p>
+<h3>All Events Everywhere</h3><p>All events any object in ChatEngine fires is also emitted from the ChatEngine object. You can get notified of every event by subscribing to <code>ChatEngine.onAny()</code>.</p>
+<p>This is helpful for debugging and notifying frameworks like Angular when the GUI needs to be updated.</p>
+<pre class="prettyprint source lang-js"><code>ChatEngine.onAny(function(event, payload) {
+    console.log('something happened', event, payload);
 });</code></pre>
 </article>
 

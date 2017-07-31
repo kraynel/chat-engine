@@ -37,6 +37,9 @@
              "payload": {
                  "title": "Event Payload"
              },
+             "wildcard": {
+                 "title": "Namespaces and Wildcards"
+             },
              "online-list": {
                  "title": "Online List"
              },
