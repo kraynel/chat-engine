@@ -547,9 +547,9 @@ function buildNav(members) {
     }
 
 
-    nav += buildMemberNav(members.classes, 'Classes', seen, linkto);
-
     nav += buildMemberNav(members.modules, 'Plugins', {}, linkto, true, members.classes);
+    nav += buildMemberNav(members.classes, 'Reference', seen, linkto);
+
     nav += buildMemberNav(members.externals, 'Externals', seen, linktoExternal);
     // nav += buildMemberNav(members.events, 'Events', seen, linkto);
     nav += buildMemberNav(members.namespaces, 'Namespaces', seen, linkto);

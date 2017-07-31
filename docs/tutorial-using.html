@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Tutorial: Event Payload - Documentation</title>
+    <title>Tutorial: Plugins - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -27,7 +27,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">Tutorial: Event Payload</h1>
+    <h1 class="page-title">Tutorial: Plugins</h1>
     
 
     <section>
@@ -35,16 +35,48 @@
 <header>
     
 
-    <h2>Event Payload</h2>
+    <h2>Plugins</h2>
 </header>
 
 <article>
-    <h2>Event Payload</h2><p>Notice how we use <code>payload.sender.uuid</code> and <code>payload.data</code> in the callback?</p>
-<p>The <code>payload</code> value is auto-magically populated with handy references to the <code>Chat</code> and <code>User</code> related to this event.</p>
-<p>The property <code>payload.chat</code> is the <code>Chat</code> that event was broadcast broadcast on, and the <code>payload.user</code> is the <code>User</code> that broadcast the message. You can find the actual message contents supplied to <code>emit()</code> within the <code>payload.data</code> property.</p>
-<blockquote>
-<p>The <code>User</code> and <code>Chat</code> properties are both fully interactive instances. Therefor, you can do things like <code>payload.chat.emit('message')</code> to automatically reply to a message.</p>
-</blockquote>
+    <h3>Using Plugins</h3><h4>Node</h4><p>It's super easy to use plugins in NodeJs. Just include the file like any other
+dependency and attach it to your ChatEngine objects.</p>
+<pre class="prettyprint source lang-js"><code>// include the plugin from the remote file
+const myPlugin = require('plugin.js');
+
+// create a new chatroom
+let someChatroom = new ChatEngine.Chat('new-channel');
+
+// attach the plugin to the new chatroom
+someChatroom.plugin(myPlugin(config));</code></pre><h4>Web</h4><p>You'll need the <code>chat-engine-plugin</code> tool described in the next section to
+build the package for web.</p>
+<p>Once you build the pckage you would include the plugin with a <code>&lt;script&gt;</code> tag like:</p>
+<pre class="prettyprint source lang-html"><code>&lt;script src=&quot;/web/plugin.js&quot;>&lt;/script></code></pre><p>And the plugin will be available under <code>ChatEngineCore.plugin[namespace]</code>.
+The namespace is defined in package.json and you can learn more about it in the
+next section.</p>
+<p>Once the plugi is available, you can attach it to ChatEngine objects like we do in the
+Node version.</p>
+<pre class="prettyprint source lang-js"><code>let someChatroom = new ChatEngine.Chat('new-channel');
+someChatroom.plugin(ChatEngineCore.plugin.myPlugin(config));</code></pre><h2>Open Chat Framework Plugin Tool</h2><p>This is a build tool for Open Chat Framework plugins. Because ChatEngine works
+on the front and back end, the plugin system requires a standardized method
+for building for web.</p>
+<p>This build process assures us that the plugin can be used identically on
+both web and nodeJS. It uses browserify to compile assets.</p>
+<p>It's main features are:</p>
+<ul>
+<li>Name spacing plugins to avoid collisions</li>
+<li>Preventing global scope leak in browser</li>
+<li>Consistent API for integration on web and node</li>
+<li>Singular tests for web and node</li>
+</ul>
+<h2>Setup</h2><p>Install the tool globally.</p>
+<pre class="prettyprint source lang-sh"><code>npm install chat-engine-plugin -g</code></pre><p>When used in a browser, this will provide your plugin as a property of the
+global <code>ChatEngineCore.plugin</code> property.</p>
+<p><code>ChatEngineCore.plugin.emoji</code>.</p>
+<p>This helps to avoid collisions with
+global variables. Be careful to avoid collisions with other ChatEngine plugins!</p>
+<h2>Run chat-engine-plugin</h2><p>Then, just run <code>chat-engine-plugin</code> from the command line. This will bundle your
+<code>plugin.js</code> file and it's dependencies so it can be used on the web.</p>
 </article>
 
 </section>

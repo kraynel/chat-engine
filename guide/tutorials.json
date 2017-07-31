@@ -2,20 +2,17 @@
      "getting-started": {
          "title": "Getting Started",
          "children": {
-             "install": {
-                 "title": "Installing Node"
-             },
              "node": {
                  "title": "Set Up NodeJS"
+             },
+             "install": {
+                 "title": "Installing Chat Engine"
              },
              "pubnub": {
                  "title": "Set Up PubNub"
              },
              "configure": {
                  "title": "Configure the SDK"
-             },
-             "full": {
-                 "title": "Everything Else"
              }
          }
      },
@@ -28,8 +25,8 @@
              "me": {
                  "title": "Me"
              },
-             "state": {
-                 "title": "State"
+             "users": {
+                 "title": "Users and State"
              },
              "chats": {
                  "title": "Chats"
@@ -42,6 +39,12 @@
              },
              "online-list": {
                  "title": "Online List"
+             },
+             "using": {
+                 "title": "Plugins"
+             },
+             "build": {
+                 "title": "Build a Plugin"
              }
          }
      },
@@ -87,6 +90,9 @@
      "jquery": {
          "title": "jQuery",
          "children": {
+             "full": {
+                 "title": "Setting Up"
+             },
              "jq-simple": {
                  "title": "Simple"
              },

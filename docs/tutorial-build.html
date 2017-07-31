@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Tutorial: Event Payload - Documentation</title>
+    <title>Tutorial: Build a Plugin - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -27,7 +27,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">Tutorial: Event Payload</h1>
+    <h1 class="page-title">Tutorial: Build a Plugin</h1>
     
 
     <section>
@@ -35,16 +35,110 @@
 <header>
     
 
-    <h2>Event Payload</h2>
+    <h2>Build a Plugin</h2>
 </header>
 
 <article>
-    <h2>Event Payload</h2><p>Notice how we use <code>payload.sender.uuid</code> and <code>payload.data</code> in the callback?</p>
-<p>The <code>payload</code> value is auto-magically populated with handy references to the <code>Chat</code> and <code>User</code> related to this event.</p>
-<p>The property <code>payload.chat</code> is the <code>Chat</code> that event was broadcast broadcast on, and the <code>payload.user</code> is the <code>User</code> that broadcast the message. You can find the actual message contents supplied to <code>emit()</code> within the <code>payload.data</code> property.</p>
-<blockquote>
-<p>The <code>User</code> and <code>Chat</code> properties are both fully interactive instances. Therefor, you can do things like <code>payload.chat.emit('message')</code> to automatically reply to a message.</p>
-</blockquote>
+    <h1>Plugin.js</h1><p>Check out <a href="module-chat-engine-markdown.html">module:chat-engine-markdown</a> and <a href="module-chat-engine-typing-indicator.html">module:chat-engine-typing-indicator</a> for some examples of plugins.</p>
+<h2>What is a pugin?</h2><p>A plugin is a NodeJS module that exports a mixin like object that augments ChatEngine objects.</p>
+<h1>Plugin Anatomy</h1><p>The plugin entry file must be a file called <code>plugin.js</code> in the root directory.
+From this file you can require any other file as normal, but the entry must be
+plugin.js</p>
+<p>Every plugin must return an object containing the property <code>namespace</code> and <code>middleware</code>
+or <code>extends</code>.</p>
+<p>You can also ChatEngine objects and add new methods to them. For example,
+this plugin adds a method called <code>newMethod()</code> to the <a href="Chat.html">Chat</a> class.</p>
+<pre class="prettyprint source lang-js"><code>// newmethod/plugin.js
+module.exports - {
+    return {
+        extends: {
+            Chat: {
+                construct: (options) => {
+                    // this is called when the pugin is attached to the Chat
+                    // the Chat object is available through this.parent
+                    console.log('I am extending', this.parent, 'with options', options);
+                },
+                newMethod: () => {
+                    // this is a new method that gets attached to Chat as Chat.newMethod()
+                    console.log('New Method Fired - this Chat object is available as this.parent');
+                }
+            }
+        }
+    }
+
+}</code></pre><p>Then you can attach the plugin to a <a href="Chat.html">Chat</a> like this:</p>
+<pre class="prettyprint source lang-js"><code>// include the plugin via require
+newMethodPlugin = require('newmethod/plguin.js');
+
+// create a chat for the plugin to attach to
+chat = new ChatEngine.Chat('my-plugin-chat');
+
+// attach the plugin to the chat
+// newMethodPlugin.construct() is called and console log is fired
+chat.plugin(newMethodPlugin({
+    myparam: true
+}));
+
+// Console: I am extending ChatEngine.Chat with options {myParam: true}
+
+chat.newMethod();
+
+// Console: 'New Method Fired - this Chat object is available as this.parent</code></pre><p>When the plugin is installed, every instance of <code>ChatEngine.Chat</code> will have a new
+method called <code>newMethod()</code>. You can call the method like <code>someChat.newMethod()</code>.</p>
+<h1>Middleware</h1><p>Middleware allows you to transform payloads as they travel through the system.
+They are executed in order they are assigned.</p>
+<p>The only valid properties of the <code>middleware</code> object are <code>send</code> and <code>broadcast</code>.</p>
+<ul>
+<li><code>send</code> is executed before the payload is sent over the
+network to the rest of the connected clients.</li>
+<li><code>broadcast</code> is executed when the client receives a payload from another
+client.</li>
+</ul>
+<pre class="prettyprint source lang-js"><code>// timer/plugin.js
+module.exports = (config) => {
+
+    return {
+        middleware: {
+            send:
+                message: (payload, next) => {
+                    payload.sentTime = new Date();
+                    next(err, payload);
+                }
+            },
+            broadcast:
+                message: (payload, next) -> {
+                    payload.receiveTime = new Date();
+                    next(err, payload);
+                }
+            }
+        }
+    };
+
+}</code></pre><p>The sub properties under <code>send</code> and <code>broadcast</code> are the events
+that will trigger the transformation.</p>
+<p>For  example, the plugin above will be executed when a <code>message</code>
+event is sent from the client.</p>
+<pre class="prettyprint source lang-js"><code>// include the plugin via require
+timerPlugin = require('timer/plugin.js');
+
+chat.plugin(timerPlugin());
+
+
+// send a message
+someChat.send('message', {text: &quot;This triggers the send method before it's published over the wire.});
+
+// timerPlugin.middleware.send.message() is executed
+// payload.sentTime is added to the payload
+
+// when message is received
+// timerPlugin.middleware.broadcast.message() is executed
+someChat.on('message', (payload) => {
+
+    // payload has been modified by the broadcast() method before this was called
+    // payload.receiveTime has been added by the plugin
+    console.log(payload.receiveTime);
+
+});</code></pre>
 </article>
 
 </section>

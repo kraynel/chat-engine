@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Tutorial: Event Payload - Documentation</title>
+    <title>Tutorial: Users and State - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -27,7 +27,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">Tutorial: Event Payload</h1>
+    <h1 class="page-title">Tutorial: Users and State</h1>
     
 
     <section>
@@ -35,16 +35,37 @@
 <header>
     
 
-    <h2>Event Payload</h2>
+    <h2>Users and State</h2>
 </header>
 
 <article>
-    <h2>Event Payload</h2><p>Notice how we use <code>payload.sender.uuid</code> and <code>payload.data</code> in the callback?</p>
-<p>The <code>payload</code> value is auto-magically populated with handy references to the <code>Chat</code> and <code>User</code> related to this event.</p>
-<p>The property <code>payload.chat</code> is the <code>Chat</code> that event was broadcast broadcast on, and the <code>payload.user</code> is the <code>User</code> that broadcast the message. You can find the actual message contents supplied to <code>emit()</code> within the <code>payload.data</code> property.</p>
-<blockquote>
-<p>The <code>User</code> and <code>Chat</code> properties are both fully interactive instances. Therefor, you can do things like <code>payload.chat.emit('message')</code> to automatically reply to a message.</p>
-</blockquote>
+    <h2>Users</h2><p><a href="User.html">User</a>s are other browser windows connected to the <a href="Chat.html">Chat</a> via ChatEngine. A User represents a connected client.</p>
+<p>When a client connects to ChatEngine, they create a special <a href="User.html">User</a> called <a href="Me.html">Me</a>. <a href="Me.html">Me</a> represents &quot;this <a href="User.html">User</a> for this instance.&quot;</p>
+<p><a href="Me.html">Me</a> and <a href="User.html">User</a> are similar in many ways, with the main difference being that <a href="Me.html">Me</a> can update state on the network while <a href="User.html">User</a> cannot update state.</p>
+<h2>State</h2><p>So how do we add other information to Users? Like a profile? We update <a href="Me.html">Me</a>'s state.</p>
+<p>This way, when any new client connects to the chat, their <a href="Me.html">Me</a> object will update all the other clients about it's state.</p>
+<p>Let's give <code>Me</code> a unique username color. Here's a function to choose a random color.</p>
+<pre class="prettyprint source lang-js"><code>const colors =   [&quot;AliceBlue&quot;,&quot;AntiqueWhite&quot;,&quot;Aqua&quot;,&quot;Aquamarine&quot;,&quot;Azure&quot;,&quot;Beige&quot;,&quot;Bisque&quot;,&quot;Black&quot;,&quot;BlanchedAlmond&quot;,&quot;Blue&quot;,&quot;BlueViolet&quot;,&quot;Brown&quot;,&quot;BurlyWood&quot;,&quot;CadetBlue&quot;,&quot;Chartreuse&quot;,&quot;Chocolate&quot;,&quot;Coral&quot;,&quot;CornflowerBlue&quot;,&quot;Cornsilk&quot;,&quot;Crimson&quot;,&quot;Cyan&quot;,&quot;DarkBlue&quot;,&quot;DarkCyan&quot;,&quot;DarkGoldenRod&quot;,&quot;DarkGray&quot;,&quot;DarkGrey&quot;,&quot;DarkGreen&quot;,&quot;DarkKhaki&quot;,&quot;DarkMagenta&quot;,&quot;DarkOliveGreen&quot;,&quot;Darkorange&quot;,&quot;DarkOrchid&quot;,&quot;DarkRed&quot;,&quot;DarkSalmon&quot;,&quot;DarkSeaGreen&quot;,&quot;DarkSlateBlue&quot;,&quot;DarkSlateGray&quot;,&quot;DarkSlateGrey&quot;,&quot;DarkTurquoise&quot;,&quot;DarkViolet&quot;,&quot;DeepPink&quot;,&quot;DeepSkyBlue&quot;,&quot;DimGray&quot;,&quot;DimGrey&quot;,&quot;DodgerBlue&quot;,&quot;FireBrick&quot;,&quot;FloralWhite&quot;,&quot;ForestGreen&quot;,&quot;Fuchsia&quot;,&quot;Gainsboro&quot;,&quot;GhostWhite&quot;,&quot;Gold&quot;,&quot;GoldenRod&quot;,&quot;Gray&quot;,&quot;Grey&quot;,&quot;Green&quot;,&quot;GreenYellow&quot;,&quot;HoneyDew&quot;,&quot;HotPink&quot;,&quot;IndianRed&quot;,&quot;Indigo&quot;,&quot;Ivory&quot;,&quot;Khaki&quot;,&quot;Lavender&quot;,&quot;LavenderBlush&quot;,&quot;LawnGreen&quot;,&quot;LemonChiffon&quot;,&quot;LightBlue&quot;,&quot;LightCoral&quot;,&quot;LightCyan&quot;,&quot;LightGoldenRodYellow&quot;,&quot;LightGray&quot;,&quot;LightGrey&quot;,&quot;LightGreen&quot;,&quot;LightPink&quot;,&quot;LightSalmon&quot;,&quot;LightSeaGreen&quot;,&quot;LightSkyBlue&quot;,&quot;LightSlateGray&quot;,&quot;LightSlateGrey&quot;,&quot;LightSteelBlue&quot;,&quot;LightYellow&quot;,&quot;Lime&quot;,&quot;LimeGreen&quot;,&quot;Linen&quot;,&quot;Magenta&quot;,&quot;Maroon&quot;,&quot;MediumAquaMarine&quot;,&quot;MediumBlue&quot;,&quot;MediumOrchid&quot;,&quot;MediumPurple&quot;,&quot;MediumSeaGreen&quot;,&quot;MediumSlateBlue&quot;,&quot;MediumSpringGreen&quot;,&quot;MediumTurquoise&quot;,&quot;MediumVioletRed&quot;,&quot;MidnightBlue&quot;,&quot;MintCream&quot;,&quot;MistyRose&quot;,&quot;Moccasin&quot;,&quot;NavajoWhite&quot;,&quot;Navy&quot;,&quot;OldLace&quot;,&quot;Olive&quot;,&quot;OliveDrab&quot;,&quot;Orange&quot;,&quot;OrangeRed&quot;,&quot;Orchid&quot;,&quot;PaleGoldenRod&quot;,&quot;PaleGreen&quot;,&quot;PaleTurquoise&quot;,&quot;PaleVioletRed&quot;,&quot;PapayaWhip&quot;,&quot;PeachPuff&quot;,&quot;Peru&quot;,&quot;Pink&quot;,&quot;Plum&quot;,&quot;PowderBlue&quot;,&quot;Purple&quot;,&quot;Red&quot;,&quot;RosyBrown&quot;,&quot;RoyalBlue&quot;,&quot;SaddleBrown&quot;,&quot;Salmon&quot;,&quot;SandyBrown&quot;,&quot;SeaGreen&quot;,&quot;SeaShell&quot;,&quot;Sienna&quot;,&quot;Silver&quot;,&quot;SkyBlue&quot;,&quot;SlateBlue&quot;,&quot;SlateGray&quot;,&quot;SlateGrey&quot;,&quot;Snow&quot;,&quot;SpringGreen&quot;,&quot;SteelBlue&quot;,&quot;Tan&quot;,&quot;Teal&quot;,&quot;Thistle&quot;,&quot;Tomato&quot;,&quot;Turquoise&quot;,&quot;Violet&quot;,&quot;Wheat&quot;,&quot;White&quot;,&quot;WhiteSmoke&quot;,&quot;Yellow&quot;,&quot;YellowGreen&quot;];
+
+const getColor = () => {
+    return colors[Math.floor(Math.random() * colors.length)];
+};</code></pre><p>Let's connect to ChatEngine.</p>
+<pre class="prettyprint source lang-js"><code>let me = ChatEngine.connect('ian-jennings');</code></pre><p>We can update the <a href="User.html">User</a>'s state on the network with the <a href="Me.html#update">Me#update</a> method.</p>
+<pre class="prettyprint source lang-js"><code>me.update({color: getColor()})</code></pre><p>All state based methods (like <a href="Me.html#update">Me#update</a> and <a href="Chat.html#event:$%2522.%2522state">Chat#event:$"."state</a> events) use <a href="ChatEngine.html#.globalChat">ChatEngine.globalChat</a> by default.</p>
+<pre class="prettyprint source"><code>ChatEngine.globalChat.on('$state', (payload) => {
+  console.log(payload.user + ' updated state: ' + payload.state);
+});</code></pre><p>You can set <a href="Me.html">Me</a>'s starting state by using the second param of ChatEngine#connect.</p>
+<pre class="prettyprint source lang-js"><code>let me = ChatEngine.connect('ian-jennings', {color: getColor()});</code></pre><p>What if we want to get a <a href="User.html">User</a>'s state some other time?</p>
+<pre class="prettyprint source lang-js"><code>// get the first user in globalChat
+let user = ChatEngine.globalChat.users[0];
+
+// output the user's state
+console.log(user.state());</code></pre><p>Until now we've only delt with state in the ChatEngine#globalChat, but <a href="User.html">User</a>s can have different states in different <a href="Chat.html">Chat</a>s.</p>
+<pre class="prettyprint source lang-js"><code>let customStateChat = new ChatEngine.chat('state-chat');
+customStateChat.on('$state', (payload) {
+    // update is fired here
+});
+me.update({newState: true}, customStateChat);</code></pre>
 </article>
 
 </section>
