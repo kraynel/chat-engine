@@ -1,4 +1,4 @@
- "use strict";
+     "use strict";
 
 // Allows us to create and bind to events. Everything in ChatEngine is an event
 // emitter
