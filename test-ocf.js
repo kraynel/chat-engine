@@ -1,5 +1,9 @@
-
+ "use strict";
 const assert = require('chai').assert;
+
+const typingIndicator = require('ocf-typing-indicator');
+// const append = require('ocf-append');
+const messageHistory = require('ocf-history');
 
 const ChatEngineCore = require('./src/index.js');
 
@@ -7,7 +11,7 @@ let agentInput = process.env.AGENT || 'pubnub';
 
 describe('import', function() {
 
-    it('ChatEngine should be imported', function() {
+    it('ocf should be imported', function() {
         assert.isObject(ChatEngineCore, 'was successfully created');
     });
 
@@ -24,9 +28,9 @@ describe('config', function() {
     it('should be configured', function() {
 
         ChatEngine = ChatEngineCore.create({
-            publishKey: 'demo',
-            subscribeKey: 'demo'
-        }, 'demo');
+            publishKey: 'pub-c-c6303bb2-8bf8-4417-aac7-e83b52237ea6',
+            subscribeKey: 'sub-c-67db0e7a-50be-11e7-bf50-02ee2ddab7fe'
+        }, 'test-channel');
 
         assert.isOk(ChatEngine);
 
