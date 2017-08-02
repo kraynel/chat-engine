@@ -1,4 +1,6 @@
-     "use strict";
+alert('tests')
+
+"use strict";
 
 // Allows us to create and bind to events. Everything in ChatEngine is an event
 // emitter
@@ -130,7 +132,7 @@ const create = function(pnConfig, globalChannel = 'chat-engine') {
             @type String
             @see [PubNub Channels](https://support.pubnub.com/support/solutions/articles/14000045182-what-is-a-channel-)
             */
-            this.channel = [Chat.channel, event].join('.');
+            this.channel = [Chat.channel, 'event', event].join('.');
 
             /**
             Publishes the event over the PubNub network to the {@link Event} channel
@@ -274,7 +276,7 @@ const create = function(pnConfig, globalChannel = 'chat-engine') {
             this.channel = channel;
 
             if(channel.indexOf(globalChannel) == -1) {
-                this.channel = [globalChannel, channel].join('.');
+                this.channel = [globalChannel, 'chat', channel].join('.');
             }
 
             /**
@@ -379,7 +381,7 @@ const create = function(pnConfig, globalChannel = 'chat-engine') {
                             // but the event name is now history:name rather than just name
                             // to distinguish it from the original live events
                             this.trigger(
-                                ['$history', event].join('.'),
+                                ['$history', 'event', event].join('.'),
                                 message.entry);
 
                         });
@@ -838,7 +840,7 @@ const create = function(pnConfig, globalChannel = 'chat-engine') {
             @type Chat
             */
             this.feed = new Chat(
-                [ChatEngine.globalChat.channel, uuid, 'feed'].join('.'));
+                [ChatEngine.globalChat.channel, 'user', uuid, 'feed'].join('.'));
 
             /**
             Direct is a private channel that anybody can publish to but only the user can subscribe to. Great
@@ -847,7 +849,7 @@ const create = function(pnConfig, globalChannel = 'chat-engine') {
             @type Chat
             */
             this.direct = new Chat(
-                [ChatEngine.globalChat.channel, uuid, 'direct'].join('.'));
+                [ChatEngine.globalChat.channel, 'user', uuid, 'direct'].join('.'));
 
             // if the user does not exist at all and we get enough
             // information to build the user
