@@ -1,5 +1,3 @@
-alert('tests')
-
 "use strict";
 
 // Allows us to create and bind to events. Everything in ChatEngine is an event
@@ -10,6 +8,9 @@ const PubNub = require('pubnub');
 
 // allows asynchronous execution flow.
 const waterfall = require('async/waterfall');
+
+// required to make AJAX calls for auth
+const request = require('request');
 
 /**
 Global object used to create an instance of {@link ChatEngine}.
@@ -27,6 +28,8 @@ const ChatEngine = ChatEngineCore.create({
 const create = function(pnConfig, globalChannel = 'chat-engine') {
 
     let ChatEngine = false;
+
+    globalChannel = globalChannel.toString();
 
     /**
     * The {@link ChatEngine} object is a RootEmitter. Configures an event emitter that other ChatEngine objects inherit. Adds shortcut methods for
@@ -264,7 +267,7 @@ const create = function(pnConfig, globalChannel = 'chat-engine') {
     */
     class Chat extends Emitter {
 
-        constructor(channel = new Date().getTime()) {
+        constructor(channel = new Date().getTime(), priv = false) {
 
             super();
 
@@ -273,10 +276,13 @@ const create = function(pnConfig, globalChannel = 'chat-engine') {
             * @readonly
             * @see [PubNub Channels](https://support.pubnub.com/support/solutions/articles/14000045182-what-is-a-channel-)
             */
-            this.channel = channel;
 
-            if(channel.indexOf(globalChannel) == -1) {
-                this.channel = [globalChannel, 'chat', channel].join('.');
+            let parent = priv ? 'private' : 'public';
+
+            this.channel = channel.toString();
+
+            if(this.channel.indexOf(globalChannel) == -1) {
+                this.channel = [globalChannel, parent, 'chat', channel].join('.');
             }
 
             /**
@@ -308,7 +314,8 @@ const create = function(pnConfig, globalChannel = 'chat-engine') {
             this.onHereNow = (status, response) => {
 
                 if(status.error) {
-                    throw new Error('There was a problem fetching here.', status.err);
+                    console.log(status, response)
+                    throw new Error('There was a problem fetching here.');
                 } else {
 
                     // get the list of occupants in this channel
@@ -840,7 +847,7 @@ const create = function(pnConfig, globalChannel = 'chat-engine') {
             @type Chat
             */
             this.feed = new Chat(
-                [ChatEngine.globalChat.channel, 'user', uuid, 'feed'].join('.'));
+                [ChatEngine.globalChat.channel, 'private', 'user', uuid, 'feed'].join('.'));
 
             /**
             Direct is a private channel that anybody can publish to but only the user can subscribe to. Great
@@ -849,7 +856,7 @@ const create = function(pnConfig, globalChannel = 'chat-engine') {
             @type Chat
             */
             this.direct = new Chat(
-                [ChatEngine.globalChat.channel, 'user', uuid, 'direct'].join('.'));
+                [ChatEngine.globalChat.channel, 'private', 'user', uuid, 'direct'].join('.'));
 
             // if the user does not exist at all and we get enough
             // information to build the user
@@ -994,35 +1001,60 @@ const create = function(pnConfig, globalChannel = 'chat-engine') {
         *
         @memberof ChatEngine
         @param {String} uuid A unique string for {@link Me}. It can be a device id, username, user id, email, etc.
+        @param {String} authKey A unique auth key that identifies this user as logged in.
         @param {Object} state An object containing information about this client ({@link Me}). This JSON object is sent to all other clients on the network, so no passwords!
         @return {Me} me an instance of me
         */
-        ChatEngine.connect = function(uuid, state = {}) {
+        ChatEngine.connect = function(uuid, authKey, state = {}) {
 
             // this creates a user known as Me and
             // connects to the global chatroom
 
             // this.config.rltm.config.uuid = uuid;
-            pnConfig.uuid = uuid || pnConfig.uuid;
+            pnConfig.uuid = uuid || pnConfig.uuid || this.pubnub.generateUUID();
+            pnConfig.authKey = authKey;
 
             this.pubnub = new PubNub(pnConfig);
 
-            // create a new chat to use as globalChat
-            this.globalChat = new Chat(globalChannel);
+            // request.post({
+            //     url:'https://pubsub.pubnub.com/v1/blocks/sub-key/sub-c-67db0e7a-50be-11e7-bf50-02ee2ddab7fe/auther',
+            //     json: {
+            //         authKey: pnConfig.authKey,
+            //         uuid: pnConfig.uuid,
+            //         globalChannel: globalChannel
+            //     }
+            // }, (err, httpResponse, body) => {
 
-            // create a new user that represents this client
-            this.me = new Me(this.pubnub.getUUID());
+            //   if (err) {
+            //     return console.error('upload failed:', err);
+            //   }
 
-            // create a new instance of Me using input parameters
-            this.globalChat.createUser(this.pubnub.getUUID(), state);
+                // console.log('Upload successful!  Server responded with:', body);
 
-            this.me.update(state);
+                // create a new chat to use as globalChat
+                this.globalChat = new Chat(globalChannel);
 
-            // return me
-            return this.me;
+                // create a new user that represents this client
+                this.me = new Me(pnConfig.uuid);
 
-            // client can access globalChat through ChatEngine.globalChat
+                // create a new instance of Me using input parameters
+                this.globalChat.createUser(pnConfig.uuid, state);
 
+                this.me.update(state);
+
+                this.globalChat.on('$.ready', () => {
+
+                    console.log('ready')
+                    this.emit('$.ready');
+                });
+
+                // return me
+                return this.me;
+
+                // client can access globalChat through ChatEngine.globalChat
+
+
+            // });
         };
 
         /**

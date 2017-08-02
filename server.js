@@ -7,7 +7,7 @@ let pubnub = new PubNub({
 });
 
 pubnub.grant({
-        channels: ['demo', 'demo.*', 'demo-pnpres'],
+        channels: ['test-chan2', 'test-chan2.public.*', 'test-chan2-pnpres'],
         read: true, // false to disallow
         write: true, // false to disallow
         ttl: 0
