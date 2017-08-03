@@ -25,12 +25,12 @@ let pn = new PubNub({
 
 let channels = [
     gChan,
-    gChan + ':public:*',
+    gChan + ':public.*',
     gChan + ':pnpres',
-    gChan + ':private:user:' + myUUID + ':feed',
-    gChan + ':private:user:' + myUUID + ':feed-pnpres',
-    gChan + ':private:user:' + myUUID + ':direct',
-    gChan + ':private:user:' + myUUID + ':direct-pnpres'
+    gChan + ':private.user:' + myUUID + ':feed',
+    gChan + ':private.user:' + myUUID + ':feed-pnpres',
+    gChan + ':private.user:' + myUUID + ':direct',
+    gChan + ':private.user:' + myUUID + ':direct-pnpres'
 ];
 
 console.log(channels)
