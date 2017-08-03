@@ -1,5 +1,3 @@
-"use strict";
-
 // Allows us to create and bind to events. Everything in ChatEngine is an event
 // emitter
 const EventEmitter2 = require('eventemitter2').EventEmitter2;
@@ -135,7 +133,7 @@ const create = function(pnConfig, globalChannel = 'chat-engine') {
             @type String
             @see [PubNub Channels](https://support.pubnub.com/support/solutions/articles/14000045182-what-is-a-channel-)
             */
-            this.channel = [Chat.channel, 'event', event].join(':');
+            this.channel = Chat.channel;
 
             /**
             Publishes the event over the PubNub network to the {@link Event} channel
@@ -146,7 +144,7 @@ const create = function(pnConfig, globalChannel = 'chat-engine') {
             this.publish = (m) => {
 
                 ChatEngine.pubnub.publish({
-                    message: m,
+                    message: [event, m],
                     channel: this.channel
                 });
 
@@ -160,8 +158,8 @@ const create = function(pnConfig, globalChannel = 'chat-engine') {
             */
             this.onMessage = (m) => {
 
-                if(this.channel == m.channel) {
-                    Chat.trigger(event, m.message);
+                if(this.channel == m.channel && m.message[0] == event) {
+                    Chat.trigger(m.message[0], m.message[1]);
                 }
 
             }
@@ -173,8 +171,7 @@ const create = function(pnConfig, globalChannel = 'chat-engine') {
 
             // subscribe to the PubNub channel for this event
             ChatEngine.pubnub.subscribe({
-                channels: [this.channel],
-                withPresence: true
+                channels: [this.channel]
             });
 
         }
@@ -267,7 +264,7 @@ const create = function(pnConfig, globalChannel = 'chat-engine') {
     */
     class Chat extends Emitter {
 
-        constructor(channel = new Date().getTime(), priv = false) {
+        constructor(channel = new Date().getTime(), autoConnect = true, priv = false) {
 
             super();
 
@@ -282,7 +279,7 @@ const create = function(pnConfig, globalChannel = 'chat-engine') {
             this.channel = channel.toString();
 
             if(this.channel.indexOf(globalChannel) == -1) {
-                this.channel = [globalChannel + ':' + parent + '.', 'chat', channel].join(':');
+                this.channel = [globalChannel, parent, 'chat', channel].join(':');
             }
 
             /**
@@ -451,26 +448,34 @@ const create = function(pnConfig, globalChannel = 'chat-engine') {
 
             };
 
-            // listen to all PubNub events for this Chat
-            ChatEngine.pubnub.addListener({
-                status: this.onStatus,
-                message: this.onMessage,
-                presence: this.onPresence
-            });
+            this.connect = () => {
 
-            // subscribe to the PubNub channel for this Chat
-            ChatEngine.pubnub.subscribe({
-                channels: [this.channel],
-                withPresence: true
-            });
+                // listen to all PubNub events for this Chat
+                ChatEngine.pubnub.addListener({
+                    status: this.onStatus,
+                    message: this.onMessage,
+                    presence: this.onPresence
+                });
 
-            // get a list of users online now
-            // ask PubNub for information about connected users in this channel
-            ChatEngine.pubnub.hereNow({
-                channels: [this.channel],
-                includeUUIDs: true,
-                includeState: true
-            }, this.onHereNow);
+                // subscribe to the PubNub channel for this Chat
+                ChatEngine.pubnub.subscribe({
+                    channels: [this.channel],
+                    withPresence: true
+                });
+
+                // get a list of users online now
+                // ask PubNub for information about connected users in this channel
+                ChatEngine.pubnub.hereNow({
+                    channels: [this.channel],
+                    includeUUIDs: true,
+                    includeState: true
+                }, this.onHereNow);
+
+            };
+
+            if(autoConnect) {
+                this.connect();
+            }
 
         }
 
@@ -847,7 +852,7 @@ const create = function(pnConfig, globalChannel = 'chat-engine') {
             @type Chat
             */
             this.feed = new Chat(
-                [ChatEngine.globalChat.channel, 'private.user', uuid, 'feed'].join(':'));
+                [ChatEngine.globalChat.channel, 'private', 'user', uuid, 'feed'].join(':'), this.constructor.name == "Me");
 
             /**
             Direct is a private channel that anybody can publish to but only the user can subscribe to. Great
@@ -856,7 +861,7 @@ const create = function(pnConfig, globalChannel = 'chat-engine') {
             @type Chat
             */
             this.direct = new Chat(
-                [ChatEngine.globalChat.channel, 'private.user', uuid, 'direct'].join(':'));
+                [ChatEngine.globalChat.channel, 'private', 'user', uuid, 'direct'].join(':'), this.constructor.name == "Me");
 
             // if the user does not exist at all and we get enough
             // information to build the user
@@ -1041,12 +1046,6 @@ const create = function(pnConfig, globalChannel = 'chat-engine') {
                 this.globalChat.createUser(pnConfig.uuid, state);
 
                 this.me.update(state);
-
-                this.globalChat.on('$.ready', () => {
-
-                    console.log('ready')
-                    this.emit('$.ready');
-                });
 
                 // return me
                 return this.me;
