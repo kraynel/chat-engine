@@ -143,8 +143,10 @@ const create = function(pnConfig, globalChannel = 'chat-engine') {
             */
             this.publish = (m) => {
 
+                m.event = event;
+
                 ChatEngine.pubnub.publish({
-                    message: [event, m],
+                    message: m,
                     channel: this.channel
                 });
 
@@ -158,8 +160,8 @@ const create = function(pnConfig, globalChannel = 'chat-engine') {
             */
             this.onMessage = (m) => {
 
-                if(this.channel == m.channel && m.message[0] == event) {
-                    Chat.trigger(m.message[0], m.message[1]);
+                if(this.channel == m.channel && m.event == event) {
+                    Chat.trigger(m.event, m);
                 }
 
             }
