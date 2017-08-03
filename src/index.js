@@ -160,8 +160,8 @@ const create = function(pnConfig, globalChannel = 'chat-engine') {
             */
             this.onMessage = (m) => {
 
-                if(this.channel == m.channel && m.event == event) {
-                    Chat.trigger(m.event, m);
+                if(this.channel == m.channel && m.message.event == event) {
+                    Chat.trigger(m.message.event, m.message);
                 }
 
             }
@@ -169,11 +169,6 @@ const create = function(pnConfig, globalChannel = 'chat-engine') {
             // call onMessage when PubNub receives an event
             ChatEngine.pubnub.addListener({
                 message: this.onMessage
-            });
-
-            // subscribe to the PubNub channel for this event
-            ChatEngine.pubnub.subscribe({
-                channels: [this.channel]
             });
 
         }
@@ -266,7 +261,7 @@ const create = function(pnConfig, globalChannel = 'chat-engine') {
     */
     class Chat extends Emitter {
 
-        constructor(channel = new Date().getTime(), autoConnect = true, priv = false) {
+        constructor(channel = new Date().getTime(), autoConnect = true) {
 
             super();
 
@@ -276,12 +271,10 @@ const create = function(pnConfig, globalChannel = 'chat-engine') {
             * @see [PubNub Channels](https://support.pubnub.com/support/solutions/articles/14000045182-what-is-a-channel-)
             */
 
-            let parent = priv ? 'private' : 'public';
-
             this.channel = channel.toString();
 
             if(this.channel.indexOf(globalChannel) == -1) {
-                this.channel = [globalChannel, parent, 'chat', channel].join(':');
+                this.channel = [globalChannel, 'chat', channel].join(':');
             }
 
             /**
@@ -313,7 +306,6 @@ const create = function(pnConfig, globalChannel = 'chat-engine') {
             this.onHereNow = (status, response) => {
 
                 if(status.error) {
-                    console.log(status, response)
                     throw new Error('There was a problem fetching here.');
                 } else {
 
@@ -673,8 +665,12 @@ const create = function(pnConfig, globalChannel = 'chat-engine') {
                 *     console.log('User left the room manually:', user);
                 * });
                 */
-                this.trigger('$.leave', this.users[uuid]);
-                this.trigger('$.offline', this.users[uuid]);
+                this.trigger('$.leave', {
+                    user: this.users[uuid]
+                });
+                this.trigger('$.offline', {
+                    user: this.users[uuid]
+                });
 
                 // remove the user from the local list of users
                 delete this.users[uuid];
@@ -713,7 +709,9 @@ const create = function(pnConfig, globalChannel = 'chat-engine') {
                 *     console.log('User disconnected from the network:', user);
                 * });
                 */
-                this.trigger('$.disconnect', this.users[uuid]);
+                this.trigger('$.disconnect', {
+                    user: this.users[uuid]
+                });
 
                 /**
                 * A {@link User} has gone offline. Triggered by ```$.leave```
@@ -726,7 +724,9 @@ const create = function(pnConfig, globalChannel = 'chat-engine') {
                 *     console.log('User disconnected from the network:', user);
                 * });
                 */
-                this.trigger('$.offline', this.users[uuid]);
+                this.trigger('$.offline', {
+                    user: this.users[uuid]
+                });
 
             }
 
@@ -847,23 +847,25 @@ const create = function(pnConfig, globalChannel = 'chat-engine') {
             this.chats = {};
 
             /**
-            Feed is a Chat that only streams things a User does, like
-            'startTyping' or 'idle' events for example. Anybody can subscribe
-            to a User's feed, but only the User can publish to it (security not yet implemented).
-
-            @type Chat
+            * Feed is a Chat that only streams things a User does, like
+            * 'startTyping' or 'idle' events for example. Anybody can subscribe
+            * to a User's feed, but only the User can publish to it.
+            *
+            * @type Chat
+            * @example
+            * this.feed.connect();
             */
             this.feed = new Chat(
-                [ChatEngine.globalChat.channel, 'private', 'user', uuid, 'feed'].join(':'), this.constructor.name == "Me");
+                [ChatEngine.globalChat.channel, 'user', uuid, 'read.', 'feed'].join(':'), this.constructor.name == "Me");
 
             /**
-            Direct is a private channel that anybody can publish to but only the user can subscribe to. Great
-            for pushing notifications or inviting to other chats. (security not implemented yet).
-
-            @type Chat
+            * Direct is a private channel that anybody can publish to but only the user can subscribe to. Great
+            * for pushing notifications or inviting to other chats.
+            *
+            * @type Chat
             */
             this.direct = new Chat(
-                [ChatEngine.globalChat.channel, 'private', 'user', uuid, 'direct'].join(':'), this.constructor.name == "Me");
+                [ChatEngine.globalChat.channel, 'user', uuid, 'write.', 'direct'].join(':'), this.constructor.name == "Me");
 
             // if the user does not exist at all and we get enough
             // information to build the user

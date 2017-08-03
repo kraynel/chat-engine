@@ -27,11 +27,27 @@ let channels = [
     gChan,
     gChan + ':public.*',
     gChan + ':pnpres',
-    gChan + ':private:user:' + myUUID + ':feed',
-    gChan + ':private:user:' + myUUID + ':feed-pnpres',
-    gChan + ':private:user:' + myUUID + ':direct',
-    gChan + ':private:user:' + myUUID + ':direct-pnpres'
+    gChan + ':private.user:' + myUUID + ':feed',
+    gChan + ':private.user:' + myUUID + ':feed-pnpres',
+    gChan + ':private.user:' + myUUID + ':direct',
+    gChan + ':private.user:' + myUUID + ':direct-pnpres'
 ];
+
+// public-read, public-write, private-read, private-write
+
+// setup
+// server grants read write on all .public
+// server revokes all permissions on .private
+// .symbolizes what it is initially
+
+// user is authorized
+// server grants them read write on .private:user:uuid:feed
+// server grants them read on .private:user:uuid:direct
+//
+//user.uuid.us.them.chan
+//
+// user.uuid:read.
+// user.uuid:write.
 
 console.log(channels)
 
