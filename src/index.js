@@ -261,7 +261,7 @@ const create = function(pnConfig, globalChannel = 'chat-engine') {
     */
     class Chat extends Emitter {
 
-        constructor(channel = new Date().getTime(), autoConnect = true) {
+        constructor(channel = new Date().getTime(), autoConnect = true, priv = false) {
 
             super();
 
@@ -273,8 +273,13 @@ const create = function(pnConfig, globalChannel = 'chat-engine') {
 
             this.channel = channel.toString();
 
+            let chanPrivString = 'public.';
+            if(priv) {
+                chanPrivString = 'private.';
+            }
+
             if(this.channel.indexOf(globalChannel) == -1) {
-                this.channel = [globalChannel, 'chat', channel].join(':');
+                this.channel = [globalChannel, 'chat', chanPrivString, channel].join(':');
             }
 
             /**
@@ -304,6 +309,8 @@ const create = function(pnConfig, globalChannel = 'chat-engine') {
             @param {Object} response The response payload object
             */
             this.onHereNow = (status, response) => {
+
+                console.log(status, response)
 
                 if(status.error) {
                     throw new Error('There was a problem fetching here.');

@@ -25,12 +25,10 @@ let pn = new PubNub({
 
 let channels = [
     gChan,
-    gChan + ':public.*',
-    gChan + ':pnpres',
-    gChan + ':private.user:' + myUUID + ':feed',
-    gChan + ':private.user:' + myUUID + ':feed-pnpres',
-    gChan + ':private.user:' + myUUID + ':direct',
-    gChan + ':private.user:' + myUUID + ':direct-pnpres'
+    gChan + '-pnpres',
+    gChan + ':chat:public.*',
+    gChan + ':user:' + myUUID + ':read.*',
+    gChan + ':user:' + myUUID + ':write.*'
 ];
 
 // public-read, public-write, private-read, private-write
@@ -48,6 +46,11 @@ let channels = [
 //
 // user.uuid:read.
 // user.uuid:write.
+//
+//
+// chat-engine-jquery-kitchen-sink:user:1501798631597:read.:feed
+// chat-engine-jquery-kitchen-sink:user:1501798631597:write.:direct
+// chat-engine-jquery-kitchen-sink
 
 console.log(channels)
 
@@ -83,12 +86,7 @@ pn.grant({
                 console.log('emitting')
             }, 1000);
 
-        }, 3000)
-
-
-
-
-        // });
+        }, 3000);
 
     }
 );
