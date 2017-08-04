@@ -860,8 +860,8 @@ const create = function(pnConfig, globalChannel = 'chat-engine') {
             * @example
             * this.feed.connect();
             */
-            // this.feed = new Chat(
-                // [ChatEngine.globalChat.channel, 'user', uuid, 'read.', 'feed'].join(':'), this.constructor.name == "Me");
+            this.feed = new Chat(
+                [ChatEngine.globalChat.channel, 'user', uuid, 'read.', 'feed'].join(':'), this.constructor.name == "Me");
 
             /**
             * Direct is a private channel that anybody can publish to but only the user can subscribe to. Great
@@ -869,8 +869,8 @@ const create = function(pnConfig, globalChannel = 'chat-engine') {
             *
             * @type Chat
             */
-            // this.direct = new Chat(
-                // [ChatEngine.globalChat.channel, 'user', uuid, 'write.', 'direct'].join(':'), this.constructor.name == "Me");
+            this.direct = new Chat(
+                [ChatEngine.globalChat.channel, 'user', uuid, 'write.', 'direct'].join(':'), this.constructor.name == "Me");
 
             // if the user does not exist at all and we get enough
             // information to build the user
@@ -951,6 +951,7 @@ const create = function(pnConfig, globalChannel = 'chat-engine') {
             // will direct back to "this.update" which creates
             // a loop of network updates
             super.update(state, chat);
+
         }
 
         /**
@@ -1019,7 +1020,7 @@ const create = function(pnConfig, globalChannel = 'chat-engine') {
         @param {Object} state An object containing information about this client ({@link Me}). This JSON object is sent to all other clients on the network, so no passwords!
         @return {Me} me an instance of me
         */
-        ChatEngine.connect = function(uuid, authKey, state = {}) {
+        ChatEngine.auth = function(uuid, authKey, state = {}) {
 
             // this creates a user known as Me and
             // connects to the global chatroom
@@ -1028,10 +1029,11 @@ const create = function(pnConfig, globalChannel = 'chat-engine') {
             pnConfig.uuid = uuid || this.pubnub.generateUUID();
             pnConfig.authKey = authKey;
 
-            console.log('connecting')
+            this.pubnub = new PubNub(pnConfig);
 
             request.post({
                 url:'http://localhost:3000/setup',
+                // url: "https://pubsub.pubnub.com/v1/blocks/sub-key/sub-c-67db0e7a-50be-11e7-bf50-02ee2ddab7fe/auther",
                 json: {
                     authKey: pnConfig.authKey,
                     uuid: pnConfig.uuid,
@@ -1039,14 +1041,11 @@ const create = function(pnConfig, globalChannel = 'chat-engine') {
                 }
             }, (err, httpResponse, body) => {
 
-                console.log(err, body)
-
-                console.log(pnConfig, 'is what were connecting with')
-
-                this.pubnub = new PubNub(pnConfig);
-
                 if (err) {
-                    return console.error('upload failed:', err);
+                    this._emit('$.auth.error', {
+                        err: err,
+                        text: 'unable to login'
+                    });
                 }
 
                 // create a new chat to use as globalChat
@@ -1060,12 +1059,14 @@ const create = function(pnConfig, globalChannel = 'chat-engine') {
 
                 this.me.update(state);
 
-                this._emit('$.ready');
-
-                // return me
-                return this.me;
+                this._emit('$.auth.success', {
+                    me: this.me
+                });
 
             });
+
+            return this;
+
         };
 
         /**

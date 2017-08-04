@@ -44,33 +44,24 @@ app.post('/setup', function (req, res) {
     ];
 
     pubnub.grant({
-        channels: chanMeRW,
+        channels: chanEverybodyR,
         read: true, // false to disallow
-        write: true, // false to disallow,
-        authKeys: [myAuthKey],
         ttl: 0
     }, function (a,b,c) {
 
-        console.log('cb 1')
-        console.log(a,b,c)
-
         pubnub.grant({
-            channels: chanEverybodyR,
-            read: true, // false to disallow
+            channels: chanEverybodyW,
+            write: true, // false to disallow
             ttl: 0
         }, function (a,b,c) {
 
-            console.log('cb 2')
-            console.log(a,b,c)
-
             pubnub.grant({
-                channels: chanEverybodyW,
-                write: true, // false to disallow
+                channels: chanMeRW,
+                read: true, // false to disallow
+                write: true, // false to disallow,
+                authKeys: [myAuthKey],
                 ttl: 0
             }, function (a,b,c) {
-
-                console.log('cb 3')
-                console.log(a,b,c)
 
                 res.send('It worked');
 

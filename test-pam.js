@@ -8,28 +8,33 @@ let myAuthKey = "dog" + new Date().getTime();;
 
 console.log('pubnub grant happened');
 
-var ChatEngine = ChatEngineCore.create({
+let ChatEngine = ChatEngineCore.create({
     publishKey: 'pub-c-c6303bb2-8bf8-4417-aac7-e83b52237ea6',
     subscribeKey: 'sub-c-67db0e7a-50be-11e7-bf50-02ee2ddab7fe'
 }, gChan);
 
-me = ChatEngine.connect(myUUID, myAuthKey, {works: true});
+ChatEngine.auth(myUUID, myAuthKey, {works: true}).on('$.auth.success', (data) => {
 
-// ChatEngine.on('$.ready', () => {
-setTimeout(() => {
+    console.log(data)
 
+    let me = data.me;
     let chat = new ChatEngine.Chat(new Date().getTime());
 
     chat.onAny((event) => {
         console.log(event);
     });
 
+    console.log(me)
+
     setInterval(() => {
+
+        me.feed.emit('test', {works: true});
+
         chat.emit('message', {test: true});
         console.log('emitting')
     }, 1000);
 
-}, 3000);
+});
 
 // runs on client
 //
