@@ -24,8 +24,6 @@ ChatEngine.auth(myUUID, myAuthKey, {works: true}).on('$.auth.success', (data) =>
         console.log(event);
     });
 
-    console.log(me)
-
     setInterval(() => {
 
         me.feed.emit('test', {works: true});

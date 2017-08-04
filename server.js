@@ -9,18 +9,22 @@ let pubnub = new PubNub({
 const express = require('express')
 const app = express()
 const bodyParser = require('body-parser');
-
+const request = require('request');
 
 app.use(bodyParser.json()); // for parsing application/json
 app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
-
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+});
 app.get('/', function (req, res) {
   res.send('Hello World!')
 });
 
 app.post('/setup', function (req, res) {
 
-    console.log('setup called');
+    console.log('setup called')
 
     // let gChan = new Date().getTime();
     let gChan = req.body.channel;
@@ -43,31 +47,52 @@ app.post('/setup', function (req, res) {
         gChan + ':user:' + myUUID + ':write.*'
     ];
 
-    pubnub.grant({
-        channels: chanEverybodyR,
-        read: true, // false to disallow
-        ttl: 0
-    }, function (a,b,c) {
 
-        pubnub.grant({
-            channels: chanEverybodyW,
-            write: true, // false to disallow
-            ttl: 0
-        }, function (a,b,c) {
+    request.get('https://graph.facebook.com/debug_token', {
+        qs: {
+            input_token: req.body.authKey,
+            access_token: '1628895400474971|a505381fd6a6af14da16db8b1ffffaee'
+        },
+        json: true
+    }, function(err, body, response){
+
+        console.log(response)
+
+        if(response.data.is_valid) {
+
+            console.log('setup called');
 
             pubnub.grant({
-                channels: chanMeRW,
+                channels: chanEverybodyR,
                 read: true, // false to disallow
-                write: true, // false to disallow,
-                authKeys: [myAuthKey],
                 ttl: 0
             }, function (a,b,c) {
 
-                res.send('It worked');
+                pubnub.grant({
+                    channels: chanEverybodyW,
+                    write: true, // false to disallow
+                    ttl: 0
+                }, function (a,b,c) {
+
+                    pubnub.grant({
+                        channels: chanMeRW,
+                        read: true, // false to disallow
+                        write: true, // false to disallow,
+                        authKeys: [myAuthKey],
+                        ttl: 0
+                    }, function (a,b,c) {
+
+                        res.send('It worked');
+
+                    });
+
+                });
 
             });
 
-        });
+        } else {
+            res.status(401);
+        }
 
     });
 

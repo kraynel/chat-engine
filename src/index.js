@@ -82,15 +82,8 @@ const create = function(pnConfig, globalChannel = 'chat-engine') {
             @param {String} event The event name
             @param {Function} cb The function to run when the event is emitted
             */
-            this.on = (event, cb) => {
+            this.on = this.emitter.on.bind(this.emitter);
 
-                // keep track of all events on this emitter
-                this.events[event] = this.events[event] || new Event(this, event);
-
-                // call the private _on property
-                this._on(event, cb);
-
-            };
 
             /**
             Stop listening to an event
@@ -202,6 +195,17 @@ const create = function(pnConfig, globalChannel = 'chat-engine') {
                 this.emitter.emit(event, data);
 
             }
+
+
+            this.on = (event, cb) => {
+
+                // keep track of all events on this emitter
+                this.events[event] = this.events[event] || new Event(this, event);
+
+                // call the private _on property
+                this._on(event, cb);
+
+            };
 
             /**
             Stores a list of plugins bound to this object
@@ -1031,6 +1035,8 @@ const create = function(pnConfig, globalChannel = 'chat-engine') {
 
             this.pubnub = new PubNub(pnConfig);
 
+            console.log('authing')
+
             request.post({
                 url:'http://localhost:3000/setup',
                 // url: "https://pubsub.pubnub.com/v1/blocks/sub-key/sub-c-67db0e7a-50be-11e7-bf50-02ee2ddab7fe/auther",
@@ -1040,6 +1046,8 @@ const create = function(pnConfig, globalChannel = 'chat-engine') {
                     channel: globalChannel
                 }
             }, (err, httpResponse, body) => {
+
+                console.log('test')
 
                 if (err) {
                     this._emit('$.auth.error', {
@@ -1058,6 +1066,8 @@ const create = function(pnConfig, globalChannel = 'chat-engine') {
                 this.globalChat.createUser(pnConfig.uuid, state);
 
                 this.me.update(state);
+
+                console.log('something 2')
 
                 this._emit('$.auth.success', {
                     me: this.me
