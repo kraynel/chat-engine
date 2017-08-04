@@ -310,10 +310,8 @@ const create = function(pnConfig, globalChannel = 'chat-engine') {
             */
             this.onHereNow = (status, response) => {
 
-                console.log(status, response)
-
                 if(status.error) {
-                    throw new Error('There was a problem fetching here.');
+                    console.error('There was a problem fetching here.', status.errorData.response.text);
                 } else {
 
                     // get the list of occupants in this channel
@@ -862,8 +860,8 @@ const create = function(pnConfig, globalChannel = 'chat-engine') {
             * @example
             * this.feed.connect();
             */
-            this.feed = new Chat(
-                [ChatEngine.globalChat.channel, 'user', uuid, 'read.', 'feed'].join(':'), this.constructor.name == "Me");
+            // this.feed = new Chat(
+                // [ChatEngine.globalChat.channel, 'user', uuid, 'read.', 'feed'].join(':'), this.constructor.name == "Me");
 
             /**
             * Direct is a private channel that anybody can publish to but only the user can subscribe to. Great
@@ -871,8 +869,8 @@ const create = function(pnConfig, globalChannel = 'chat-engine') {
             *
             * @type Chat
             */
-            this.direct = new Chat(
-                [ChatEngine.globalChat.channel, 'user', uuid, 'write.', 'direct'].join(':'), this.constructor.name == "Me");
+            // this.direct = new Chat(
+                // [ChatEngine.globalChat.channel, 'user', uuid, 'write.', 'direct'].join(':'), this.constructor.name == "Me");
 
             // if the user does not exist at all and we get enough
             // information to build the user
@@ -1027,25 +1025,29 @@ const create = function(pnConfig, globalChannel = 'chat-engine') {
             // connects to the global chatroom
 
             // this.config.rltm.config.uuid = uuid;
-            pnConfig.uuid = uuid || pnConfig.uuid || this.pubnub.generateUUID();
+            pnConfig.uuid = uuid || this.pubnub.generateUUID();
             pnConfig.authKey = authKey;
 
-            this.pubnub = new PubNub(pnConfig);
+            console.log('connecting')
 
-            // request.post({
-            //     url:'https://pubsub.pubnub.com/v1/blocks/sub-key/sub-c-67db0e7a-50be-11e7-bf50-02ee2ddab7fe/auther',
-            //     json: {
-            //         authKey: pnConfig.authKey,
-            //         uuid: pnConfig.uuid,
-            //         globalChannel: globalChannel
-            //     }
-            // }, (err, httpResponse, body) => {
+            request.post({
+                url:'http://localhost:3000/setup',
+                json: {
+                    authKey: pnConfig.authKey,
+                    uuid: pnConfig.uuid,
+                    channel: globalChannel
+                }
+            }, (err, httpResponse, body) => {
 
-            //   if (err) {
-            //     return console.error('upload failed:', err);
-            //   }
+                console.log(err, body)
 
-                // console.log('Upload successful!  Server responded with:', body);
+                console.log(pnConfig, 'is what were connecting with')
+
+                this.pubnub = new PubNub(pnConfig);
+
+                if (err) {
+                    return console.error('upload failed:', err);
+                }
 
                 // create a new chat to use as globalChat
                 this.globalChat = new Chat(globalChannel);
@@ -1058,13 +1060,12 @@ const create = function(pnConfig, globalChannel = 'chat-engine') {
 
                 this.me.update(state);
 
+                this._emit('$.ready');
+
                 // return me
                 return this.me;
 
-                // client can access globalChat through ChatEngine.globalChat
-
-
-            // });
+            });
         };
 
         /**

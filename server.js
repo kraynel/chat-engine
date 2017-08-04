@@ -6,13 +6,83 @@ let pubnub = new PubNub({
     secretKey: 'sec-c-MjU3YjEwOGYtYzVkNC00N2M4LTliYTktN2FhY2U1OGI0Y2Iw'
 });
 
-pubnub.grant({
-        channels: ['test-chan2', 'test-chan2.public.*', 'test-chan2-pnpres'],
+const express = require('express')
+const app = express()
+const bodyParser = require('body-parser');
+
+
+app.use(bodyParser.json()); // for parsing application/json
+app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
+
+app.get('/', function (req, res) {
+  res.send('Hello World!')
+});
+
+app.post('/setup', function (req, res) {
+
+    console.log('setup called');
+
+    // let gChan = new Date().getTime();
+    let gChan = req.body.channel;
+    let myUUID = req.body.uuid;
+    let myAuthKey = req.body.authKey;
+
+    let chanMeRW = [
+        gChan,
+        gChan + '-pnpres',
+        gChan + ':chat:public.*',
+        gChan + ':user:' + myUUID + ':read.*',
+        gChan + ':user:' + myUUID + ':write.*'
+    ];
+
+    let chanEverybodyR = [
+        gChan + ':user:' + myUUID + ':read.*'
+    ];
+
+    let chanEverybodyW = [
+        gChan + ':user:' + myUUID + ':write.*'
+    ];
+
+    pubnub.grant({
+        channels: chanMeRW,
         read: true, // false to disallow
-        write: true, // false to disallow
+        write: true, // false to disallow,
+        authKeys: [myAuthKey],
         ttl: 0
-    },
-    function (status) {
-        console.log(status)
-    }
-);
+    }, function (a,b,c) {
+
+        console.log('cb 1')
+        console.log(a,b,c)
+
+        pubnub.grant({
+            channels: chanEverybodyR,
+            read: true, // false to disallow
+            ttl: 0
+        }, function (a,b,c) {
+
+            console.log('cb 2')
+            console.log(a,b,c)
+
+            pubnub.grant({
+                channels: chanEverybodyW,
+                write: true, // false to disallow
+                ttl: 0
+            }, function (a,b,c) {
+
+                console.log('cb 3')
+                console.log(a,b,c)
+
+                res.send('It worked');
+
+            });
+
+        });
+
+    });
+
+});
+
+
+app.listen(3000, function () {
+  console.log('Example app listening on port 3000!')
+})
