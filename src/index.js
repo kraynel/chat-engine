@@ -1023,9 +1023,7 @@ const create = function(pnConfig, ceConfig = {}) {
             // this creates a user known as Me and
             // connects to the global chatroom
 
-            // this.config.rltm.config.uuid = uuid;
-
-            pnConfig.uuid = uuid || this.pubnub.generateUUID();
+            pnConfig.uuid = uuid;
 
             let complete = () => {
 
