@@ -56,7 +56,7 @@ describe('chat', function() {
         chat = new ChatEngine.Chat(new Date() + 'chat');
 
         chat.onAny((event) => {
-            console.log(event)
+            // console.log(event)
         })
 
         done();
