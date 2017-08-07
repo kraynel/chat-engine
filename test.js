@@ -21,6 +21,9 @@ describe('config', function() {
         ChatEngine = ChatEngineCore.create({
             publishKey: 'pub-c-c6303bb2-8bf8-4417-aac7-e83b52237ea6',
             subscribeKey: 'sub-c-67db0e7a-50be-11e7-bf50-02ee2ddab7fe'
+        }, {
+            authUrl: 'http://localhost:3000/insecure',
+            globalChannel: 'chat-engine-demo-test' + new Date().getTime()
         });
 
         assert.isOk(ChatEngine);
@@ -31,10 +34,14 @@ describe('config', function() {
 
 describe('connect', function() {
 
-    it('should be identified as new user', function() {
+    it('should be identified as new user', function(done) {
 
-        me = ChatEngine.connect('robot-tester', {works: true});
-        assert.isObject(me);
+        ChatEngine.connect('robot-tester', {works: true}, 'token-doesnt-matter');
+
+        ChatEngine.on('$.ready', (data) => {
+            assert.isObject(data.me);
+            done();
+        });
 
     });
 
@@ -58,7 +65,7 @@ describe('chat', function() {
 
     it('should get ready callback', function(done) {
 
-        chat.on('$.ready', () => {
+        chat.on('$.connected', () => {
 
             done();
 

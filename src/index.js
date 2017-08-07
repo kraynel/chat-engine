@@ -1004,14 +1004,6 @@ const create = function(pnConfig, ceConfig = {}) {
         */
         ChatEngine.pubnub = false;
 
-
-        ChatEngine.setupPubNub = function(uuid) {
-
-            pnConfig.uuid = uuid || this.pubnub.generateUUID();
-
-            return new PubNub(pnConfig);
-
-        }
         /**
         connect to realtime service and create instance of {@link Me}
         *
@@ -1059,8 +1051,6 @@ const create = function(pnConfig, ceConfig = {}) {
 
                 request.post({
                     url: ceConfig.authUrl,
-                    // url: "https://pubsub.pubnub.com/v1/blocks/sub-key/sub-c-67db0e7a-50be-11e7-bf50-02ee2ddab7fe/auther",
-                    // ceConfig.functionUrl
                     json: {
                         authKey: pnConfig.authKey,
                         uuid: pnConfig.uuid,

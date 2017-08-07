@@ -24,6 +24,8 @@ app.get('/', function (req, res) {
 
 let grant = function(gChan, myUUID, myAuthKey, next) {
 
+    console.log('granting', gChan, myUUID, myAuthKey)
+
     let chanMeRW = [
         gChan,
         gChan + '-pnpres',
@@ -94,6 +96,29 @@ app.post('/facebook', function (req, res) {
 
 });
 
+app.post('/insecure', function (req, res) {
+
+    // grants everybody!
+    grant(req.body.channel, req.body.uuid, req.body.authKey, () => {
+        res.send('it worked');
+    });
+
+});
+
+app.post('/test', function (req, res) {
+
+    if(req.body.authKey == 'open-sesame') {
+
+        // grants everybody!
+        grant(req.body.channel, req.body.uuid, req.body.authKey, () => {
+            res.send('it worked');
+        });
+
+    } else {
+        res.status(401);
+    }
+
+});
 
 app.listen(3000, function () {
   console.log('Example app listening on port 3000!')
