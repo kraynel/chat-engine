@@ -25,7 +25,7 @@ const ChatEngine = ChatEngineCore.create({
     subscribeKey: 'demo'
 }, 'global-channel');
 */
-const create = function(pnConfig, ceConfig) {
+const create = function(pnConfig, ceConfig = {}) {
 
     let ChatEngine = false;
 

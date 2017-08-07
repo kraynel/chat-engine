@@ -22,14 +22,7 @@ app.get('/', function (req, res) {
   res.send('Hello World!')
 });
 
-app.post('/setup', function (req, res) {
-
-    console.log('setup called')
-
-    // let gChan = new Date().getTime();
-    let gChan = req.body.channel;
-    let myUUID = req.body.uuid;
-    let myAuthKey = req.body.authKey;
+let grant = function(gChan, myUUID, myAuthKey, next) {
 
     let chanMeRW = [
         gChan,
@@ -47,6 +40,37 @@ app.post('/setup', function (req, res) {
         gChan + ':user:' + myUUID + ':write.*'
     ];
 
+    pubnub.grant({
+        channels: chanEverybodyR,
+        read: true, // false to disallow
+        ttl: 0
+    }, function (a,b,c) {
+
+        pubnub.grant({
+            channels: chanEverybodyW,
+            write: true, // false to disallow
+            ttl: 0
+        }, function (a,b,c) {
+
+            pubnub.grant({
+                channels: chanMeRW,
+                read: true, // false to disallow
+                write: true, // false to disallow,
+                authKeys: [myAuthKey],
+                ttl: 0
+            }, function (a,b,c) {
+
+                next();
+
+            });
+
+        });
+
+    });
+
+}
+
+app.post('/setup', function (req, res) {
 
     request.get('https://graph.facebook.com/debug_token', {
         qs: {
@@ -56,36 +80,10 @@ app.post('/setup', function (req, res) {
         json: true
     }, function(err, body, response){
 
-        console.log(response)
-
         if(response.data.is_valid) {
 
-            pubnub.grant({
-                channels: chanEverybodyR,
-                read: true, // false to disallow
-                ttl: 0
-            }, function (a,b,c) {
-
-                pubnub.grant({
-                    channels: chanEverybodyW,
-                    write: true, // false to disallow
-                    ttl: 0
-                }, function (a,b,c) {
-
-                    pubnub.grant({
-                        channels: chanMeRW,
-                        read: true, // false to disallow
-                        write: true, // false to disallow,
-                        authKeys: [myAuthKey],
-                        ttl: 0
-                    }, function (a,b,c) {
-
-                        res.send('It worked');
-
-                    });
-
-                });
-
+            grant(req.body.channel, req.body.uuid, req.body.authKey, () => {
+                res.send('it worked');
             });
 
         } else {
