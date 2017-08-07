@@ -262,11 +262,8 @@ const create = function(pnConfig, ceConfig) {
     @param {String} channel A unique identifier for this chat {@link Chat}. The channel is the unique name of a {@link Chat}, and is usually something like "The Watercooler", "Support", or "Off Topic". See [PubNub Channels](https://support.pubnub.com/support/solutions/articles/14000045182-what-is-a-channel-).
     @extends Emitter
     @fires Chat#$"."ready
-    @fires Chat#$"."join
-    @fires Chat#$"."online
     @fires Chat#$"."state
-    @fires Chat#$"."leave
-    @fires Chat#$"."disconnect
+    @fires Chat#$"."online
     @fires Chat#$"."offline
     */
     class Chat extends Emitter {
@@ -352,13 +349,13 @@ const create = function(pnConfig, ceConfig) {
 
                         /**
                         * Broadcast that the {@link Chat} is connected to the network.
-                        * @event Chat#$"."ready
+                        * @event Chat#$"."connected
                         * @example
-                        * chat.on('$.ready', () => {
+                        * chat.on('$.connected', () => {
                         *     console.log('chat is ready to go!');
                         * });
                         */
-                        this.trigger('$.ready');
+                        this.trigger('$.connected');
                     }
 
                 }
@@ -394,7 +391,7 @@ const create = function(pnConfig, ceConfig) {
                             // but the event name is now history:name rather than just name
                             // to distinguish it from the original live events
                             this.trigger(
-                                ['$history', 'event', event].join('.'),
+                                ['$.history', 'event', event].join('.'),
                                 message.entry);
 
                         });
@@ -424,7 +421,7 @@ const create = function(pnConfig, ceConfig) {
                         /**
                         * Fired when a {@link User} has joined the room.
                         *
-                        * @event Chat#$"."join
+                        * @event Chat#$"."online"."join
                         * @param {Object} data The payload returned by the event
                         * @param {User} data.user The {@link User} that came online
                         * @example
@@ -432,7 +429,7 @@ const create = function(pnConfig, ceConfig) {
                         *     console.log('User has joined the room!', data.user);
                         * });
                         */
-                        this.trigger('$.join', {
+                        this.trigger('$.online.join', {
                             user: user
                         });
 
@@ -591,11 +588,11 @@ const create = function(pnConfig, ceConfig) {
                 * @param {Object} data The payload returned by the event
                 * @param {User} data.user The {@link User} that came online
                 * @example
-                * chat.on('$.online', (data) => {
+                * chat.on('$.online.new', (data) => {
                 *     console.log('User has come online:', data.user);
                 * });
                 */
-                this.trigger('$.online', {
+                this.trigger('$.online.new', {
                     user: ChatEngine.users[uuid]
                 });
 
@@ -673,17 +670,15 @@ const create = function(pnConfig, ceConfig) {
                 /**
                 * Fired when a {@link User} intentionally leaves a {@link Chat}.
                 *
-                * @event Chat#$"."leave
+                * @event Chat#$"."offline"."leave
+                * @param {Object} data The data payload from the event
                 * @param {User} user The {@link User} that has left the room
                 * @example
-                * chat.on('$.leave', (user) => {
-                *     console.log('User left the room manually:', user);
+                * chat.on('$.offline.leave', (data) => {
+                *     console.log('User left the room manually:', data.user);
                 * });
                 */
-                this.trigger('$.leave', {
-                    user: this.users[uuid]
-                });
-                this.trigger('$.offline', {
+                this.trigger('$.offline.leave', {
                     user: this.users[uuid]
                 });
 
@@ -717,29 +712,16 @@ const create = function(pnConfig, ceConfig) {
                 * Fired specifically when a {@link User} looses network connection
                 * to the {@link Chat} involuntarily.
                 *
-                * @event Chat#$"."disconnect
-                * @param {Object} User The {@link User} that disconnected
+                * @event Chat#$"."offline"."disconnect
+                * @param {Object} data The {@link User} that disconnected
+                * @param {Object} data.user The {@link User} that disconnected
                 * @example
-                * chat.on('$.disconnect', (user) => {
-                *     console.log('User disconnected from the network:', user);
+                * chat.on('$.offline.disconnect', (data) => {
+                *     console.log('User disconnected from the network:', data.user);
                 * });
                 */
-                this.trigger('$.disconnect', {
-                    user: this.users[uuid]
-                });
 
-                /**
-                * A {@link User} has gone offline. Triggered by ```$.leave```
-                * or ```$.disconnect```.
-                *
-                * @event Chat#$"."offline
-                * @param {User} user The {@link User} that has gone offline
-                * @example
-                * chat.on('$.offline', (user) => {
-                *     console.log('User disconnected from the network:', user);
-                * });
-                */
-                this.trigger('$.offline', {
+                this.trigger('$.offline.disconnect', {
                     user: this.users[uuid]
                 });
 
@@ -1035,6 +1017,7 @@ const create = function(pnConfig, ceConfig) {
         @memberof ChatEngine
         @param {String} uuid A unique string for {@link Me}. It can be a device id, username, user id, email, etc.
         @param {Object} state An object containing information about this client ({@link Me}). This JSON object is sent to all other clients on the network, so no passwords!
+        @param {Strung} authKey A authentication secret. Will be sent to authentication backend for validation. This is usually an access token or password. This is different from UUID as a user can have a single UUID but multiple auth keys.
         @return {Me} me an instance of me
         */
         ChatEngine.connect = function(uuid, state = {}, authKey = false, authData) {
@@ -1046,7 +1029,7 @@ const create = function(pnConfig, ceConfig) {
 
             pnConfig.uuid = uuid || this.pubnub.generateUUID();
 
-            let complete = function() {
+            let complete = () => {
 
                 this.pubnub = new PubNub(pnConfig);
 
@@ -1061,7 +1044,7 @@ const create = function(pnConfig, ceConfig) {
 
                 this.me.update(state);
 
-                this._emit('$.connect', {
+                this._emit('$.ready', {
                     me: this.me
                 });
 
@@ -1080,7 +1063,8 @@ const create = function(pnConfig, ceConfig) {
                     json: {
                         authKey: pnConfig.authKey,
                         uuid: pnConfig.uuid,
-                        channel: ceConfig.globalChannel
+                        channel: ceConfig.globalChannel,
+                        authData: authData
                     }
                 }, (err, httpResponse, body) => {
 
@@ -1108,17 +1092,6 @@ const create = function(pnConfig, ceConfig) {
             }
 
 
-
-        };
-
-        /**
-         * Authorize with PubNub Permission Access Manager before connecting to the service. Calls Chatengine.connect() upon auth success.
-        @param {String} authKey A unique auth key that identifies this user as logged in.
-        @param {String} uuid A unique string for {@link Me}. It can be a device id, username, user id, email, etc.
-        @param {Object} state An object containing information about this client ({@link Me}). This JSON object is sent to all other clients on the network, so no passwords!
-        @return {Me} me an instance of me
-         */
-        ChatEngine.auth = function(uuid, state = {}, authKey, authData) {
 
         };
 
