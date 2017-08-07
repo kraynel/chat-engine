@@ -15,7 +15,9 @@ Global object used to create an instance of {@link ChatEngine}.
 
 @alias ChatEngineCore
 @param pnConfig {Object} ChatEngine is based off PubNub. Supply your PubNub configuration parameters here. See the getting started tutorial and [the PubNub docs](https://www.pubnub.com/docs/java-se-java/api-reference-configuration).
-@param [globalChannel] {Chat.channel} The global channel name. See {@link ChatEngine.globalChat}
+@param ceConfig {Object} A list of chat engine specific config options.
+@param [ceConfig.globalChannel=chat-engine] {String} The root channel. See {@link ChatEngine.globalChat}
+@param [ceConfig.functionName] {String} The name of the PubNub function for authorization.
 @return {ChatEngine} Returns an instance of {@link ChatEngine}
 @example
 const ChatEngine = ChatEngineCore.create({
@@ -23,11 +25,15 @@ const ChatEngine = ChatEngineCore.create({
     subscribeKey: 'demo'
 }, 'global-channel');
 */
-const create = function(pnConfig, globalChannel = 'chat-engine') {
+const create = function(pnConfig, ceConfig) {
 
     let ChatEngine = false;
 
-    globalChannel = globalChannel.toString();
+    if(ceConfig.globalChannel) {
+        ceConfig.globalChannel = ceConfig.globalChannel.toString()
+    } else {
+        ceConfig.globalChannel = 'chat-engine';
+    }
 
     /**
     * The {@link ChatEngine} object is a RootEmitter. Configures an event emitter that other ChatEngine objects inherit. Adds shortcut methods for
@@ -282,8 +288,8 @@ const create = function(pnConfig, globalChannel = 'chat-engine') {
                 chanPrivString = 'private.';
             }
 
-            if(this.channel.indexOf(globalChannel) == -1) {
-                this.channel = [globalChannel, 'chat', chanPrivString, channel].join(':');
+            if(this.channel.indexOf(ceConfig.globalChannel) == -1) {
+                this.channel = [ceConfig.globalChannel, 'chat', chanPrivString, channel].join(':');
             }
 
             /**
@@ -1015,49 +1021,37 @@ const create = function(pnConfig, globalChannel = 'chat-engine') {
         */
         ChatEngine.pubnub = false;
 
+
+        ChatEngine.setupPubNub = function(uuid) {
+
+            pnConfig.uuid = uuid || this.pubnub.generateUUID();
+
+            return new PubNub(pnConfig);
+
+        }
         /**
         connect to realtime service and create instance of {@link Me}
         *
         @memberof ChatEngine
         @param {String} uuid A unique string for {@link Me}. It can be a device id, username, user id, email, etc.
-        @param {String} authKey A unique auth key that identifies this user as logged in.
         @param {Object} state An object containing information about this client ({@link Me}). This JSON object is sent to all other clients on the network, so no passwords!
         @return {Me} me an instance of me
         */
-        ChatEngine.auth = function(uuid, authKey, state = {}) {
+        ChatEngine.connect = function(uuid, state = {}, authKey = false, authData) {
 
             // this creates a user known as Me and
             // connects to the global chatroom
 
             // this.config.rltm.config.uuid = uuid;
+
             pnConfig.uuid = uuid || this.pubnub.generateUUID();
-            pnConfig.authKey = authKey;
 
-            this.pubnub = new PubNub(pnConfig);
+            let complete = function() {
 
-            console.log('authing')
-
-            request.post({
-                url:'http://localhost:3000/setup',
-                // url: "https://pubsub.pubnub.com/v1/blocks/sub-key/sub-c-67db0e7a-50be-11e7-bf50-02ee2ddab7fe/auther",
-                json: {
-                    authKey: pnConfig.authKey,
-                    uuid: pnConfig.uuid,
-                    channel: globalChannel
-                }
-            }, (err, httpResponse, body) => {
-
-                console.log('test')
-
-                if (err) {
-                    this._emit('$.auth.error', {
-                        err: err,
-                        text: 'unable to login'
-                    });
-                }
+                this.pubnub = new PubNub(pnConfig);
 
                 // create a new chat to use as globalChat
-                this.globalChat = new Chat(globalChannel);
+                this.globalChat = new Chat(ceConfig.globalChannel);
 
                 // create a new user that represents this client
                 this.me = new Me(pnConfig.uuid);
@@ -1067,15 +1061,64 @@ const create = function(pnConfig, globalChannel = 'chat-engine') {
 
                 this.me.update(state);
 
-                console.log('something 2')
-
-                this._emit('$.auth.success', {
+                this._emit('$.connect', {
                     me: this.me
                 });
 
-            });
+            }
 
-            return this;
+            if(!authKey) {
+                complete();
+            } else {
+
+                pnConfig.authKey = authKey;
+
+                request.post({
+                    url:'http://localhost:3000/setup',
+                    // url: "https://pubsub.pubnub.com/v1/blocks/sub-key/sub-c-67db0e7a-50be-11e7-bf50-02ee2ddab7fe/auther",
+                    // ceConfig.functionUrl
+                    json: {
+                        authKey: pnConfig.authKey,
+                        uuid: pnConfig.uuid,
+                        channel: ceConfig.globalChannel
+                    }
+                }, (err, httpResponse, body) => {
+
+                    if (err) {
+
+                        this._emit('$.auth.error', {
+                            err: err,
+                            text: 'unable to login'
+                        });
+
+                    } else {
+
+                        this._emit('$.auth.success', {
+                            me: this.me,
+                            httpResponse: httpResponse
+                        });
+
+                        complete();
+
+                    }
+
+                });
+
+
+            }
+
+
+
+        };
+
+        /**
+         * Authorize with PubNub Permission Access Manager before connecting to the service. Calls Chatengine.connect() upon auth success.
+        @param {String} authKey A unique auth key that identifies this user as logged in.
+        @param {String} uuid A unique string for {@link Me}. It can be a device id, username, user id, email, etc.
+        @param {Object} state An object containing information about this client ({@link Me}). This JSON object is sent to all other clients on the network, so no passwords!
+        @return {Me} me an instance of me
+         */
+        ChatEngine.auth = function(uuid, state = {}, authKey, authData) {
 
         };
 
