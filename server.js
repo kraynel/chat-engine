@@ -24,7 +24,7 @@ app.get('/', function (req, res) {
 
 let grant = function(gChan, myUUID, myAuthKey, next) {
 
-    console.log('granting', gChan, myUUID, myAuthKey)
+    console.log('granting on channel', gChan, 'for uuid', myUUID, 'with auth key', myAuthKey)
 
     let chanMeRW = [
         gChan,
