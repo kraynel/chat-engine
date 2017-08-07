@@ -388,12 +388,16 @@ const create = function(pnConfig, ceConfig = {}) {
 
                         response.messages.forEach((message) => {
 
-                            // trigger the same event with the same data
-                            // but the event name is now history:name rather than just name
-                            // to distinguish it from the original live events
-                            this.trigger(
-                                ['$.history', 'event', event].join('.'),
-                                message.entry);
+                            if(message.entry.event == event) {
+
+                                // trigger the same event with the same data
+                                // but the event name is now history:name rather than just name
+                                // to distinguish it from the original live events
+                                this.trigger(
+                                    ['$', 'history', event].join('.'),
+                                    message.entry);
+
+                            }
 
                         });
 
@@ -796,7 +800,8 @@ const create = function(pnConfig, ceConfig = {}) {
     };
 
     /**
-    This is our User class which represents a connected client.
+    This is our User class which represents a connected client. User's are automatically created and managed by {@link Chat}s, but you can also instantiate them yourself.
+    If a User has been created but has never been authenticated, you will recieve 403s when connecting to their feed or direct Chats.
     @class
     @extends Emitter
     @param uuid

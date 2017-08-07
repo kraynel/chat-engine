@@ -22,6 +22,18 @@ app.get('/', function (req, res) {
   res.send('Hello World!')
 });
 
+let reset = function() {
+
+    pubnub.grant({
+        read: false,
+        write: false,
+        ttl: 0
+    }, function (a,b,c) {
+        console.log('ALL PAM PERMISSIONS RESET');
+    });
+
+}
+
 let grant = function(gChan, myUUID, myAuthKey, next) {
 
     console.log('granting on channel', gChan, 'for uuid', myUUID, 'with auth key', myAuthKey)
@@ -119,6 +131,8 @@ app.post('/test', function (req, res) {
     }
 
 });
+
+reset();
 
 app.listen(3000, function () {
   console.log('Example app listening on port 3000!')
