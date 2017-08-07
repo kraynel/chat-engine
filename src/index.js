@@ -18,6 +18,7 @@ Global object used to create an instance of {@link ChatEngine}.
 @param ceConfig {Object} A list of chat engine specific config options.
 @param [ceConfig.globalChannel=chat-engine] {String} The root channel. See {@link ChatEngine.globalChat}
 @param [ceConfig.functionName] {String} The name of the PubNub function for authorization.
+@param [ceConfig.authUrl] {String} The URL to hit to see if this user is authenticated.
 @return {ChatEngine} Returns an instance of {@link ChatEngine}
 @example
 const ChatEngine = ChatEngineCore.create({
@@ -1057,7 +1058,7 @@ const create = function(pnConfig, ceConfig = {}) {
                 pnConfig.authKey = authKey;
 
                 request.post({
-                    url:'http://localhost:3000/setup',
+                    url: ceConfig.authUrl,
                     // url: "https://pubsub.pubnub.com/v1/blocks/sub-key/sub-c-67db0e7a-50be-11e7-bf50-02ee2ddab7fe/auther",
                     // ceConfig.functionUrl
                     json: {

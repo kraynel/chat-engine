@@ -70,7 +70,7 @@ let grant = function(gChan, myUUID, myAuthKey, next) {
 
 }
 
-app.post('/setup', function (req, res) {
+app.post('/facebook', function (req, res) {
 
     request.get('https://graph.facebook.com/debug_token', {
         qs: {
