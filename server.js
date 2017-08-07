@@ -60,8 +60,6 @@ app.post('/setup', function (req, res) {
 
         if(response.data.is_valid) {
 
-            console.log('setup called');
-
             pubnub.grant({
                 channels: chanEverybodyR,
                 read: true, // false to disallow
