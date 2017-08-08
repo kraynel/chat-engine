@@ -18,7 +18,9 @@ api.init({
             owner_id: session.user.id,
             properties: {}
         }
-    }, function (err, data) {
+    }, function (err, created) {
+
+        console.log(created.result.id)
 
          api.request('get', ['api', 'apps'], {
             qs: {
@@ -26,7 +28,20 @@ api.init({
             }
         }, function (err, data) {
 
-            let key = data.result[0].keys[0];
+            let result = false;
+
+            console.log(data)
+
+            data.result.forEach((res) => {
+                console.log(res.id, created.result.id)
+                if(res.id == created.result.id) {
+                    result = res;
+                }
+            });
+
+            console.log(result)
+
+            let key = result.keys[0];
 
             key.properties.name = 'ChatEngine Keyset';
             key.properties.presence = 1;
@@ -45,6 +60,8 @@ api.init({
             api.request('put', ['api', 'keys', key.id], {
                 form: key
             }, function (err, data) {
+
+                console.log(data)
 
                 console.log(err, data.result.publish_key, data.result.subscribe_key)
 
