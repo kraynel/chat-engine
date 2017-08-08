@@ -42,13 +42,11 @@ api.init({
             key.properties.uls = 1;
             key.properties.wildcardsubscribe = 1;
 
-            console.log(key, 'put', ['api', 'keys', key.id])
-
             api.request('put', ['api', 'keys', key.id], {
                 form: key
             }, function (err, data) {
 
-                console.log(err, data)
+                console.log(err, data.result.publish_key, data.result.subscribe_key)
 
             });
 
