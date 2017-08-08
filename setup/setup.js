@@ -1,64 +1,81 @@
-let Client = require('./client.js');
-
 let api = new Client({
     debug: true,
     endpoint: 'http://admin.bronze.ps.pn'
 });
 
-api.init({
-    email: 'ian+pubnubgarbage@meetjennings.com',
-    password: 'Mrgarbageis#1!'
-}, (err, body) => {
+let Provision = (email, password, callback = function(){}) => {
 
-    let session = body.result;
+    api.init({
+        email: email,
+        password: password
+    }, (err, body) => {
 
-     api.request('post', ['api', 'apps'], {
-        form: {
-            name: 'ChatEngine App',
-            owner_id: session.user.id,
-            properties: {}
+        if(err) {
+            return callback(err);
         }
-    }, function (err, created) {
 
-        console.log(created.result.id)
+        let session = body.result;
 
-         api.request('get', ['api', 'apps'], {
-            qs: {
+         api.request('post', ['api', 'apps'], {
+            data: {
+                name: 'ChatEngine App',
                 owner_id: session.user.id,
+                properties: {}
             }
-        }, function (err, data) {
+        }, function (err, created) {
 
-            let result = false;
 
-            data.result.forEach((res) => {
-                if(res.id == created.result.id) {
-                    result = res;
+            if(err) {
+                return callback(err);
+            }
+
+             api.request('get', ['api', 'apps'], {
+                data: {
+                    owner_id: session.user.id,
                 }
-            });
-
-            let key = result.keys[0];
-
-            key.properties.name = 'ChatEngine Keyset';
-            key.properties.presence = 1;
-            key.properties.history = 1;
-            key.properties.message_storage_ttl = 7;
-            key.properties.multiplexing = 1;
-            key.properties.presence_announce_max = 20;
-            key.properties.presence_debounce = 2;
-            key.properties.presence_global_here_now = 1;
-            key.properties.presence_interval = 10;
-            key.properties.presence_leave_on_disconnect = 0;
-            key.properties.blocks = 1;
-            key.properties.uls = 1;
-            key.properties.wildcardsubscribe = 1;
-
-            api.request('put', ['api', 'keys', key.id], {
-                form: key
             }, function (err, data) {
 
-                console.log(data)
 
-                console.log(err, data.result.publish_key, data.result.subscribe_key)
+                if(err) {
+                    return callback(err);
+                }
+
+                let result = false;
+
+                data.result.forEach((res) => {
+                    if(res.id == created.result.id) {
+                        result = res;
+                    }
+                });
+
+                let key = result.keys[0];
+
+                key.properties.name = 'ChatEngine Keyset';
+                key.properties.presence = 1;
+                key.properties.history = 1;
+                key.properties.message_storage_ttl = 7;
+                key.properties.multiplexing = 1;
+                key.properties.presence_announce_max = 20;
+                key.properties.presence_debounce = 2;
+                key.properties.presence_global_here_now = 1;
+                key.properties.presence_interval = 10;
+                key.properties.presence_leave_on_disconnect = 0;
+                key.properties.blocks = 1;
+                key.properties.uls = 1;
+                key.properties.wildcardsubscribe = 1;
+
+                api.request('put', ['api', 'keys', key.id], {
+                    data: key
+                }, function (err, data) {
+
+
+                    if(err) {
+                        return callback(err);
+                    }
+
+                    callback(null, data);
+
+                });
 
             });
 
@@ -66,4 +83,4 @@ api.init({
 
     });
 
-});
+}

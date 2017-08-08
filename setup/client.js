@@ -1,6 +1,3 @@
-let request = require('request');
-let colors = require('colors')
-
 let Client = function (options) {
 
     var self = this;
@@ -42,7 +39,7 @@ let Client = function (options) {
         opts.json = true;
         opts.headers = opts.headers || {};
         // opts.headers.Authorization =
-            // 'Basic cHVibnViLWJldGE6YmxvY2tzMjAxNg===';
+        //     'Basic cHVibnViLWJldGE6YmxvY2tzMjAxNg===';
 
         if (self.session) {
             opts.headers['X-Session-Token'] = self.session.token;
@@ -53,25 +50,23 @@ let Client = function (options) {
         clog('-- opts:'.yellow);
         clog(opts);
 
-        request(opts, function (err, response, body) {
+        $.ajax(opts)
+            .done((data) => {
+                console.log(data)
+                holla(null, data)
+            })
+            .fail((data) => {
+                console.log('fail', data)
+                holla(data || data.message || data)
+            })
 
-            if (response.statusCode !== 200) {
-                errHandle('Server replied with code '
-                    + response.statusCode + ' '
-                    + response.statusMessage || body.error || '');
-                holla(err || body.message || body);
-            } else {
-                holla(err, body);
-            }
-
-        });
 
     };
 
     self.init = function (input, holla) {
 
         self.request('post', ['api', 'me'], {
-            form: {
+            data: {
                 email: input.email || errHandle('No Email Supplied'),
                 password: input.password || errHandle('No Password Supplied')
             }
@@ -80,7 +75,7 @@ let Client = function (options) {
             if (body && body.error) {
                 holla(body.error);
             } else if (err) {
-                holla(err.error);
+                holla(err);
             } else {
                 self.session = body.result;
                 holla(null, body);
@@ -93,6 +88,3 @@ let Client = function (options) {
     return self;
 
 };
-
-
-module.exports = Client;
