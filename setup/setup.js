@@ -14,7 +14,7 @@ api.init({
 
      api.request('post', ['api', 'apps'], {
         form: {
-            name: 'test-app-2',
+            name: 'ChatEngine App',
             owner_id: session.user.id,
             properties: {}
         }
@@ -30,16 +30,11 @@ api.init({
 
             let result = false;
 
-            console.log(data)
-
             data.result.forEach((res) => {
-                console.log(res.id, created.result.id)
                 if(res.id == created.result.id) {
                     result = res;
                 }
             });
-
-            console.log(result)
 
             let key = result.keys[0];
 
