@@ -528,6 +528,7 @@ function buildNav(members) {
     nav += buildMemberNav(members.tutorials, 'Guides', seenTutorials, linktoTutorial, true, members.children);
 
     if (members.globals.length) {
+
         var globalNav = '';
 
         members.globals.forEach(function(g) {

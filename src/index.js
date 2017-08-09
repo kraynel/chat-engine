@@ -17,14 +17,16 @@ Global object used to create an instance of {@link ChatEngine}.
 @param pnConfig {Object} ChatEngine is based off PubNub. Supply your PubNub configuration parameters here. See the getting started tutorial and [the PubNub docs](https://www.pubnub.com/docs/java-se-java/api-reference-configuration).
 @param ceConfig {Object} A list of chat engine specific config options.
 @param [ceConfig.globalChannel=chat-engine] {String} The root channel. See {@link ChatEngine.globalChat}
-@param [ceConfig.functionName] {String} The name of the PubNub function for authorization.
-@param [ceConfig.authUrl] {String} The URL to hit to see if this user is authenticated.
+@param [ceConfig.authUrl] {String} The authentication URL used to grant users access to ChatEngine.
 @return {ChatEngine} Returns an instance of {@link ChatEngine}
 @example
-const ChatEngine = ChatEngineCore.create({
+ChatEngine = ChatEngineCore.create({
     publishKey: 'demo',
     subscribeKey: 'demo'
-}, 'global-channel');
+}, {
+    authUrl: 'http://localhost/auth',
+    globalChannel: 'chat-engine-global-channel'
+});
 */
 const create = function(pnConfig, ceConfig = {}) {
 
