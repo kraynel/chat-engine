@@ -1,15 +1,12 @@
  {
      "getting-started": {
-         "title": "Getting Started",
+         "title": "Setup",
          "children": {
              "install": {
-                 "title": "Installing Chat Engine"
+                 "title": "Install ChatEngine"
              },
              "pubnub": {
-                 "title": "Set Up PubNub"
-             },
-             "configure": {
-                 "title": "Configure the SDK"
+                 "title": "Get PubNub Keys"
              }
          }
      },
@@ -90,9 +87,6 @@
      "jquery": {
          "title": "jQuery",
          "children": {
-             "full": {
-                 "title": "Setting Up"
-             },
              "jq-simple": {
                  "title": "Simple"
              },
