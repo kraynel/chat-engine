@@ -76,7 +76,7 @@ const create = function(pnConfig, ceConfig = {}) {
             this._emit = this.emitter.emit.bind(this.emitter);
 
             /**
-            Listen for a specific event and fire a callback when it's emitted
+            Listen for a specific event and fire a callback when it's emitted. This is reserved in case this.on is overwritten.
 
             @private
             @param {String} event The event name
@@ -128,8 +128,8 @@ const create = function(pnConfig, ceConfig = {}) {
         constructor(Chat, event) {
 
             /**
-            The [PubNub channel](https://www.pubnub.com/developers/tech/key-concepts/publish-subscribe/channels/) upon which this event is broadcast. Events
-            are always a property of a {@link Chat}.
+            Events are always a property of a {@link Chat}. Responsible for
+            listening to specific events and firing events when they occur.
 
             @readonly
             @type String
@@ -155,7 +155,7 @@ const create = function(pnConfig, ceConfig = {}) {
             }
 
             /**
-            Forwards events to the proper {@link Chat}
+            Forwards events to the Chat that registered the event {@link Chat}
 
             @private
             @param {Object} data The event payload object
@@ -189,7 +189,7 @@ const create = function(pnConfig, ceConfig = {}) {
             super();
 
             /**
-            Forwards events to the proper {@link Chat}
+            Emit events locally.
 
             @private
             @param {String} event The event payload object
@@ -205,7 +205,12 @@ const create = function(pnConfig, ceConfig = {}) {
 
             }
 
+            /**
+            Listen for Events and trigger the ```on``` method when they occur.
 
+            @private
+            @param {String} event The event payload object
+            */
             this.on = (event, cb) => {
 
                 // keep track of all events on this emitter
@@ -262,7 +267,8 @@ const create = function(pnConfig, ceConfig = {}) {
     /**
     This is the root {@link Chat} class that represents a chat room
 
-    @param {String} channel A unique identifier for this chat {@link Chat}. The channel is the unique name of a {@link Chat}, and is usually something like "The Watercooler", "Support", or "Off Topic". See [PubNub Channels](https://support.pubnub.com/support/solutions/articles/14000045182-what-is-a-channel-).
+    @param {String} [channel=new Date().getTime()] A unique identifier for this chat {@link Chat}. The channel is the unique name of a {@link Chat}, and is usually something like "The Watercooler", "Support", or "Off Topic". See [PubNub Channels](https://support.pubnub.com/support/solutions/articles/14000045182-what-is-a-channel-).
+    @param {Boolean} [autoConnect=true] Connect to this chat as soon as its initiated. If set to ```false```, call the {@link Chat#connect} method to connect to this {@link Chat}.
     @extends Emitter
     @fires Chat#$"."ready
     @fires Chat#$"."state
