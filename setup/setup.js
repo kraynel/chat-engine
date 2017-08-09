@@ -3,7 +3,9 @@ let api = new Client({
     endpoint: 'http://admin.bronze.ps.pn'
 });
 
-let Provision = (email, password, callback = function(){}) => {
+let Provision = (email, password, callback = function(){}, status = function(){}) => {
+
+    status('Logging in...');
 
     api.init({
         email: email,
@@ -11,8 +13,10 @@ let Provision = (email, password, callback = function(){}) => {
     }, (err, body) => {
 
         if(err) {
-            return callback(err);
+            return callback('Incorrect email or password. Reset your password <a href="https://admin.pubnub.com/#/forgot-password/">here</a>.');
         }
+
+        status('Creating new PubNub app...');
 
         let session = body.result;
 
@@ -24,10 +28,11 @@ let Provision = (email, password, callback = function(){}) => {
             }
         }, function (err, created) {
 
-
             if(err) {
-                return callback(err);
+                return callback('Could not create new PubNub app. Please contact support@pubnub.com.');
             }
+
+            status('Creating new PubNub keys...');
 
              api.request('get', ['api', 'apps'], {
                 data: {
@@ -35,10 +40,11 @@ let Provision = (email, password, callback = function(){}) => {
                 }
             }, function (err, data) {
 
-
                 if(err) {
-                    return callback(err);
+                    return callback('Could not fetch PubNub apps. Please contact support@pubnub.com.');
                 }
+
+                status('Enabling PubNub features...');
 
                 let result = false;
 
@@ -68,10 +74,11 @@ let Provision = (email, password, callback = function(){}) => {
                     data: key
                 }, function (err, data) {
 
-
                     if(err) {
-                        return callback(err);
+                        return callback('Could not create a new key. Please contact support@pubnub.com.');
                     }
+
+                    status('Done!');
 
                     callback(null, data);
 

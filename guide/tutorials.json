@@ -2,9 +2,6 @@
      "getting-started": {
          "title": "Getting Started",
          "children": {
-             "node": {
-                 "title": "Set Up NodeJS"
-             },
              "install": {
                  "title": "Installing Chat Engine"
              },
