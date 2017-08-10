@@ -13,7 +13,7 @@ describe('import', function() {
 
 let me;
 let ChatEngine;
-let ChatEngine2;
+let ChatEngineYou;
 let globalChannel  = 'chat-engine-demo-test' + new Date().getTime();
 
 describe('config', function() {
@@ -38,10 +38,11 @@ describe('connect', function() {
 
     it('should be identified as new user', function(done) {
 
-        ChatEngine.connect('robot-tester', {works: true}, 'token-doesnt-matter');
+        ChatEngine.connect('ian', {works: true}, 'token-doesnt-matter');
 
         ChatEngine.on('$.ready', (data) => {
             assert.isObject(data.me);
+            me = data.me;
             done();
         });
 
@@ -92,12 +93,16 @@ describe('chat', function() {
 
 });
 
-let me2;
+let myChat;
+
+let you;
+let yourChat;
+
 describe('invite', function() {
 
     it('should be created', function(done) {
 
-        ChatEngine2 = ChatEngineCore.create({
+        ChatEngineYou = ChatEngineCore.create({
             publishKey: 'pub-c-c6303bb2-8bf8-4417-aac7-e83b52237ea6',
             subscribeKey: 'sub-c-67db0e7a-50be-11e7-bf50-02ee2ddab7fe'
         }, {
@@ -105,9 +110,10 @@ describe('invite', function() {
             globalChannel: globalChannel
         });
 
-        me2 = ChatEngine2.connect('robot-tester2', {works: true}, 'token-doesnt-matter');
+        ChatEngineYou.connect('stephen', {works: true}, 'token-doesnt-matter');
 
-        ChatEngine2.on('$.ready', (data) => {
+        ChatEngineYou.on('$.ready', (data) => {
+            you = data.me;
             done();
         });
 
@@ -115,12 +121,39 @@ describe('invite', function() {
 
     it('should create chat', function(done) {
 
-        let myChat2 = new ChatEngine2.Chat('secret-channel-' + new Date().getTime());
+        yourChat = new ChatEngineYou.Chat('secret-channel-' + new Date().getTime());
 
-        myChat2.on('$.connected', () => {
+        yourChat.on('$.connected', () => {
+            done();
+        });
+
+    });
+
+    it('should invite other users', function(done) {
+
+        me.direct.on('$.invite', (payload) => {
+
+            assert.isObject(payload.chat);
+
+            myChat = new ChatEngine.Chat(payload.data.channel);
 
             done();
+        });
 
+        // me is the current context
+        yourChat.invite(me);
+
+    });
+
+    it('two users are able to talk to each other in private channel', function(done) {
+
+        myChat.emit('message', {
+            text: 'sup?'
+        });
+
+        yourChat.on('message', (payload) => {
+            assert.equal(payload.data.text, 'sup?');
+            done();
         });
 
     });

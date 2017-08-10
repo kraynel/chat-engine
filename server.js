@@ -108,9 +108,6 @@ app.post('/facebook', function (req, res) {
 
 app.use('/insecure', function(req, res, next) {
 
-    console.log('THIS IS WORKING')
-    console.log('This is where Auth happens that makes sure this user is LEGIT.')
-
     if(true) { // not very secure
         next(null);
     } else {
@@ -133,27 +130,35 @@ app.post('/insecure/auth', function (req, res) {
 
 
 let db = {};
-// new chat
-app.post('/insecure/chat', function(req, res) {
 
-    let key = ['channels', req.body.uuid].join(':');
+let authUser = (uuid, authKey, channel, done) => {
+
+    let key = ['channels', uuid].join(':');
     db[key] = db[key] || [];
 
-    let newChannels = [req.body.channel, req.body.channel + '-pnpres'];
+    let newChannels = [channel, channel + '-pnpres'];
 
     pubnub.grant({
         channels: newChannels,
         read: true, // false to disallow
         write: true,
-        ttl: 0
+        ttl: 0,
+        authKey: authKey
     }, function (a,b,c) {
 
         db[key] = db[key].concat(newChannels);
 
-        console.log(db)
+       done();
 
+    });
+
+}
+
+// new chat
+app.post('/insecure/chat', function(req, res) {
+
+    authUser(req.body.uuid, req.body.authKey, req.body.channel, () => {
         return res.sendStatus(200);
-
     });
 
     // make a new chat
@@ -164,13 +169,25 @@ app.post('/insecure/chat', function(req, res) {
 
 app.post('/insecure/invite', function (req, res) {
 
+    console.log('invite called')
+
     // you can only invite if you're in the channel
     // grants the user permission in the channel
 
-    // grants everybody!
-    grant(req.body.channel, req.body.uuid, req.body.authKey, () => {
-        res.send('it worked');
-    });
+    let key = ['channels', req.body.uuid].join(':');
+
+    if(db[key].indexOf(req.body.channel) > -1) {
+
+        console.log('this user has auth in this chan, and can invite other users... proceeding');
+
+        // grants everybody!
+        grant(req.body.channel, req.body.uuid, req.body.authKey, () => {
+            res.send('it worked');
+        });
+
+    } else {
+        res.sendStatus(401)
+    }
 
 });
 

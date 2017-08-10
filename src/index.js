@@ -369,6 +369,8 @@ const create = function(pnConfig, ceConfig = {}) {
                         *     console.log('chat is ready to go!');
                         * });
                         */
+
+                        this.connected = true;
                         this.trigger('$.connected');
                     }
 
@@ -419,6 +421,37 @@ const create = function(pnConfig, ceConfig = {}) {
                 });
 
             }
+
+            this.invite = (user) => {
+
+                request.post({
+                    url: ceConfig.authUrl + '/invite',
+                    json: {
+                        authKey: pnConfig.authKey,
+                        uuid: user.uuid,
+                        channel: this.channel,
+                        authData: ChatEngine.me.authData
+                    }
+                }, (err, httpResponse, body) => {
+
+                    let send = () => {
+
+                        user.direct.emit('$.invite', {
+                            channel: this.channel
+                        });
+
+                    }
+
+                    if(!user.direct.connected) {
+                        user.direct.connect();
+                        user.direct.on('$.connected', send);
+                    } else {
+                        send();
+                    }
+
+                });
+
+            };
 
             /**
             Keep track of {@link User}s in the room by subscribing to PubNub presence events.
@@ -472,42 +505,43 @@ const create = function(pnConfig, ceConfig = {}) {
 
             };
 
+            this.connected = false;
+
             /**
             Connect to PubNub servers to initialize the chat.
             */
             this.connect = () => {
 
-                console.log('subscribing to', this.channel)
+                if(!this.connected) {
 
-                // listen to all PubNub events for this Chat
-                ChatEngine.pubnub.addListener({
-                    status: this.onStatus,
-                    message: this.onMessage,
-                    presence: this.onPresence
-                });
+                    // listen to all PubNub events for this Chat
+                    ChatEngine.pubnub.addListener({
+                        status: this.onStatus,
+                        message: this.onMessage,
+                        presence: this.onPresence
+                    });
 
-                // subscribe to the PubNub channel for this Chat
-                ChatEngine.pubnub.subscribe({
-                    channels: [this.channel],
-                    withPresence: true
-                });
+                    // subscribe to the PubNub channel for this Chat
+                    ChatEngine.pubnub.subscribe({
+                        channels: [this.channel],
+                        withPresence: true
+                    });
 
-                // get a list of users online now
-                // ask PubNub for information about connected users in this channel
-                ChatEngine.pubnub.hereNow({
-                    channels: [this.channel],
-                    includeUUIDs: true,
-                    includeState: true
-                }, this.onHereNow);
+                    // get a list of users online now
+                    // ask PubNub for information about connected users in this channel
+                    ChatEngine.pubnub.hereNow({
+                        channels: [this.channel],
+                        includeUUIDs: true,
+                        includeState: true
+                    }, this.onHereNow);
+
+                }
 
             };
 
             this.onPrep = () => {
 
-                console.log('connect', autoConnect, this.channel)
-
                 if(autoConnect) {
-                    console.log('calling this.connect', this.channel)
                     this.connect();
                 }
 
@@ -524,8 +558,6 @@ const create = function(pnConfig, ceConfig = {}) {
                         authData: ChatEngine.me.authData
                     }
                 }, (err, httpResponse, body) => {
-                    console.log('http responses')
-                    console.log(err, body);
                     //grant
                     this.onPrep();
                 });
@@ -909,6 +941,8 @@ const create = function(pnConfig, ceConfig = {}) {
             * @example
             * this.feed.connect();
             */
+
+            // grants for these chats are done on auth. Even though they're marked private, they are locked down
             this.feed = new Chat(
                 [ChatEngine.globalChat.channel, 'user', uuid, 'read.', 'feed'].join(':'), this.constructor.name == "Me", false);
 
@@ -931,22 +965,6 @@ const create = function(pnConfig, ceConfig = {}) {
             this.assign(state, chat)
 
         }
-
-        // invite(chat) {
-
-            // request.post({
-            //     url: ceConfig.authUrl + '/invite',
-            //     json: {
-            //         authKey: pnConfig.authKey,
-            //         uuid: pnConfig.uuid,
-            //         channel: ceConfig.globalChannel,
-            //         authData: authData
-            //     }
-            // }, (err, httpResponse, body) => {
-
-            // });
-
-        // }
 
         /**
         Gets the user state in a {@link Chat}.
