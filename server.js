@@ -158,14 +158,6 @@ app.post('/insecure/auth', function (req, res) {
 // new chat
 app.post('/insecure/chat', function(req, res) {
 
-    // add to this channel to represent user is first creator
-    // and ensure client can't own all chats
-    req.body.channel = [req.body.channel, req.body.uuid].join(':');
-
-    if(!req.body.uuid) {
-        return res.sendStatus(400);
-    }
-
     let key = ['channel', req.body.channel].join(':');
 
     if(!db[key]) {
@@ -173,11 +165,7 @@ app.post('/insecure/chat', function(req, res) {
         console.log('new chat created on behalf of ', req.body.uuid, 'for channel', req.body.channel);
 
         authUser(req.body.uuid, req.body.authKey, req.body.channel, () => {
-
-            return res.json({
-                channel: req.body.channel
-            });
-
+            return res.sendStatus(200);
         });
 
     } else {

@@ -558,11 +558,6 @@ const create = function(pnConfig, ceConfig = {}) {
                         authData: ChatEngine.me.authData
                     }
                 }, (err, httpResponse, body) => {
-
-                    // auth callback may modify channel
-                    this.channel = body.channel;
-
-                    //grant
                     this.onPrep();
                 });
 
