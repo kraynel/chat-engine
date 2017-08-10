@@ -36,9 +36,11 @@ let reset = function() {
 
 let grant = function(gChan, myUUID, myAuthKey, next) {
 
-    console.log('granting on channel', gChan, 'for uuid', myUUID, 'with auth key', myAuthKey)
+    console.log('granting global access for', myUUID, 'permissions on ', gChan, 'for uuid', myUUID, 'with auth key', myAuthKey)
 
     let chanMeRW = [
+        gChan,
+        gChan + '-pnpres',
         gChan + ':chat:public.*',
         gChan + ':user:' + myUUID + ':read.*',
         gChan + ':user:' + myUUID + ':write.*'
@@ -116,24 +118,13 @@ app.use('/insecure', function(req, res, next) {
 
 });
 
-// we logged in, grant
-app.post('/insecure/auth', function (req, res) {
-
-    console.log('made it to /auth')
-
-    grant(req.body.channel, req.body.uuid, req.body.authKey, () => {
-        console.log('grant happened')
-        res.send('it worked');
-    });
-
-});
-
-
 let db = {};
 
 let authUser = (uuid, authKey, channel, done) => {
 
-    let key = ['channels', uuid].join(':');
+    console.log('new grant for ', uuid, 'access on channel', channel)
+
+    let key = ['channel', channel].join(':');
     db[key] = db[key] || [];
 
     let newChannels = [channel, channel + '-pnpres'];
@@ -146,7 +137,7 @@ let authUser = (uuid, authKey, channel, done) => {
         authKey: authKey
     }, function (a,b,c) {
 
-        db[key] = db[key].concat(newChannels);
+        db[key] = db[key].concat([uuid]);
 
        done();
 
@@ -154,12 +145,47 @@ let authUser = (uuid, authKey, channel, done) => {
 
 }
 
+// we logged in, grant
+app.post('/insecure/auth', function (req, res) {
+
+    grant(req.body.channel, req.body.uuid, req.body.authKey, () => {
+        res.send('it worked');
+    });
+
+});
+
+
 // new chat
 app.post('/insecure/chat', function(req, res) {
 
-    authUser(req.body.uuid, req.body.authKey, req.body.channel, () => {
-        return res.sendStatus(200);
-    });
+    // add to this channel to represent user is first creator
+    // and ensure client can't own all chats
+    req.body.channel = [req.body.channel, req.body.uuid].join(':');
+
+    if(!req.body.uuid) {
+        return res.sendStatus(400);
+    }
+
+    let key = ['channel', req.body.channel].join(':');
+
+    if(!db[key]) {
+
+        console.log('new chat created on behalf of ', req.body.uuid, 'for channel', req.body.channel);
+
+        authUser(req.body.uuid, req.body.authKey, req.body.channel, () => {
+
+            return res.json({
+                channel: req.body.channel
+            });
+
+        });
+
+    } else {
+
+        console.log('not auto granting', req.body.uuid, 'permissions on', req.body.channel, 'because it already has permissions');
+        return res.sendStatus(401)
+    }
+
 
     // make a new chat
     // person who makes chat gets the permission
@@ -174,9 +200,9 @@ app.post('/insecure/invite', function (req, res) {
     // you can only invite if you're in the channel
     // grants the user permission in the channel
 
-    let key = ['channels', req.body.uuid].join(':');
+    let key = ['channel', req.body.uuid].join(':');
 
-    if(db[key].indexOf(req.body.channel) > -1) {
+    if(db[key] && db[key].indexOf(req.body.uuid) > -1) {
 
         console.log('this user has auth in this chan, and can invite other users... proceeding');
 

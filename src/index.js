@@ -278,7 +278,7 @@ const create = function(pnConfig, ceConfig = {}) {
     */
     class Chat extends Emitter {
 
-        constructor(channel = new Date().getTime(), autoConnect = true, priv = true) {
+        constructor(channel = new Date().getTime(), autoConnect = true, needGrant = true) {
 
             super();
 
@@ -291,7 +291,7 @@ const create = function(pnConfig, ceConfig = {}) {
             this.channel = channel.toString();
 
             let chanPrivString = 'public.';
-            if(priv) {
+            if(needGrant) {
                 chanPrivString = 'private.';
             }
 
@@ -558,13 +558,17 @@ const create = function(pnConfig, ceConfig = {}) {
                         authData: ChatEngine.me.authData
                     }
                 }, (err, httpResponse, body) => {
+
+                    // auth callback may modify channel
+                    this.channel = body.channel;
+
                     //grant
                     this.onPrep();
                 });
 
             }
 
-            if(priv) {
+            if(needGrant) {
                 this.grant();
             } else {
                 this.onPrep();
@@ -1117,7 +1121,8 @@ const create = function(pnConfig, ceConfig = {}) {
                 this.pubnub = new PubNub(pnConfig);
 
                 // create a new chat to use as globalChat
-                this.globalChat = new Chat(ceConfig.globalChannel);
+                // we don't do auth on this one becauseit's assumed to be done with the /auth request below
+                this.globalChat = new Chat(ceConfig.globalChannel, true, false);
 
                 // create a new user that represents this client
                 this.me = new Me(pnConfig.uuid, authData);
