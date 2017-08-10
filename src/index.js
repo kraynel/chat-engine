@@ -1109,8 +1109,12 @@ const create = function(pnConfig, ceConfig = {}) {
 
                 this.me.update(state);
 
-                this._emit('$.ready', {
-                    me: this.me
+                this.globalChat.on('$.connected', () => {
+
+                    this._emit('$.ready', {
+                        me: this.me
+                    });
+
                 });
 
             }

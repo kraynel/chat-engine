@@ -39,12 +39,9 @@ let grant = function(gChan, myUUID, myAuthKey, next) {
     console.log('granting on channel', gChan, 'for uuid', myUUID, 'with auth key', myAuthKey)
 
     let chanMeRW = [
-        gChan,
-        gChan + '-pnpres',
         gChan + ':chat:public.*',
         gChan + ':user:' + myUUID + ':read.*',
-        gChan + ':user:' + myUUID + ':write.*',
-        gChan + ':chat:public.*'
+        gChan + ':user:' + myUUID + ':write.*'
     ];
 
     let chanEverybodyR = [
@@ -109,14 +106,12 @@ app.post('/facebook', function (req, res) {
 
 });
 
-let permitted = {};
-
 app.use('/insecure', function(req, res, next) {
 
     console.log('THIS IS WORKING')
-    console.log('Making sure logged in')
+    console.log('This is where Auth happens that makes sure this user is LEGIT.')
 
-    if(true) {
+    if(true) { // not very secure
         next(null);
     } else {
         return res.status(401);
@@ -136,21 +131,29 @@ app.post('/insecure/auth', function (req, res) {
 
 });
 
+
+let db = {};
 // new chat
 app.post('/insecure/chat', function(req, res) {
 
-    console.log('chat endpoint called')
+    let key = ['channels', req.body.uuid].join(':');
+    db[key] = db[key] || [];
 
-    console.log(req.body)
+    let newChannels = [req.body.channel, req.body.channel + '-pnpres'];
 
     pubnub.grant({
-        channels: [req.body.channel, req.body.channel + '-pnpres'],
+        channels: newChannels,
         read: true, // false to disallow
         write: true,
         ttl: 0
     }, function (a,b,c) {
-        res.status(200);
-        res.sendStatus(200)
+
+        db[key] = db[key].concat(newChannels);
+
+        console.log(db)
+
+        return res.sendStatus(200);
+
     });
 
     // make a new chat

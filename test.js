@@ -117,13 +117,8 @@ describe('invite', function() {
 
         let myChat2 = new ChatEngine2.Chat('secret-channel-' + new Date().getTime());
 
-        myChat2.onAny((event) => {
-            console.log('chat2', event)
-        });
-
         myChat2.on('$.connected', () => {
 
-            console.log('in secure private chat');
             done();
 
         });
