@@ -43,7 +43,8 @@ let grant = function(gChan, myUUID, myAuthKey, next) {
         gChan + '-pnpres',
         gChan + ':chat:public.*',
         gChan + ':user:' + myUUID + ':read.*',
-        gChan + ':user:' + myUUID + ':write.*'
+        gChan + ':user:' + myUUID + ':write.*',
+        gChan + ':chat:public.*'
     ];
 
     let chanEverybodyR = [
@@ -108,7 +109,48 @@ app.post('/facebook', function (req, res) {
 
 });
 
-app.post('/insecure', function (req, res) {
+let permitted = {};
+
+app.use('/insecure', function(req, res, next) {
+
+    console.log('THIS IS WORKING')
+    console.log('Making sure logged in')
+
+    if(true) {
+        next(null);
+    } else {
+        return res.status(401);
+    }
+
+});
+
+// we logged in, grant
+app.post('/insecure/auth', function (req, res) {
+
+    console.log('made it to /auth')
+
+    grant(req.body.channel, req.body.uuid, req.body.authKey, () => {
+        console.log('grant happened')
+        res.send('it worked');
+    });
+
+});
+
+// new chat
+app.post('/insecure/chat', function(req, res) {
+
+    // need to auth again to ensure this user is legit
+
+    // make a new chat
+    // person who makes chat gets the permission
+    // response tells them to join
+
+});
+
+app.post('/insecure/invite', function (req, res) {
+
+    // you can only invite if you're in the channel
+    // grants the user permission in the channel
 
     // grants everybody!
     grant(req.body.channel, req.body.uuid, req.body.authKey, () => {
@@ -116,6 +158,10 @@ app.post('/insecure', function (req, res) {
     });
 
 });
+
+// uuids are permitted in channels
+// authKey is what is used to grant
+// server should make sure that uuid or other auth params match authKey for security
 
 app.post('/test', function (req, res) {
 

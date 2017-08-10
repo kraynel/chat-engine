@@ -13,6 +13,8 @@ describe('import', function() {
 
 let me;
 let ChatEngine;
+let ChatEngine2;
+let globalChannel  = 'chat-engine-demo-test' + new Date().getTime();
 
 describe('config', function() {
 
@@ -23,7 +25,7 @@ describe('config', function() {
             subscribeKey: 'sub-c-67db0e7a-50be-11e7-bf50-02ee2ddab7fe'
         }, {
             authUrl: 'http://localhost:3000/insecure',
-            globalChannel: 'chat-engine-demo-test' + new Date().getTime()
+            globalChannel: globalChannel
         });
 
         assert.isOk(ChatEngine);
@@ -52,6 +54,55 @@ let chat;
 describe('chat', function() {
 
     it('should be created', function(done) {
+
+        chat = new ChatEngine.Chat(new Date() + 'chat');
+
+        chat.onAny((event) => {
+            // console.log(event)
+        })
+
+        done();
+
+    });
+
+    it('should get ready callback', function(done) {
+
+        chat.on('$.connected', () => {
+
+            done();
+
+        });
+
+    });
+
+    it('should get message', function(done) {
+
+        chat.on('something', (payload) => {
+
+            assert.isObject(payload);
+            done();
+
+        });
+
+        chat.emit('something', {
+            text: 'hello world'
+        });
+
+    });
+
+});
+
+describe('invite', function() {
+
+    it('should be created', function(done) {
+
+        ChatEngine2 = ChatEngineCore.create({
+            publishKey: 'pub-c-c6303bb2-8bf8-4417-aac7-e83b52237ea6',
+            subscribeKey: 'sub-c-67db0e7a-50be-11e7-bf50-02ee2ddab7fe'
+        }, {
+            authUrl: 'http://localhost:3000/insecure',
+            globalChannel: globalChannel
+        });
 
         chat = new ChatEngine.Chat(new Date() + 'chat');
 

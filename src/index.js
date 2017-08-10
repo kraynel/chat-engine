@@ -76,7 +76,7 @@ const create = function(pnConfig, ceConfig = {}) {
             this._emit = this.emitter.emit.bind(this.emitter);
 
             /**
-            Listen for a specific event and fire a callback when it's emitted. This is reserved in case this.on is overwritten.
+            Listen for a specific event and fire a callback when it's emitted. This is reserved in case ```this.on``` is overwritten.
 
             @private
             @param {String} event The event name
@@ -269,6 +269,7 @@ const create = function(pnConfig, ceConfig = {}) {
 
     @param {String} [channel=new Date().getTime()] A unique identifier for this chat {@link Chat}. The channel is the unique name of a {@link Chat}, and is usually something like "The Watercooler", "Support", or "Off Topic". See [PubNub Channels](https://support.pubnub.com/support/solutions/articles/14000045182-what-is-a-channel-).
     @param {Boolean} [autoConnect=true] Connect to this chat as soon as its initiated. If set to ```false```, call the {@link Chat#connect} method to connect to this {@link Chat}.
+    @param {Boolean} [priv=false]
     @extends Emitter
     @fires Chat#$"."ready
     @fires Chat#$"."state
@@ -467,6 +468,9 @@ const create = function(pnConfig, ceConfig = {}) {
 
             };
 
+            /**
+            Connect to PubNub servers to initialize the chat.
+            */
             this.connect = () => {
 
                 // listen to all PubNub events for this Chat
@@ -889,6 +893,22 @@ const create = function(pnConfig, ceConfig = {}) {
 
         }
 
+        invite(chat) {
+
+            request.post({
+                url: ceConfig.authUrl + '/invite',
+                json: {
+                    authKey: pnConfig.authKey,
+                    uuid: pnConfig.uuid,
+                    channel: ceConfig.globalChannel,
+                    authData: authData
+                }
+            }, (err, httpResponse, body) => {
+
+            });
+
+        }
+
         /**
         Gets the user state in a {@link Chat}.
         @param {Chat} chat Chatroom to retrieve state from
@@ -1061,7 +1081,7 @@ const create = function(pnConfig, ceConfig = {}) {
                 pnConfig.authKey = authKey;
 
                 request.post({
-                    url: ceConfig.authUrl,
+                    url: ceConfig.authUrl + '/auth',
                     json: {
                         authKey: pnConfig.authKey,
                         uuid: pnConfig.uuid,
