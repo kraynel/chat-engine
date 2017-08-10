@@ -269,7 +269,7 @@ const create = function(pnConfig, ceConfig = {}) {
 
     @param {String} [channel=new Date().getTime()] A unique identifier for this chat {@link Chat}. The channel is the unique name of a {@link Chat}, and is usually something like "The Watercooler", "Support", or "Off Topic". See [PubNub Channels](https://support.pubnub.com/support/solutions/articles/14000045182-what-is-a-channel-).
     @param {Boolean} [autoConnect=true] Connect to this chat as soon as its initiated. If set to ```false```, call the {@link Chat#connect} method to connect to this {@link Chat}.
-    @param {Boolean} [priv=false]
+    @param {Boolean} [priv=true]
     @extends Emitter
     @fires Chat#$"."ready
     @fires Chat#$"."state
@@ -278,7 +278,7 @@ const create = function(pnConfig, ceConfig = {}) {
     */
     class Chat extends Emitter {
 
-        constructor(channel = new Date().getTime(), autoConnect = true, priv = false) {
+        constructor(channel = new Date().getTime(), autoConnect = true, priv = true) {
 
             super();
 
@@ -350,6 +350,10 @@ const create = function(pnConfig, ceConfig = {}) {
             @param {Object} statusEvent The response status
             */
             this.onStatus = (statusEvent) => {
+
+                if(statusEvent.error) {
+                    console.log(statusEvent.errorData.response.text)
+                }
 
                 // if the event says we're connected
                 if (statusEvent.category === "PNConnectedCategory") {
@@ -473,6 +477,8 @@ const create = function(pnConfig, ceConfig = {}) {
             */
             this.connect = () => {
 
+                console.log('subscribing to', this.channel)
+
                 // listen to all PubNub events for this Chat
                 ChatEngine.pubnub.addListener({
                     status: this.onStatus,
@@ -496,9 +502,42 @@ const create = function(pnConfig, ceConfig = {}) {
 
             };
 
-            if(autoConnect) {
-                this.connect();
+            this.onPrep = () => {
+
+                console.log('connect', autoConnect, this.channel)
+
+                if(autoConnect) {
+                    console.log('calling this.connect', this.channel)
+                    this.connect();
+                }
+
             }
+
+            this.grant = () => {
+
+                request.post({
+                    url: ceConfig.authUrl + '/chat',
+                    json: {
+                        authKey: pnConfig.authKey,
+                        uuid: pnConfig.uuid,
+                        channel: this.channel,
+                        authData: ChatEngine.me.authData
+                    }
+                }, (err, httpResponse, body) => {
+                    console.log('http responses')
+                    console.log(err, body);
+                    //grant
+                    this.onPrep();
+                });
+
+            }
+
+            if(priv) {
+                this.grant();
+            } else {
+                this.onPrep();
+            }
+
 
         }
 
@@ -871,7 +910,7 @@ const create = function(pnConfig, ceConfig = {}) {
             * this.feed.connect();
             */
             this.feed = new Chat(
-                [ChatEngine.globalChat.channel, 'user', uuid, 'read.', 'feed'].join(':'), this.constructor.name == "Me");
+                [ChatEngine.globalChat.channel, 'user', uuid, 'read.', 'feed'].join(':'), this.constructor.name == "Me", false);
 
             /**
             * Direct is a private channel that anybody can publish to but only the user can subscribe to. Great
@@ -880,7 +919,7 @@ const create = function(pnConfig, ceConfig = {}) {
             * @type Chat
             */
             this.direct = new Chat(
-                [ChatEngine.globalChat.channel, 'user', uuid, 'write.', 'direct'].join(':'), this.constructor.name == "Me");
+                [ChatEngine.globalChat.channel, 'user', uuid, 'write.', 'direct'].join(':'), this.constructor.name == "Me", false);
 
             // if the user does not exist at all and we get enough
             // information to build the user
@@ -893,21 +932,21 @@ const create = function(pnConfig, ceConfig = {}) {
 
         }
 
-        invite(chat) {
+        // invite(chat) {
 
-            request.post({
-                url: ceConfig.authUrl + '/invite',
-                json: {
-                    authKey: pnConfig.authKey,
-                    uuid: pnConfig.uuid,
-                    channel: ceConfig.globalChannel,
-                    authData: authData
-                }
-            }, (err, httpResponse, body) => {
+            // request.post({
+            //     url: ceConfig.authUrl + '/invite',
+            //     json: {
+            //         authKey: pnConfig.authKey,
+            //         uuid: pnConfig.uuid,
+            //         channel: ceConfig.globalChannel,
+            //         authData: authData
+            //     }
+            // }, (err, httpResponse, body) => {
 
-            });
+            // });
 
-        }
+        // }
 
         /**
         Gets the user state in a {@link Chat}.
@@ -964,10 +1003,12 @@ const create = function(pnConfig, ceConfig = {}) {
     */
     class Me extends User {
 
-        constructor(uuid) {
+        constructor(uuid, authData) {
 
             // call the User constructor
             super(uuid);
+
+            this.authData = authData;
 
         }
 
@@ -1061,7 +1102,7 @@ const create = function(pnConfig, ceConfig = {}) {
                 this.globalChat = new Chat(ceConfig.globalChannel);
 
                 // create a new user that represents this client
-                this.me = new Me(pnConfig.uuid);
+                this.me = new Me(pnConfig.uuid, authData);
 
                 // create a new instance of Me using input parameters
                 this.globalChat.createUser(pnConfig.uuid, state);
@@ -1086,7 +1127,7 @@ const create = function(pnConfig, ceConfig = {}) {
                         authKey: pnConfig.authKey,
                         uuid: pnConfig.uuid,
                         channel: ceConfig.globalChannel,
-                        authData: authData
+                        authData: this.me.authData
                     }
                 }, (err, httpResponse, body) => {
 

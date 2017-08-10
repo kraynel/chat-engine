@@ -55,7 +55,7 @@ describe('chat', function() {
 
     it('should be created', function(done) {
 
-        chat = new ChatEngine.Chat(new Date() + 'chat');
+        chat = new ChatEngine.Chat(new Date() + 'chat', true, false);
 
         chat.onAny((event) => {
             // console.log(event)
@@ -92,6 +92,7 @@ describe('chat', function() {
 
 });
 
+let me2;
 describe('invite', function() {
 
     it('should be created', function(done) {
@@ -104,37 +105,27 @@ describe('invite', function() {
             globalChannel: globalChannel
         });
 
-        chat = new ChatEngine.Chat(new Date() + 'chat');
+        me2 = ChatEngine2.connect('robot-tester2', {works: true}, 'token-doesnt-matter');
 
-        chat.onAny((event) => {
-            // console.log(event)
-        })
-
-        done();
-
-    });
-
-    it('should get ready callback', function(done) {
-
-        chat.on('$.connected', () => {
-
+        ChatEngine2.on('$.ready', (data) => {
             done();
-
         });
 
     });
 
-    it('should get message', function(done) {
+    it('should create chat', function(done) {
 
-        chat.on('something', (payload) => {
+        let myChat2 = new ChatEngine2.Chat('secret-channel-' + new Date().getTime());
 
-            assert.isObject(payload);
-            done();
-
+        myChat2.onAny((event) => {
+            console.log('chat2', event)
         });
 
-        chat.emit('something', {
-            text: 'hello world'
+        myChat2.on('$.connected', () => {
+
+            console.log('in secure private chat');
+            done();
+
         });
 
     });

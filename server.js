@@ -139,7 +139,19 @@ app.post('/insecure/auth', function (req, res) {
 // new chat
 app.post('/insecure/chat', function(req, res) {
 
-    // need to auth again to ensure this user is legit
+    console.log('chat endpoint called')
+
+    console.log(req.body)
+
+    pubnub.grant({
+        channels: [req.body.channel, req.body.channel + '-pnpres'],
+        read: true, // false to disallow
+        write: true,
+        ttl: 0
+    }, function (a,b,c) {
+        res.status(200);
+        res.sendStatus(200)
+    });
 
     // make a new chat
     // person who makes chat gets the permission
