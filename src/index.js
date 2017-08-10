@@ -125,7 +125,7 @@ const create = function(pnConfig, ceConfig = {}) {
     */
     class Event {
 
-        constructor(Chat, event) {
+        constructor(chat, event) {
 
             /**
             Events are always a property of a {@link Chat}. Responsible for
@@ -135,7 +135,7 @@ const create = function(pnConfig, ceConfig = {}) {
             @type String
             @see [PubNub Channels](https://support.pubnub.com/support/solutions/articles/14000045182-what-is-a-channel-)
             */
-            this.channel = Chat.channel;
+            this.channel = chat.channel;
 
             /**
             Publishes the event over the PubNub network to the {@link Event} channel
@@ -150,6 +150,18 @@ const create = function(pnConfig, ceConfig = {}) {
                 ChatEngine.pubnub.publish({
                     message: m,
                     channel: this.channel
+                }, (status, response) => {
+
+                    if(status.statusCode == 200) {
+                        chat.trigger('$.publish.success');
+                    } else {
+
+                        chat.trigger('$.error.publish', {
+                            text: response && response.errorData.response.text,
+                            error: response
+                        });
+                    }
+
                 });
 
             }
@@ -163,7 +175,7 @@ const create = function(pnConfig, ceConfig = {}) {
             this.onMessage = (m) => {
 
                 if(this.channel == m.channel && m.message.event == event) {
-                    Chat.trigger(m.message.event, m.message);
+                    chat.trigger(m.message.event, m.message);
                 }
 
             }
@@ -328,7 +340,9 @@ const create = function(pnConfig, ceConfig = {}) {
             this.onHereNow = (status, response) => {
 
                 if(status.error) {
-                    console.error('There was a problem fetching here.', status.errorData.response.text);
+                    this.trigger(['$', 'error', 'presence'].join('.'), {
+                        text: status.errorData.response.text
+                    });
                 } else {
 
                     // get the list of occupants in this channel
@@ -352,7 +366,11 @@ const create = function(pnConfig, ceConfig = {}) {
             this.onStatus = (statusEvent) => {
 
                 if(statusEvent.error) {
-                    console.log(statusEvent.errorData.response.text)
+
+                    this.trigger(['$', 'error', 'connection'].join('.'), {
+                        text: statusEvent.errorData.response.text
+                    });
+
                 }
 
                 // if the event says we're connected
@@ -371,6 +389,7 @@ const create = function(pnConfig, ceConfig = {}) {
                         */
 
                         this.connected = true;
+
                         this.trigger('$.connected');
                     }
 
@@ -398,7 +417,12 @@ const create = function(pnConfig, ceConfig = {}) {
                 ChatEngine.pubnub.history(config, (status, response) => {
 
                     if(response.error) {
-                        throw new Error(response.error);
+
+                        this.trigger(['$', 'error', 'history'].join('.'), {
+                            text: statusEvent.errorData.response.text,
+                            error: response.error
+                        });
+
                     } else {
 
                         response.messages.forEach((message) => {
@@ -430,6 +454,7 @@ const create = function(pnConfig, ceConfig = {}) {
                         authKey: pnConfig.authKey,
                         uuid: user.uuid,
                         channel: this.channel,
+                        myUUID: ChatEngine.me.uuid,
                         authData: ChatEngine.me.authData
                     }
                 }, (err, httpResponse, body) => {
@@ -1155,7 +1180,7 @@ const create = function(pnConfig, ceConfig = {}) {
 
                     if (err) {
 
-                        this._emit('$.auth.error', {
+                        this.trigger(['$', 'error', 'auth'].join('.'), {
                             err: err,
                             text: 'unable to login'
                         });

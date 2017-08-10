@@ -38,7 +38,7 @@ describe('connect', function() {
 
     it('should be identified as new user', function(done) {
 
-        ChatEngine.connect('ian', {works: true}, 'token-doesnt-matter');
+        ChatEngine.connect('ian', {works: true}, 'ian-authtoken');
 
         ChatEngine.on('$.ready', (data) => {
             assert.isObject(data.me);
@@ -110,7 +110,7 @@ describe('invite', function() {
             globalChannel: globalChannel
         });
 
-        ChatEngineYou.connect('stephen', {works: true}, 'token-doesnt-matter');
+        ChatEngineYou.connect('stephen', {works: true}, 'stephen-authtoken');
 
         ChatEngineYou.on('$.ready', (data) => {
             you = data.me;
@@ -154,6 +154,34 @@ describe('invite', function() {
         yourChat.on('message', (payload) => {
             assert.equal(payload.data.text, 'sup?');
             done();
+        });
+
+    });
+
+    it('should not be able to join another chat', function(done) {
+
+        let targetChan = 'super-secret-channel-' + new Date().getTime();
+
+        let yourSecretChat = new ChatEngineYou.Chat(targetChan);
+
+        yourSecretChat.on('$.connected', () => {
+
+            let illegalAccessChat = new ChatEngine.Chat(targetChan);
+
+            illegalAccessChat.on('$.connected', () => {
+
+                done(new Error('This user should not be able to join', illegalAccessChat.channel))
+
+            });
+
+            illegalAccessChat.once('$.error.connection', () => {
+
+                done();
+
+            });
+
+            illegalAccessChat.emit('message', 'test');
+
         });
 
     });

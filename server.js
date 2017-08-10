@@ -22,6 +22,14 @@ app.get('/', function (req, res) {
   res.send('Hello World!')
 });
 
+
+function logger(req,res,next){
+  console.log('\n-----', req.method, req.url, '\n');
+  next();
+}
+
+app.use(logger);
+
 let reset = function() {
 
     pubnub.grant({
@@ -122,7 +130,7 @@ let db = {};
 
 let authUser = (uuid, authKey, channel, done) => {
 
-    console.log('new grant for ', uuid, 'access on channel', channel)
+    console.log('new grant for ', uuid, authKey, 'access on channel', channel)
 
     let key = ['channel', channel].join(':');
     db[key] = db[key] || [];
@@ -134,8 +142,10 @@ let authUser = (uuid, authKey, channel, done) => {
         read: true, // false to disallow
         write: true,
         ttl: 0,
-        authKey: authKey
+        authKeys: [authKey]
     }, function (a,b,c) {
+
+        console.log('uuid', uuid, 'has access to', key, 'with authkey', authKey)
 
         db[key] = db[key].concat([uuid]);
 
@@ -148,8 +158,10 @@ let authUser = (uuid, authKey, channel, done) => {
 // we logged in, grant
 app.post('/insecure/auth', function (req, res) {
 
+
     grant(req.body.channel, req.body.uuid, req.body.authKey, () => {
         res.send('it worked');
+        db['authkeys:' + req.body.uuid] = req.body.authKey;
     });
 
 });
@@ -162,7 +174,8 @@ app.post('/insecure/chat', function(req, res) {
 
     if(!db[key]) {
 
-        console.log('new chat created on behalf of ', req.body.uuid, 'for channel', req.body.channel);
+        // logic goes here to tell if user can create this specific chat
+        console.log('new chat created on behalf of ', req.body.uuid, req.body.authKey, 'for channel', req.body.channel);
 
         authUser(req.body.uuid, req.body.authKey, req.body.channel, () => {
             return res.sendStatus(200);
@@ -170,7 +183,7 @@ app.post('/insecure/chat', function(req, res) {
 
     } else {
 
-        console.log('not auto granting', req.body.uuid, 'permissions on', req.body.channel, 'because it already has permissions');
+        console.log('not auto granting', req.body.uuid, req.body.authKey, 'permissions on', req.body.channel, 'because the channel already has permissions');
         return res.sendStatus(401)
     }
 
@@ -183,23 +196,28 @@ app.post('/insecure/chat', function(req, res) {
 
 app.post('/insecure/invite', function (req, res) {
 
-    console.log('invite called')
+    console.log('invite called', req.body.uuid, req.body.authKey, 'in channel', req.body.channel)
 
     // you can only invite if you're in the channel
     // grants the user permission in the channel
 
-    let key = ['channel', req.body.uuid].join(':');
+    let key = ['channel', req.body.channel].join(':');
 
-    if(db[key] && db[key].indexOf(req.body.uuid) > -1) {
+    console.log(db[key])
+
+    if(db[key] && db[key].indexOf(req.body.myUUID) > -1) {
 
         console.log('this user has auth in this chan, and can invite other users... proceeding');
 
         // grants everybody!
-        grant(req.body.channel, req.body.uuid, req.body.authKey, () => {
+        authUser(req.body.uuid, db['authkeys:' + req.body.uuid], req.body.channel, () => {
             res.send('it worked');
         });
 
     } else {
+
+        console.log('can not invite user to this channel')
+
         res.sendStatus(401)
     }
 
