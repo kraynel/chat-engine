@@ -317,7 +317,7 @@ const create = function(pnConfig, ceConfig = {}) {
 
     @param {String} [channel=new Date().getTime()] A unique identifier for this chat {@link Chat}. The channel is the unique name of a {@link Chat}, and is usually something like "The Watercooler", "Support", or "Off Topic". See [PubNub Channels](https://support.pubnub.com/support/solutions/articles/14000045182-what-is-a-channel-).
     @param {Boolean} [autoConnect=true] Connect to this chat as soon as its initiated. If set to ```false```, call the {@link Chat#connect} method to connect to this {@link Chat}.
-    @param {Boolean} [priv=true]
+    @param {Boolean} [needGrant=true] This Chat has restricted permissions and we need to authenticate ourselves in order to connect.
     @extends Emitter
     @fires Chat#$"."ready
     @fires Chat#$"."state
@@ -331,11 +331,11 @@ const create = function(pnConfig, ceConfig = {}) {
             super();
 
             /**
+            * A string identifier for the Chat room.
             * @type String
             * @readonly
             * @see [PubNub Channels](https://support.pubnub.com/support/solutions/articles/14000045182-what-is-a-channel-)
             */
-
             this.channel = channel.toString();
 
             let chanPrivString = 'public.';
@@ -434,12 +434,27 @@ const create = function(pnConfig, ceConfig = {}) {
             };
 
             /**
-            Get messages that have been published to the network before this client was connected.
-            Events are published with the ```$history``` prefix. So for example, if you had the event ```message```,
-            you would call ```Chat.history('message')``` and subscribe to history events via ```chat.on('$history.message', (data) => {})```.
-
-            @param {String} event The name of the event we're getting history for
-            @param {Object} [config] The PubNub history config for this call
+            * Get messages that have been published to the network before this client was connected.
+            * Events are published with the ```$history``` prefix. So for example, if you had the event ```message```,
+            * you would call ```Chat.history('message')``` and subscribe to history events via ```chat.on('$history.message', (data) => {})```.
+            *
+            * @param {String} event The name of the event we're getting history for
+            * @param {Object} [config] The PubNub history config for this call
+            * @example
+            *  // when this chat gets a message
+            *  chat.on('message', function(payload) {
+            *      // render it in the DOM
+            *      renderMessage(payload, null);
+            *  });
+            *
+            *  // if this chat receives a message that's not from this sessions
+            *  chat.on('$.history.message', function(payload) {
+            *      // render it in the DOM with a special class
+            *      renderMessage(payload, 'text-muted');
+            *  });
+            *
+            *   // trigger history messages
+            *  chat.history('message');
             */
             this.history = (event, config = {}) => {
 
@@ -482,6 +497,20 @@ const create = function(pnConfig, ceConfig = {}) {
 
             }
 
+            /**
+            * Invite a user to this Chat. Authorizes the invited user in the Chat and sends them an invite via {@link User#direct}.
+            * @param {User} user The {@link User} to invite to this chatroom.
+            * @fires Me#event:$"."invite
+            * @example
+            * // one user running ChatEngine
+            * let secretChat = new ChatEngine.Chat('secret-channel');
+            * secretChat.invite(someoneElse);
+            *
+            * // someoneElse in another instance of ChatEngine
+            * me.direct.on('$.invite', (payload) => {
+            *     let secretChat = new ChatEngine.Chat(payload.data.channel);
+            * });
+            */
             this.invite = (user) => {
 
                 request.post({
