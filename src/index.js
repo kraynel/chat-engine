@@ -595,10 +595,20 @@ const create = function(pnConfig, ceConfig = {}) {
 
             };
 
+            /**
+             * Boolean value that indicates of the Chat is connected to the network.
+             * @type {Boolean}
+             */
             this.connected = false;
 
             /**
-            Connect to PubNub servers to initialize the chat.
+            * Connect to PubNub servers to initialize the chat.
+            * @example
+            * // create a new chatroom, but don't connect to it automatically
+            * let chat = new Chat('some-chat', false)
+            *
+            * // connect to the chat when we feel like it
+            * chat.connect();
             */
             this.connect = () => {
 
@@ -629,6 +639,9 @@ const create = function(pnConfig, ceConfig = {}) {
 
             };
 
+            /**
+             * @private
+             */
             this.onPrep = () => {
 
                 if(autoConnect) {
@@ -637,6 +650,9 @@ const create = function(pnConfig, ceConfig = {}) {
 
             }
 
+            /**
+             * @private
+             */
             this.grant = () => {
 
                 request.post({
@@ -663,12 +679,17 @@ const create = function(pnConfig, ceConfig = {}) {
         }
 
         /**
-        Send events to other clients in this {@link User}.
-        Events are trigger over the network  and all events are made
-        on behalf of {@link Me}
-
-        @param {String} event The event name
-        @param {Object} data The event payload object
+        * Send events to other clients in this {@link User}.
+        * Events are trigger over the network  and all events are made
+        * on behalf of {@link Me}
+        *
+        * @param {String} event The event name
+        * @param {Object} data The event payload object
+        * @example
+        * chat.emit('custom-event', {value: true});
+        * chat.on('custom-event', (payload) => {
+        *     console.log(payload.user.uuid, 'emitted the value', payload.data.value);
+        * });
         */
         emit(event, data) {
 
@@ -822,7 +843,9 @@ const create = function(pnConfig, ceConfig = {}) {
         }
 
         /**
-        Leave from the {@link Chat} on behalf of {@link Me}.
+        * Leave from the {@link Chat} on behalf of {@link Me}.
+        * @example
+        * chat.leave();
         */
         leave() {
 
@@ -1024,22 +1047,41 @@ const create = function(pnConfig, ceConfig = {}) {
             /**
             * Feed is a Chat that only streams things a User does, like
             * 'startTyping' or 'idle' events for example. Anybody can subscribe
-            * to a User's feed, but only the User can publish to it.
+            * to a User's feed, but only the User can publish to it. Users will
+            * not be able to converse in this channel.
             *
             * @type Chat
             * @example
-            * this.feed.connect();
+            * // me
+            * me.feed.emit('update', 'I may be away from my computer right now');
+            *
+            * // another instance
+            * them.feed.connect();
+            * them.feed.on('update', (payload) => {})
             */
 
-            // grants for these chats are done on auth. Even though they're marked private, they are locked down
+            // grants for these chats are done on auth. Even though they're marked private, they are locked down via the server
             this.feed = new Chat(
                 [ChatEngine.globalChat.channel, 'user', uuid, 'read.', 'feed'].join(':'), this.constructor.name == "Me", false);
 
             /**
-            * Direct is a private channel that anybody can publish to but only the user can subscribe to. Great
-            * for pushing notifications or inviting to other chats.
+            * Direct is a private channel that anybody can publish to but only
+            * the user can subscribe to. Great for pushing notifications or
+            * inviting to other chats. Users will not be able to communicate
+            * with one another inside of this chat. Check out the
+            * {@link Chat#invite} method for private chats utilizing
+            * {@link User#direct}.
             *
             * @type Chat
+            * @example
+            * // me
+            * me.direct.on('private-message', (payload) -> {
+            *     console.log(payload.user.uuid, 'sent your a direct message');
+            * });
+            *
+            * // another instance
+            * them.direct.connect();
+            * them.direct.emit('private-message', {secret: 42});
             */
             this.direct = new Chat(
                 [ChatEngine.globalChat.channel, 'user', uuid, 'write.', 'direct'].join(':'), this.constructor.name == "Me", false);
@@ -1056,8 +1098,17 @@ const create = function(pnConfig, ceConfig = {}) {
         }
 
         /**
-        Gets the user state in a {@link Chat}.
-        @param {Chat} chat Chatroom to retrieve state from
+        * Gets the user state in a {@link Chat}. See {@link Me#update} for how to assign state values.
+        * @param {Chat} chat Chatroom to retrieve state from
+        * @return {Object} Returns a generic JSON object containing state information.
+        * @example
+        *
+        * // Global State
+        * let globalState = user.state();
+        *
+        * // State in some channel
+        * let someChat = new ChatEngine.Chat('some-channel');
+        * let someChatState = user.state(someChat);s
         */
         state(chat = ChatEngine.globalChat) {
             return this.states[chat.channel] || {};
@@ -1129,11 +1180,20 @@ const create = function(pnConfig, ceConfig = {}) {
         }
 
         /**
-        Update {@link Me}'s state in a {@link Chat}. All {@link User}s in the {@link Chat} will be notified of this change via ($.update)[Chat.html#event:$%2522.%2522state].
-        @param {Object} state The new state for {@link Me}
-        @param {Chat} chat An instance of the {@link Chat} where state will be updated.
-        Defaults to ```ChatEngine.globalChat```.
-        @fires Chat#event:$"."state
+        * Update {@link Me}'s state in a {@link Chat}. All {@link User}s in
+        * the {@link Chat} will be notified of this change via ($.update)[Chat.html#event:$%2522.%2522state].
+        * Retrieve state at any time with {@link User#state}.
+        * @param {Object} state The new state for {@link Me}
+        * @param {Chat} chat An instance of the {@link Chat} where state will be updated.
+        * Defaults to ```ChatEngine.globalChat```.
+        * @fires Chat#event:$"."state
+        * @example
+        * // update global state
+        * me.update({value: true});
+        *
+        * // update state in specific chat
+        * let chat = new ChatEngine.Chat('some-chat');
+        * me.update({value: true}, chat);
         */
         update(state, chat = ChatEngine.globalChat) {
 
@@ -1166,8 +1226,9 @@ const create = function(pnConfig, ceConfig = {}) {
 
         /**
         * A global {@link Chat} that all {@link User}s join when they connect to ChatEngine. Useful for announcements, alerts, and global events.
-        * @member globalChat
+        * @member {Chat} globalChat
         * @memberof ChatEngine
+        * @type
         */
         ChatEngine.globalChat = false;
 
@@ -1192,7 +1253,8 @@ const create = function(pnConfig, ceConfig = {}) {
         @param {String} uuid A unique string for {@link Me}. It can be a device id, username, user id, email, etc.
         @param {Object} state An object containing information about this client ({@link Me}). This JSON object is sent to all other clients on the network, so no passwords!
         @param {Strung} authKey A authentication secret. Will be sent to authentication backend for validation. This is usually an access token or password. This is different from UUID as a user can have a single UUID but multiple auth keys.
-        @return {Me} me an instance of me
+        @param {Object} [authData] Additional data to send to the authentication endpoint. Not used by ChatEngine SDK.
+        @fires $"."connected
         */
         ChatEngine.connect = function(uuid, state = {}, authKey = false, authData) {
 
@@ -1217,6 +1279,10 @@ const create = function(pnConfig, ceConfig = {}) {
 
                 this.me.update(state);
 
+                /**
+                 * Fired when ChatEngine is connected to the internet and ready to go!
+                 * @event ChatEngine#$"."ready
+                 */
                 this.globalChat.on('$.connected', () => {
 
                     this._emit('$.ready', {
