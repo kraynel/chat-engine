@@ -17,7 +17,7 @@ Global object used to create an instance of {@link ChatEngine}.
 @param pnConfig {Object} ChatEngine is based off PubNub. Supply your PubNub configuration parameters here. See the getting started tutorial and [the PubNub docs](https://www.pubnub.com/docs/java-se-java/api-reference-configuration).
 @param ceConfig {Object} A list of chat engine specific config options.
 @param [ceConfig.globalChannel=chat-engine] {String} The root channel. See {@link ChatEngine.globalChat}
-@param [ceConfig.authUrl] {String} The authentication URL used to grant users access to ChatEngine.
+@param [ceConfig.authUrl] {String} The root URL used to manage permissions for private channels.
 @return {ChatEngine} Returns an instance of {@link ChatEngine}
 @example
 ChatEngine = ChatEngineCore.create({
@@ -86,33 +86,58 @@ const create = function(pnConfig, ceConfig = {}) {
             this._on = this.emitter.on.bind(this.emitter);
 
             /**
-            Listen for a specific event and fire a callback when it's emitted
-
-            @param {String} event The event name
-            @param {Function} cb The function to run when the event is emitted
+            * Listen for a specific event and fire a callback when it's emitted. Supports wildcard matching.
+            * @method
+            * @param {String} event The event name
+            * @param {Function} cb The function to run when the event is emitted
+            * @example
+            *
+            * // Get notified whenever someone joins the room
+            * object.on('event', (payload) => {
+            *     console.log('event was fired').
+            * })
+            *
+            * // Get notified of event.a and event.b
+            * object.on('event.*', (payload) => {
+            *     console.log('event.a or event.b was fired').;
+            * })
             */
             this.on = this.emitter.on.bind(this.emitter);
 
-
             /**
-            Stop listening to an event
-            @method
-            @param {String} event The event name
+            * Stop a callback from listening to an event.
+            * @method
+            * @param {String} event The event name
+            * @example
+            * let callback = function(payload;) {
+            *    console.log('something happend!');
+            * };
+            * object.on('event', callback);
+            * // ...
+            * object.off('event', callback);
             */
             this.off = this.emitter.off.bind(this.emitter);
 
             /**
-            Listen for any event on this object and fire a callback when it's emitted
-            @method
-            @param {Function} callback The function to run when any event is emitted. First parameter is the event name and second is the payload.
+            * Listen for any event on this object and fire a callback when it's emitted
+            * @method
+            * @param {Function} callback The function to run when any event is emitted. First parameter is the event name and second is the payload.
+            * @example
+            * object.onAny((event, payload) => {
+            *     console.log('All events trigger this.');
+            * });
             */
             this.onAny = this.emitter.onAny.bind(this.emitter);
 
             /**
-            Listen for an event and only fire the callback a single time
-            @method
-            @param {String} event The event name
-            @param {Function} callback The function to run once
+            * Listen for an event and only fire the callback a single time
+            * @method
+            * @param {String} event The event name
+            * @param {Function} callback The function to run once
+            * @example
+            * object.once('message', => (event, payload) {
+            *     console.log('This is only fired once!');
+            * });
             */
             this.once = this.emitter.once.bind(this.emitter);
 
@@ -130,7 +155,7 @@ const create = function(pnConfig, ceConfig = {}) {
             /**
             Events are always a property of a {@link Chat}. Responsible for
             listening to specific events and firing events when they occur.
-
+;
             @readonly
             @type String
             @see [PubNub Channels](https://support.pubnub.com/support/solutions/articles/14000045182-what-is-a-channel-)
@@ -218,10 +243,21 @@ const create = function(pnConfig, ceConfig = {}) {
             }
 
             /**
-            Listen for Events and trigger the ```on``` method when they occur.
-
-            @private
-            @param {String} event The event payload object
+            * Listen for a specific event and fire a callback when it's emitted. Supports wildcard matching.
+            * @method
+            * @param {String} event The event name
+            * @param {Function} cb The function to run when the event is emitted
+            * @example
+            *
+            * // Get notified whenever someone joins the room
+            * object.on('event', (payload) => {
+            *     console.log('event was fired').
+            * })
+            *
+            * // Get notified of event.a and event.b
+            * object.on('event.*', (payload) => {
+            *     console.log('event.a or event.b was fired').;
+            * })
             */
             this.on = (event, cb) => {
 

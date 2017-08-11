@@ -142,7 +142,7 @@
 
 
         <?js methods.forEach(function(m) { ?>
-            <?js if(isGlobalPage && m.id.indexOf('module:') == -1) { ?>
+            <?js if(!isGlobalPage || m.id.indexOf('module:') == -1) { ?>
             <?js= self.partial('method.tmpl', m) ?>
         <?js } }); ?>
     <?js } ?>
