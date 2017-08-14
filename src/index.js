@@ -16,7 +16,7 @@ Global object used to create an instance of {@link ChatEngine}.
 @alias ChatEngineCore
 @param pnConfig {Object} ChatEngine is based off PubNub. Supply your PubNub configuration parameters here. See the getting started tutorial and [the PubNub docs](https://www.pubnub.com/docs/java-se-java/api-reference-configuration).
 @param ceConfig {Object} A list of chat engine specific config options.
-@param [ceConfig.globalChannel=chat-engine] {String} The root channel. See {@link ChatEngine.globalChat}
+@param [ceConfig.globalChannel=chat-engine] {String} The root channel. See {@link ChatEngine.global}
 @param [ceConfig.authUrl] {String} The root URL used to manage permissions for private channels.
 @return {ChatEngine} Returns an instance of {@link ChatEngine}
 @example
@@ -1005,7 +1005,7 @@ const create = function(pnConfig, ceConfig = {}) {
     */
     class User extends Emitter {
 
-        constructor(uuid, state = {}, chat = ChatEngine.globalChat) {
+        constructor(uuid, state = {}, chat = ChatEngine.global) {
 
             super();
 
@@ -1062,7 +1062,7 @@ const create = function(pnConfig, ceConfig = {}) {
 
             // grants for these chats are done on auth. Even though they're marked private, they are locked down via the server
             this.feed = new Chat(
-                [ChatEngine.globalChat.channel, 'user', uuid, 'read.', 'feed'].join(':'), this.constructor.name == "Me", false);
+                [ChatEngine.global.channel, 'user', uuid, 'read.', 'feed'].join(':'), this.constructor.name == "Me", false);
 
             /**
             * Direct is a private channel that anybody can publish to but only
@@ -1084,7 +1084,7 @@ const create = function(pnConfig, ceConfig = {}) {
             * them.direct.emit('private-message', {secret: 42});
             */
             this.direct = new Chat(
-                [ChatEngine.globalChat.channel, 'user', uuid, 'write.', 'direct'].join(':'), this.constructor.name == "Me", false);
+                [ChatEngine.global.channel, 'user', uuid, 'write.', 'direct'].join(':'), this.constructor.name == "Me", false);
 
             // if the user does not exist at all and we get enough
             // information to build the user
@@ -1110,7 +1110,7 @@ const create = function(pnConfig, ceConfig = {}) {
         * let someChat = new ChatEngine.Chat('some-channel');
         * let someChatState = user.state(someChat);s
         */
-        state(chat = ChatEngine.globalChat) {
+        state(chat = ChatEngine.global) {
             return this.states[chat.channel] || {};
         }
 
@@ -1119,7 +1119,7 @@ const create = function(pnConfig, ceConfig = {}) {
         * @param {Object} state The new state for the user
         * @param {Chat} chat Chatroom to retrieve state from
         */
-        update(state, chat = ChatEngine.globalChat) {
+        update(state, chat = ChatEngine.global) {
             let chatState = this.state(chat) || {};
             this.states[chat.channel] = Object.assign(chatState, state);
         }
@@ -1185,7 +1185,7 @@ const create = function(pnConfig, ceConfig = {}) {
         * Retrieve state at any time with {@link User#state}.
         * @param {Object} state The new state for {@link Me}
         * @param {Chat} chat An instance of the {@link Chat} where state will be updated.
-        * Defaults to ```ChatEngine.globalChat```.
+        * Defaults to ```ChatEngine.global```.
         * @fires Chat#event:$"."state
         * @example
         * // update global state
@@ -1195,7 +1195,7 @@ const create = function(pnConfig, ceConfig = {}) {
         * let chat = new ChatEngine.Chat('some-chat');
         * me.update({value: true}, chat);
         */
-        update(state, chat = ChatEngine.globalChat) {
+        update(state, chat = ChatEngine.global) {
 
             // run the root update function
             super.update(state, chat);
@@ -1226,11 +1226,11 @@ const create = function(pnConfig, ceConfig = {}) {
 
         /**
         * A global {@link Chat} that all {@link User}s join when they connect to ChatEngine. Useful for announcements, alerts, and global events.
-        * @member {Chat} globalChat
+        * @member {Chat} global
         * @memberof ChatEngine
         * @type
         */
-        ChatEngine.globalChat = false;
+        ChatEngine.global = false;
 
         /**
         * This instance of ChatEngine represented as a special {@link User} know as {@link Me}
@@ -1267,15 +1267,15 @@ const create = function(pnConfig, ceConfig = {}) {
 
                 this.pubnub = new PubNub(pnConfig);
 
-                // create a new chat to use as globalChat
+                // create a new chat to use as global chat
                 // we don't do auth on this one becauseit's assumed to be done with the /auth request below
-                this.globalChat = new Chat(ceConfig.globalChannel, true, false);
+                this.global = new Chat(ceConfig.globalChannel, true, false);
 
                 // create a new user that represents this client
                 this.me = new Me(pnConfig.uuid, authData);
 
                 // create a new instance of Me using input parameters
-                this.globalChat.createUser(pnConfig.uuid, state);
+                this.global.createUser(pnConfig.uuid, state);
 
                 this.me.update(state);
 
@@ -1283,7 +1283,7 @@ const create = function(pnConfig, ceConfig = {}) {
                  * Fired when ChatEngine is connected to the internet and ready to go!
                  * @event ChatEngine#$"."ready
                  */
-                this.globalChat.on('$.connected', () => {
+                this.global.on('$.connected', () => {
 
                     this._emit('$.ready', {
                         me: this.me
