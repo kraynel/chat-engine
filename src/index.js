@@ -782,15 +782,15 @@ const create = function(pnConfig, ceConfig = {}) {
                 * by, ```$.join```, or other network events that
                 * notify the framework of a new user.
                 *
-                * @event Chat#$"."online
+                * @event Chat#$"."online"."
                 * @param {Object} data The payload returned by the event
                 * @param {User} data.user The {@link User} that came online
                 * @example
-                * chat.on('$.online.new', (data) => {
+                * chat.on('$.online.here', (data) => {
                 *     console.log('User has come online:', data.user);
                 * });
                 */
-                this.trigger('$.online.new', {
+                this.trigger('$.online.here', {
                     user: ChatEngine.users[uuid]
                 });
 
