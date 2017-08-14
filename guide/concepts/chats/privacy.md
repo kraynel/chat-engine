@@ -1,0 +1,5 @@
+- pam server
+- direct
+- feed
+- default privacy
+- invite method

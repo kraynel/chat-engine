@@ -377,9 +377,15 @@ const create = function(pnConfig, ceConfig = {}) {
             this.onHereNow = (status, response) => {
 
                 if(status.error) {
+
+                    /**
+                    * There was a problem fetching the presence of this chat
+                    * @event Chat#$"."error"."presence
+                    */
                     this.trigger(['$', 'error', 'presence'].join('.'), {
                         text: status.errorData.response.text
                     });
+
                 } else {
 
                     // get the list of occupants in this channel
@@ -389,112 +395,6 @@ const create = function(pnConfig, ceConfig = {}) {
                     for(let i in occupants) {
                         this.userUpdate(occupants[i].uuid, occupants[i].state);
                     }
-
-                }
-
-            };
-
-            /**
-            Fires when PubNub network connection changes
-
-            @private
-            @param {Object} statusEvent The response status
-            */
-            this.onStatus = (statusEvent) => {
-
-                if(statusEvent.error) {
-
-                    this.trigger(['$', 'error', 'connection'].join('.'), {
-                        text: statusEvent.errorData.response.text
-                    });
-
-                }
-
-                if(statusEvent.affectedChannels.indexOf(this.channel) > -1) {
-
-                    // connected category tells us the chat is ready
-                    if (statusEvent.category === "PNConnectedCategory") {
-
-                    // and the channel matches this Chat
-
-                        /**
-                        * Broadcast that the {@link Chat} is connected to the network.
-                        * @event Chat#$"."connected
-                        * @example
-                        * chat.on('$.connected', () => {
-                        *     console.log('chat is ready to go!');
-                        * });
-                        */
-                        this.connected = true;
-
-                        this.trigger('$.connected');
-                    }
-
-                    /**
-                    * SDK detected that network is online.
-                    * @event Chat#$"."network"."up
-                    */
-
-                    /**
-                    * SDK detected that network is down.
-                    * @event Chat#$"."network"."down
-                    */
-
-                    /**
-                    * A subscribe event experienced an exception when running.
-                    * @event Chat#$"."network"."issue
-                    */
-
-                    /**
-                    * SDK was able to reconnect to pubnub.
-                    * @event Chat#$"."network"."reconnected
-                    */
-
-                    /**
-                    * SDK subscribed with a new mix of channels (fired every time the channel / channel group mix changed).
-                    * @event Chat#$"."network"."connected
-                    */
-
-                    /**
-                    * PAM permission failure.
-                    * @event Chat#$"."network"."denied
-                    */
-
-                    /**
-                    * JSON parsing crashed.
-                    * @event Chat#$"."network"."malformed
-                    */
-
-                    /**
-                    * Server rejected the request.
-                    * @event Chat#$"."network"."bad
-                    */
-
-                    /**
-                    * If using decryption strategies and the decryption fails.
-                    * @event Chat#$"."network"."decryption
-                    */
-
-                    /**
-                    * @event Chat#$"."network"."timeout
-                    */
-
-                    // map the pubnub events into chat engine events
-                    let map = {
-                        'PNNetworkUpCategory': 'up',
-                        'PNNetworkDownCategory': 'down',
-                        'PNNetworkIssuesCategory': 'issue',
-                        'PNReconnectedCategory': 'reconnected',
-                        'PNConnectedCategory': 'connected',
-                        'PNAccessDeniedCategory': 'denied',
-                        'PNMalformedResponseCategory': 'malformed',
-                        'PNBadRequestCategory': 'bad',
-                        'PNDecryptionErrorCategory': 'decryption',
-                        'PNTimeoutCategory': 'timeout'
-                    };
-
-                    // trigger the network events
-                    this.trigger(['$', 'network', map[s.category] || 'undefined'].join('.'), s);
 
                 }
 
@@ -536,6 +436,10 @@ const create = function(pnConfig, ceConfig = {}) {
 
                     if(response.error) {
 
+                        /**
+                        * There was a problem fetching the history of this chat
+                        * @event Chat#$"."error"."history
+                        */
                         this.trigger(['$', 'error', 'history'].join('.'), {
                             text: statusEvent.errorData.response.text,
                             error: response.error
@@ -547,9 +451,11 @@ const create = function(pnConfig, ceConfig = {}) {
 
                             if(message.entry.event == event) {
 
-                                // trigger the same event with the same data
-                                // but the event name is now history:name rather than just name
-                                // to distinguish it from the original live events
+                                /**
+                                * Fired by the {@link Chat#history} call. Emits old events again. Events are prepended with
+                                * ```$.history.``` to distinguish it from the original live events.
+                                * @event Chat#$"."history"."*
+                                */
                                 this.trigger(
                                     ['$', 'history', event].join('.'),
                                     message.entry);
@@ -683,7 +589,6 @@ const create = function(pnConfig, ceConfig = {}) {
 
                     // listen to all PubNub events for this Chat
                     ChatEngine.pubnub.addListener({
-                        status: this.onStatus,
                         message: this.onMessage,
                         presence: this.onPresence
                     });
@@ -742,6 +647,7 @@ const create = function(pnConfig, ceConfig = {}) {
                 this.onPrep();
             }
 
+            ChatEngine.chats[this.channel] = this;
 
         }
 
@@ -1059,6 +965,22 @@ const create = function(pnConfig, ceConfig = {}) {
 
         }
 
+        onConnectionReady() {
+
+            /**
+            * Broadcast that the {@link Chat} is connected to the network.
+            * @event Chat#$"."connected
+            * @example
+            * chat.on('$.connected', () => {
+            *     console.log('chat is ready to go!');
+            * });
+            */
+            this.connected = true;
+
+            this.trigger('$.connected');
+
+        }
+
     };
 
     /**
@@ -1286,10 +1208,16 @@ const create = function(pnConfig, ceConfig = {}) {
         ChatEngine = new RootEmitter;
 
         /**
-        * A map of all known users in this instance of ChatEngine
+        * A map of all known {@link User}s in this instance of ChatEngine
         * @memberof ChatEngine
         */
         ChatEngine.users = {};
+
+        /**
+        * A map of all known {@link Chat}s in this instance of ChatEngine
+        * @memberof ChatEngine
+        */
+        ChatEngine.chats = {};
 
         /**
         * A global {@link Chat} that all {@link User}s join when they connect to ChatEngine. Useful for announcements, alerts, and global events.
@@ -1357,6 +1285,129 @@ const create = function(pnConfig, ceConfig = {}) {
 
                 });
 
+
+
+                /**
+                Fires when PubNub network connection changes
+
+                @private
+                @param {Object} statusEvent The response status
+                */
+                this.pubnub.addListener({
+                    status: (statusEvent) => {
+
+                        if(statusEvent.error) {
+
+                            /**
+                            * There was a network error
+                            * @event ChatEngine#$"."error"."network
+                            */
+                            this._emit(['$', 'error', 'network'].join('.'), {
+                                text: statusEvent.errorData.response.text
+                            });
+
+                        }
+
+                        /**
+                        * SDK detected that network is online.
+                        * @event Chat#$"."network"."up
+                        */
+
+                        /**
+                        * SDK detected that network is down.
+                        * @event Chat#$"."network"."down
+                        */
+
+                        /**
+                        * A subscribe event experienced an exception when running.
+                        * @event Chat#$"."network"."issue
+                        */
+
+                        /**
+                        * SDK was able to reconnect to pubnub.
+                        * @event Chat#$"."network"."reconnected
+                        */
+
+                        /**
+                        * SDK subscribed with a new mix of channels (fired every time the channel / channel group mix changed).
+                        * @event Chat#$"."network"."connected
+                        */
+
+                        /**
+                        * JSON parsing crashed.
+                        * @event Chat#$"."network"."malformed
+                        */
+
+                        /**
+                        * Server rejected the request.
+                        * @event Chat#$"."network"."bad
+                        */
+
+                        /**
+                        * If using decryption strategies and the decryption fails.
+                        * @event Chat#$"."network"."decryption
+                        */
+
+                        /**
+                        * @event Chat#$"."network"."timeout
+                        */
+
+                        /**
+                        * PAM permission failure.
+                        * @event Chat#$"."network"."denied
+                        */
+
+                        // map the pubnub events into chat engine events
+                        let map = {
+                            'PNNetworkUpCategory': 'up',
+                            'PNNetworkDownCategory': 'down',
+                            'PNNetworkIssuesCategory': 'issue',
+                            'PNReconnectedCategory': 'reconnected',
+                            'PNConnectedCategory': 'connected',
+                            'PNAccessDeniedCategory': 'denied',
+                            'PNMalformedResponseCategory': 'malformed',
+                            'PNBadRequestCategory': 'bad',
+                            'PNDecryptionErrorCategory': 'decryption',
+                            'PNTimeoutCategory': 'timeout'
+                        };
+
+                        let eventName = ['$', 'network', map[statusEvent.category]|| 'undefined'].join('.');
+
+                        if(statusEvent.affectedChannels) {
+
+                            statusEvent.affectedChannels.forEach((channel) => {
+
+                                let chat = ChatEngine.chats[channel];
+
+                                if(chat) {
+
+                                    // connected category tells us the chat is ready
+                                    if (statusEvent.category === "PNConnectedCategory") {
+                                        chat.onConnectionReady();
+                                    }
+
+                                    // trigger the network events
+                                    chat.trigger(eventName, statusEvent);
+
+
+                                } else {
+
+                                    this._emit(eventName, statusEvent);
+
+                                }
+
+                            });
+
+                        } else {
+
+                            this._emit(eventName, statusEvent);
+
+                        }
+
+                    }
+                });
+
+
             }
 
             if(!authKey) {
@@ -1377,6 +1428,10 @@ const create = function(pnConfig, ceConfig = {}) {
 
                     if (err) {
 
+                        /**
+                        * There was an authentication error
+                        * @event ChatEngine#$"."error"."auth
+                        */
                         this.trigger(['$', 'error', 'auth'].join('.'), {
                             err: err,
                             text: 'unable to login'
@@ -1384,7 +1439,11 @@ const create = function(pnConfig, ceConfig = {}) {
 
                     } else {
 
-                        this._emit('$.auth.success', {
+                        /**
+                        * There was an authentication success
+                        * @event ChatEngine#$"."auth
+                        */
+                        this._emit('$.auth', {
                             me: this.me,
                             httpResponse: httpResponse
                         });

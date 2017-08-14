@@ -50,6 +50,10 @@ describe('connect', function() {
             done();
         });
 
+        ChatEngine.on('$.network.*', (data) => {
+            console.log(data.operation)
+        })
+
     });
 
 });
@@ -178,7 +182,11 @@ describe('invite', function() {
 
             });
 
-            illegalAccessChat.once('$.error.connection', () => {
+            illegalAccessChat.onAny((event, packet) => {
+                console.log('illegal ---', event)
+            })
+
+            illegalAccessChat.once('$.error.publish', () => {
 
                 done();
 
