@@ -295,7 +295,7 @@ function renderMember(member) {
 
     // if (!member.scope === 'static') return;
     itemsNav += "<li data-type='member'>";
-    itemsNav += linkto(member.longname, member.name.replace('"."', '.'));
+    itemsNav += linkto(member.longname, member.name.replace(/"/g,""));
     itemsNav += "</li>";
 
     return itemsNav;
@@ -307,7 +307,7 @@ function renderMethod(method) {
     var itemsNav = '';
 
     itemsNav += "<li data-type='method'>";
-    itemsNav += linkto(method.longname, method.name.replace('"."', '.') + '()');
+    itemsNav += linkto(method.longname, method.name.replace(/"/g,"") + '()');
     itemsNav += "</li>";
 
     return itemsNav;
@@ -317,7 +317,7 @@ function renderMethod(method) {
 function renderEvent(event) {
     var itemsNav = '';
     itemsNav += "<li data-type='event'>";
-    itemsNav += linkto(event.longname, event.name.replace('"."', '.'));
+    itemsNav += linkto(event.longname, event.name.replace(/"/g,""));
     itemsNav += "</li>";
     return itemsNav;
 }

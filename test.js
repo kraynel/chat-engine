@@ -28,6 +28,10 @@ describe('config', function() {
             globalChannel: globalChannel
         });
 
+        ChatEngine.on('$.network.*', function(event) {
+            console.log(this.event)
+        });
+
         assert.isOk(ChatEngine);
 
     });

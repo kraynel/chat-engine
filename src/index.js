@@ -185,6 +185,7 @@ const create = function(pnConfig, ceConfig = {}) {
                             text: response && response.errorData.response.text,
                             error: response
                         });
+
                     }
 
                 });
@@ -216,7 +217,7 @@ const create = function(pnConfig, ceConfig = {}) {
 
     /**
     An ChatEngine generic emitter that supports plugins and forwards
-    events to a global emitter.
+    events to the root emitter.
     @extends RootEmitter
     */
     class Emitter extends RootEmitter {
@@ -409,11 +410,12 @@ const create = function(pnConfig, ceConfig = {}) {
 
                 }
 
-                // if the event says we're connected
-                if (statusEvent.category === "PNConnectedCategory") {
+                if(statusEvent.affectedChannels.indexOf(this.channel) > -1) {
+
+                    // connected category tells us the chat is ready
+                    if (statusEvent.category === "PNConnectedCategory") {
 
                     // and the channel matches this Chat
-                    if(statusEvent.affectedChannels.indexOf(this.channel) > -1) {
 
                         /**
                         * Broadcast that the {@link Chat} is connected to the network.
@@ -423,11 +425,76 @@ const create = function(pnConfig, ceConfig = {}) {
                         *     console.log('chat is ready to go!');
                         * });
                         */
-
                         this.connected = true;
 
                         this.trigger('$.connected');
                     }
+
+                    /**
+                    * SDK detected that network is online.
+                    * @event Chat#$"."network"."up
+                    */
+
+                    /**
+                    * SDK detected that network is down.
+                    * @event Chat#$"."network"."down
+                    */
+
+                    /**
+                    * A subscribe event experienced an exception when running.
+                    * @event Chat#$"."network"."issue
+                    */
+
+                    /**
+                    * SDK was able to reconnect to pubnub.
+                    * @event Chat#$"."network"."reconnected
+                    */
+
+                    /**
+                    * SDK subscribed with a new mix of channels (fired every time the channel / channel group mix changed).
+                    * @event Chat#$"."network"."connected
+                    */
+
+                    /**
+                    * PAM permission failure.
+                    * @event Chat#$"."network"."denied
+                    */
+
+                    /**
+                    * JSON parsing crashed.
+                    * @event Chat#$"."network"."malformed
+                    */
+
+                    /**
+                    * Server rejected the request.
+                    * @event Chat#$"."network"."bad
+                    */
+
+                    /**
+                    * If using decryption strategies and the decryption fails.
+                    * @event Chat#$"."network"."decryption
+                    */
+
+                    /**
+                    * @event Chat#$"."network"."timeout
+                    */
+
+                    // map the pubnub events into chat engine events
+                    let map = {
+                        'PNNetworkUpCategory': 'up',
+                        'PNNetworkDownCategory': 'down',
+                        'PNNetworkIssuesCategory': 'issue',
+                        'PNReconnectedCategory': 'reconnected',
+                        'PNConnectedCategory': 'connected',
+                        'PNAccessDeniedCategory': 'denied',
+                        'PNMalformedResponseCategory': 'malformed',
+                        'PNBadRequestCategory': 'bad',
+                        'PNDecryptionErrorCategory': 'decryption',
+                        'PNTimeoutCategory': 'timeout'
+                    };
+
+                    // trigger the network events
+                    this.trigger(['$', 'network', map[s.category] || 'undefined'].join('.'), s);
 
                 }
 
@@ -1228,7 +1295,6 @@ const create = function(pnConfig, ceConfig = {}) {
         * A global {@link Chat} that all {@link User}s join when they connect to ChatEngine. Useful for announcements, alerts, and global events.
         * @member {Chat} global
         * @memberof ChatEngine
-        * @type
         */
         ChatEngine.global = false;
 
