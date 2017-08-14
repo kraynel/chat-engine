@@ -1296,79 +1296,67 @@ const create = function(pnConfig, ceConfig = {}) {
                 this.pubnub.addListener({
                     status: (statusEvent) => {
 
-                        if(statusEvent.error) {
-
-                            /**
-                            * There was a network error
-                            * @event ChatEngine#$"."error"."network
-                            */
-                            this._emit(['$', 'error', 'network'].join('.'), {
-                                text: statusEvent.errorData.response.text
-                            });
-
-                        }
-
                         /**
                         * SDK detected that network is online.
-                        * @event Chat#$"."network"."up
+                        * @event Chat#$"."network"."up"."online
                         */
 
                         /**
                         * SDK detected that network is down.
-                        * @event Chat#$"."network"."down
+                        * @event Chat#$"."network"."down"."offline
                         */
 
                         /**
                         * A subscribe event experienced an exception when running.
-                        * @event Chat#$"."network"."issue
+                        * @event Chat#$"."network"."down"."issue
                         */
 
                         /**
                         * SDK was able to reconnect to pubnub.
-                        * @event Chat#$"."network"."reconnected
+                        * @event Chat#$"."network"."up"."reconnected
                         */
 
                         /**
-                        * SDK subscribed with a new mix of channels (fired every time the channel / channel group mix changed).
-                        * @event Chat#$"."network"."connected
+                        * SDK subscribed with a new mix of channels.
+                        * @event Chat#$"."network"."up"."connected
                         */
 
                         /**
                         * JSON parsing crashed.
-                        * @event Chat#$"."network"."malformed
+                        * @event Chat#$"."network"."down"."malformed
                         */
 
                         /**
                         * Server rejected the request.
-                        * @event Chat#$"."network"."bad
+                        * @event Chat#$"."network"."down"."badrequest
                         */
 
                         /**
                         * If using decryption strategies and the decryption fails.
-                        * @event Chat#$"."network"."decryption
+                        * @event Chat#$"."network"."down"."decryption
                         */
 
                         /**
-                        * @event Chat#$"."network"."timeout
+                        * @event Chat#$"."network"."down"."timeout
                         */
 
                         /**
                         * PAM permission failure.
-                        * @event Chat#$"."network"."denied
+                        * @event Chat#$"."network"."down"."denied
                         */
 
                         // map the pubnub events into chat engine events
                         let map = {
-                            'PNNetworkUpCategory': 'up',
-                            'PNNetworkDownCategory': 'down',
-                            'PNNetworkIssuesCategory': 'issue',
-                            'PNReconnectedCategory': 'reconnected',
-                            'PNConnectedCategory': 'connected',
-                            'PNAccessDeniedCategory': 'denied',
-                            'PNMalformedResponseCategory': 'malformed',
-                            'PNBadRequestCategory': 'bad',
-                            'PNDecryptionErrorCategory': 'decryption',
-                            'PNTimeoutCategory': 'timeout'
+                            'PNNetworkUpCategory': 'up.online',
+                            'PNNetworkDownCategory': 'down.offline',
+                            'PNNetworkIssuesCategory': 'down.issue',
+                            'PNReconnectedCategory': 'up.reconnected',
+                            'PNConnectedCategory': 'up.connected',
+                            'PNAccessDeniedCategory': 'down.denied',
+                            'PNMalformedResponseCategory': 'down.malformed',
+                            'PNBadRequestCategory': 'down.badrequest',
+                            'PNDecryptionErrorCategory': 'down.decryption',
+                            'PNTimeoutCategory': 'down.timeout'
                         };
 
                         let eventName = ['$', 'network', map[statusEvent.category]|| 'undefined'].join('.');
