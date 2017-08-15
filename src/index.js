@@ -1116,8 +1116,6 @@ const create = function(pnConfig, ceConfig = {}) {
             * them.feed.on('update', (payload) => {})
             */
 
-            console.log('auto join feed?', this.constructor.name == "Me")
-
             // grants for these chats are done on auth. Even though they're marked private, they are locked down via the server
             this.feed = new Chat(
                 [ChatEngine.global.channel, 'user', uuid, 'read.', 'feed'].join(':'), false, this.constructor.name == "Me");
