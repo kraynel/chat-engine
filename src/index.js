@@ -654,14 +654,6 @@ const create = function(pnConfig, ceConfig = {}) {
                         withPresence: true
                     });
 
-                    // get a list of users online now
-                    // ask PubNub for information about connected users in this channel
-                    ChatEngine.pubnub.hereNow({
-                        channels: [this.channel],
-                        includeUUIDs: true,
-                        includeState: true
-                    }, this.onHereNow);
-
                 }
 
             };
@@ -1046,6 +1038,14 @@ const create = function(pnConfig, ceConfig = {}) {
 
             this.trigger('$.connected');
 
+            // get a list of users online now
+            // ask PubNub for information about connected users in this channel
+            ChatEngine.pubnub.hereNow({
+                channels: [this.channel],
+                includeUUIDs: true,
+                includeState: true
+            }, this.onHereNow);
+
         }
 
     };
@@ -1115,6 +1115,8 @@ const create = function(pnConfig, ceConfig = {}) {
             * them.feed.connect();
             * them.feed.on('update', (payload) => {})
             */
+
+            console.log('auto join feed?', this.constructor.name == "Me")
 
             // grants for these chats are done on auth. Even though they're marked private, they are locked down via the server
             this.feed = new Chat(

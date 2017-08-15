@@ -13,13 +13,11 @@ const request = require('request');
 
 app.use(bodyParser.json()); // for parsing application/json
 app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
+
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   next();
-});
-app.get('/', function (req, res) {
-  res.send('Hello World!')
 });
 
 
@@ -43,7 +41,7 @@ let reset = function() {
 
 }
 
-let grant = function(gChan, myUUID, myAuthKey, next) {
+let globalGrant = function(gChan, myUUID, myAuthKey, next) {
 
     console.log('granting global access for', myUUID, 'permissions on ', gChan, 'for uuid', myUUID, 'with auth key', myAuthKey)
 
@@ -93,7 +91,12 @@ let grant = function(gChan, myUUID, myAuthKey, next) {
 
 }
 
-app.post('/facebook', function (req, res) {
+app.use('/facebook', function(req, res, next) {
+
+    if(!req.body.authKey) {
+        // covers OPTIONS requests
+        return res.sendStatus(200);
+    }
 
     request.get('https://graph.facebook.com/debug_token', {
         qs: {
@@ -103,16 +106,24 @@ app.post('/facebook', function (req, res) {
         json: true
     }, function(err, body, response){
 
-        if(response.data.is_valid) {
-
-            grant(req.body.channel, req.body.uuid, req.body.authKey, () => {
-                res.send('it worked');
-            });
-
+        if(response.data.is_valid && response.data.user_id == req.body.uuid) {
+            next();
         } else {
-            res.status(401);
+            res.sendStatus(401);
         }
 
+    });
+
+});
+
+app.get('/', function (req, res) {
+  res.send('Hello World!')
+});
+
+app.post('/facebook/auth', function (req, res) {
+
+    globalGrant(req.body.channel, req.body.uuid, req.body.authKey, () => {
+        res.send('it worked');
     });
 
 });
@@ -160,7 +171,7 @@ let authUser = (uuid, authKey, channel, done) => {
 app.post('/insecure/auth', function (req, res) {
 
 
-    grant(req.body.channel, req.body.uuid, req.body.authKey, () => {
+    globalGrant(req.body.channel, req.body.uuid, req.body.authKey, () => {
         res.send('it worked');
         db['authkeys:' + req.body.uuid] = req.body.authKey;
     });
@@ -233,7 +244,7 @@ app.post('/test', function (req, res) {
     if(req.body.authKey == 'open-sesame') {
 
         // grants everybody!
-        grant(req.body.channel, req.body.uuid, req.body.authKey, () => {
+        globalGrant(    req.body.channel, req.body.uuid, req.body.authKey, () => {
             res.send('it worked');
         });
 
