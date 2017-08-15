@@ -2,7 +2,7 @@
 // emitter
 const EventEmitter2 = require('eventemitter2').EventEmitter2;
 
-const PubNub = new require('pubnub');
+const PubNub = require('pubnub');
 
 // allows asynchronous execution flow.
 const waterfall = require('async/waterfall');
@@ -356,7 +356,7 @@ const create = function(pnConfig, ceConfig = {}) {
     */
     class Chat extends Emitter {
 
-        constructor(channel = new Date().getTime(), autoConnect = true, needGrant = true) {
+        constructor(channel = new Date().getTime(), needGrant = true, autoConnect = true) {
 
             super();
 
@@ -468,15 +468,15 @@ const create = function(pnConfig, ceConfig = {}) {
                 // run the PubNub history method for this event
                 ChatEngine.pubnub.history(config, (status, response) => {
 
-                    if(response.error) {
+                    if(status.error) {
 
                         /**
                         * There was a problem fetching the history of this chat
                         * @event Chat#$"."error"."history
                         */
                         throwError(this, 'trigger', 'history', new Error('There was a problem fetching the history. Make sure history is enabled for this PubNub key.'), {
-                            errorText: statusEvent.errorData.response.text,
-                            error: response.error,
+                            errorText: status.errorData.response.text,
+                            error: status.error,
                         });
 
                     } else {
@@ -577,8 +577,6 @@ const create = function(pnConfig, ceConfig = {}) {
 
                 // make sure channel matches this channel
                 if(this.channel == presenceEvent.channel) {
-
-                    console.log(presenceEvent)
 
                     // someone joins channel
                     if(presenceEvent.action == "join") {
@@ -1120,7 +1118,7 @@ const create = function(pnConfig, ceConfig = {}) {
 
             // grants for these chats are done on auth. Even though they're marked private, they are locked down via the server
             this.feed = new Chat(
-                [ChatEngine.global.channel, 'user', uuid, 'read.', 'feed'].join(':'), this.constructor.name == "Me", false);
+                [ChatEngine.global.channel, 'user', uuid, 'read.', 'feed'].join(':'), false, this.constructor.name == "Me");
 
             /**
             * Direct is a private channel that anybody can publish to but only
@@ -1142,7 +1140,7 @@ const create = function(pnConfig, ceConfig = {}) {
             * them.direct.emit('private-message', {secret: 42});
             */
             this.direct = new Chat(
-                [ChatEngine.global.channel, 'user', uuid, 'write.', 'direct'].join(':'), this.constructor.name == "Me", false);
+                [ChatEngine.global.channel, 'user', uuid, 'write.', 'direct'].join(':'), false, this.constructor.name == "Me");
 
             // if the user does not exist at all and we get enough
             // information to build the user
@@ -1332,7 +1330,7 @@ const create = function(pnConfig, ceConfig = {}) {
 
                 // create a new chat to use as global chat
                 // we don't do auth on this one becauseit's assumed to be done with the /auth request below
-                this.global = new Chat(ceConfig.globalChannel, true, false);
+                this.global = new Chat(ceConfig.globalChannel, false, true);
 
                 // create a new user that represents this client
                 this.me = new Me(pnConfig.uuid, authData);
