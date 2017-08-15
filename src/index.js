@@ -39,8 +39,21 @@ const create = function(pnConfig, ceConfig = {}) {
         ceConfig.globalChannel = 'chat-engine';
     }
 
-    if(!ceConfig.throwErrors) {
+    if(typeof ceConfig.throwErrors == "undefined") {
         ceConfig.throwErrors = true;
+    }
+
+    const throwError = function(self, cb, key, ceError, payload) {
+
+        if(ceConfig.throwErrors) {
+            // throw ceError;
+            throw ceError;
+        }
+
+        payload.ceError = ceError.toString();
+
+        self[cb].call(self, ['$', 'error', key].join('.'), payload);
+
     }
 
     /**
@@ -186,15 +199,13 @@ const create = function(pnConfig, ceConfig = {}) {
                         chat.trigger('$.publish.success');
                     } else {
 
-                        let humanError = 'There was a problem publishing over the PubNub network.';
-                        if(ceConfig.throwErrors) {
-                            throw new Error(humanError);
-                        }
-
-                        chat.trigger('$.error.publish', {
-                            errorText: statusEvent.errorData.response.text,
-                            error: response.errorData,
-                            human: humanError
+                        /**
+                        * There was a problem publishing over the PubNub network.
+                        * @event Chat#$"."error"."publish
+                        */
+                        throwError(chat, 'trigger', 'publish', new Error('There was a problem publishing over the PubNub network.'), {
+                            errorText: status.errorData.response.text,
+                            error: status.errorData,
                         });
 
                     }
@@ -393,15 +404,9 @@ const create = function(pnConfig, ceConfig = {}) {
                     * There was a problem fetching the presence of this chat
                     * @event Chat#$"."error"."presence
                     */
-                    let humanError = 'Getting presence of this Chat. Make sure PubNub presence is enabled for this key.';
-                    if(ceConfig.throwErrors) {
-                        throw new Error(humanError);
-                    }
-
-                    this.trigger(['$', 'error', 'presence'].join('.'), {
+                    throwError(this, 'trigger', 'presence', new Error('Getting presence of this Chat. Make sure PubNub presence is enabled for this key'), {
                         error: status.errorData,
-                        errorText: status.errorData.response.text,
-                        human: humanError
+                        errorText: status.errorData.response.text
                     });
 
                 } else {
@@ -454,19 +459,13 @@ const create = function(pnConfig, ceConfig = {}) {
 
                     if(response.error) {
 
-                        let humanError = 'There was a problem fetching the history. Make sure history is enabled for this PubNub key.';
-                        if(ceConfig.throwErrors) {
-                            throw new Error(humanError);
-                        }
-
                         /**
                         * There was a problem fetching the history of this chat
                         * @event Chat#$"."error"."history
                         */
-                        this.trigger(['$', 'error', 'history'].join('.'), {
+                        throwError(this, 'trigger', 'history', new Error('There was a problem fetching the history. Make sure history is enabled for this PubNub key.'), {
                             errorText: statusEvent.errorData.response.text,
                             error: response.error,
-                            human: humanError
                         });
 
                     } else {
@@ -1446,17 +1445,12 @@ const create = function(pnConfig, ceConfig = {}) {
 
                     if (err) {
 
-                        let humanError = 'There was a problem logging into the auth server ('+ceConfig.authUrl+').';
-                        if(ceConfig.throwErrors) {
-                            throw new Error(humanError);
-                        }
                         /**
                         * There was an authentication error
                         * @event ChatEngine#$"."error"."auth
                         */
-                        this._emit(['$', 'error', 'auth'].join('.'), {
-                            err: err,
-                            human: humanError
+                        throwError(this, '_emit', 'auth', new Error('There was a problem logging into the auth server ('+ceConfig.authUrl+').'), {
+                            err: err
                         });
 
                     } else {

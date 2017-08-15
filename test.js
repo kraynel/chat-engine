@@ -25,11 +25,8 @@ describe('config', function() {
             subscribeKey: 'sub-c-67db0e7a-50be-11e7-bf50-02ee2ddab7fe'
         }, {
             authUrl: 'http://localhost:3000/insecure',
-            globalChannel: globalChannel
-        });
-
-        ChatEngine.on('$.network.*', function(event) {
-            console.log(this.event)
+            globalChannel: globalChannel,
+            throwErrors: false
         });
 
         assert.isOk(ChatEngine);
@@ -43,10 +40,6 @@ describe('connect', function() {
     it('should be identified as new user', function(done) {
 
         ChatEngine.connect('ian', {works: true}, 'ian-authtoken');
-
-        ChatEngine.onAny((name) => {
-            console.log(name)
-        });
 
         ChatEngine.on('$.ready', (data) => {
             assert.isObject(data.me);
@@ -214,9 +207,7 @@ describe('invite', function() {
             })
 
             illegalAccessChat.once('$.error.publish', () => {
-
                 done();
-
             });
 
             illegalAccessChat.emit('message', 'test');
