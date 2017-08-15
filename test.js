@@ -16,17 +16,18 @@ let ChatEngine;
 let ChatEngineYou;
 let globalChannel  = 'chat-engine-demo-test' + new Date().getTime();
 
+let pnConfig = {
+    publishKey: 'pub-c-5f1e0d9d-89e5-485f-8f05-ad92a0fdb083',
+    subscribeKey: 'sub-c-2fc37408-81fd-11e7-b8cd-f652352d4e79'
+};
+
 describe('config', function() {
 
     it('should be configured', function() {
 
-        ChatEngine = ChatEngineCore.create({
-            publishKey: 'pub-c-c6303bb2-8bf8-4417-aac7-e83b52237ea6',
-            subscribeKey: 'sub-c-67db0e7a-50be-11e7-bf50-02ee2ddab7fe'
-        }, {
+        ChatEngine = ChatEngineCore.create(pnConfig, {
             authUrl: 'http://localhost:3000/insecure',
-            globalChannel: globalChannel,
-            throwErrors: false
+            globalChannel: globalChannel
         });
 
         assert.isOk(ChatEngine);
@@ -61,11 +62,7 @@ describe('chat', function() {
 
     it('should be created', function(done) {
 
-        chat = new ChatEngine.Chat(new Date() + 'chat', true, false);
-
-        chat.onAny((event) => {
-            // console.log(event)
-        })
+        chat = new ChatEngine.Chat(new Date() + 'chat');
 
         done();
 
@@ -100,26 +97,34 @@ describe('chat', function() {
 
 let chat2;
 
-// describe('myself-presence', function() {
+describe('myself-join', function() {
 
-//     it('should be created', function(done) {
+    it('should get self as an online event', function(done) {
 
-//         chat2 = new ChatEngine.Chat(new Date() + 'chat');
+        ChatEngineChecker = ChatEngineCore.create(pnConfig, {
+            authUrl: 'http://localhost:3000/insecure',
+            globalChannel: globalChannel
+        });
+        ChatEngineChecker.connect('ian', {works: true}, 'ian-authtoken');
 
-//         it('should get self as online event', function(done) {
+        ChatEngineChecker.on('$.ready', (data) => {
 
-//             chat2.on('$.online.*', (event) => {
-//                 console.log(event);
-//             })
+            chat2 = new ChatEngineChecker.Chat(new Date() + 'chat22', true, true);
 
-//         });
+            chat2.once('$.online.*', (p) => {
+                assert(p.user.uuid == ChatEngine.me.uuid, 'this online event is me')
+                done();
+            });
 
-//         done();
+        });
 
-//     });
+        this.timeout(10000)
 
 
-// });
+    });
+
+
+});
 
 let myChat;
 
@@ -130,10 +135,7 @@ describe('invite', function() {
 
     it('should be created', function(done) {
 
-        ChatEngineYou = ChatEngineCore.create({
-            publishKey: 'pub-c-c6303bb2-8bf8-4417-aac7-e83b52237ea6',
-            subscribeKey: 'sub-c-67db0e7a-50be-11e7-bf50-02ee2ddab7fe'
-        }, {
+        ChatEngineYou = ChatEngineCore.create(pnConfig, {
             authUrl: 'http://localhost:3000/insecure',
             globalChannel: globalChannel
         });
@@ -141,18 +143,15 @@ describe('invite', function() {
         ChatEngineYou.connect('stephen', {works: true}, 'stephen-authtoken');
 
         ChatEngineYou.on('$.ready', (data) => {
+
             you = data.me;
-            done();
-        });
 
-    });
+            yourChat = new ChatEngineYou.Chat('secret-channel-' + new Date().getTime());
 
-    it('should create chat', function(done) {
+            yourChat.on('$.connected', () => {
+                done();
+            });
 
-        yourChat = new ChatEngineYou.Chat('secret-channel-' + new Date().getTime());
-
-        yourChat.on('$.connected', () => {
-            done();
         });
 
     });
@@ -196,15 +195,15 @@ describe('invite', function() {
 
             let illegalAccessChat = new ChatEngine.Chat(targetChan);
 
-            illegalAccessChat.on('$.connected', () => {
-
-                done(new Error('This user should not be able to join', illegalAccessChat.channel))
-
-            });
-
-            illegalAccessChat.onAny((event, packet) => {
-                console.log('illegal ---', event)
+            illegalAccessChat.onAny((event, p) => {
+                if(p && p.user) {
+                    console.log(event, p.user.uuid)
+                }
             })
+
+            illegalAccessChat.on('$.connected', () => {
+                done(new Error('This user should not be able to join', illegalAccessChat.channel))
+            });
 
             illegalAccessChat.once('$.error.publish', () => {
                 done();

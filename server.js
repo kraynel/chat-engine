@@ -25,6 +25,7 @@ app.get('/', function (req, res) {
 
 function logger(req,res,next){
   console.log('\n-----', req.method, req.url, '\n');
+  console.log(req.body)
   next();
 }
 

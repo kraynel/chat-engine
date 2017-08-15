@@ -2,7 +2,7 @@
 // emitter
 const EventEmitter2 = require('eventemitter2').EventEmitter2;
 
-const PubNub = require('pubnub');
+const PubNub = new require('pubnub');
 
 // allows asynchronous execution flow.
 const waterfall = require('async/waterfall');
@@ -17,8 +17,9 @@ Global object used to create an instance of {@link ChatEngine}.
 @param pnConfig {Object} ChatEngine is based off PubNub. Supply your PubNub configuration parameters here. See the getting started tutorial and [the PubNub docs](https://www.pubnub.com/docs/java-se-java/api-reference-configuration).
 @param ceConfig {Object} A list of chat engine specific config options.
 @param [ceConfig.globalChannel=chat-engine] {String} The root channel. See {@link ChatEngine.global}
-@param [ceConfig.authUrl] {String} The root URL used to manage permissions for private channels.
+@param [ceConfig.authUrl] {String} The root URL used to manage permissions for private channels. Omitting this forces insecure mode.
 @param [ceConfig.throwErrors=true] {Boolean} Throws errors in JS console.
+@param [ceConfig.insecure=true] {Boolean} Force into insecure mode. Will ignore authUrl and all Chats will be public.
 @return {ChatEngine} Returns an instance of {@link ChatEngine}
 @example
 ChatEngine = ChatEngineCore.create({
@@ -43,7 +44,13 @@ const create = function(pnConfig, ceConfig = {}) {
         ceConfig.throwErrors = true;
     }
 
-    const throwError = function(self, cb, key, ceError, payload) {
+    ceConfig.insecure = ceConfig.insecure || false;
+    if(!ceConfig.authUrl) {
+        console.info('ChatEngine is running in insecure mode. Supply a authUrl to run in secure mode.');
+        ceConfig.insecure = true;
+    }
+
+    const throwError = function(self, cb, key, ceError, payload = {}) {
 
         if(ceConfig.throwErrors) {
             // throw ceError;
@@ -52,7 +59,7 @@ const create = function(pnConfig, ceConfig = {}) {
 
         payload.ceError = ceError.toString();
 
-        self[cb].call(self, ['$', 'error', key].join('.'), payload);
+        self[cb](['$', 'error', key].join('.'), payload);
 
     }
 
@@ -353,6 +360,10 @@ const create = function(pnConfig, ceConfig = {}) {
 
             super();
 
+            if(ceConfig.insecure) {
+                needGrant = false;
+            }
+
             /**
             * A string identifier for the Chat room.
             * @type String
@@ -509,16 +520,7 @@ const create = function(pnConfig, ceConfig = {}) {
             */
             this.invite = (user) => {
 
-                request.post({
-                    url: ceConfig.authUrl + '/invite',
-                    json: {
-                        authKey: pnConfig.authKey,
-                        uuid: user.uuid,
-                        channel: this.channel,
-                        myUUID: ChatEngine.me.uuid,
-                        authData: ChatEngine.me.authData
-                    }
-                }, (err, httpResponse, body) => {
+                let complete = () => {
 
                     let send = () => {
 
@@ -535,7 +537,33 @@ const create = function(pnConfig, ceConfig = {}) {
                         send();
                     }
 
-                });
+                }
+
+                if(ceConfig.insecure) {
+                    complete();
+                } else {
+
+                    request.post({
+                        url: ceConfig.authUrl + '/invite',
+                        json: {
+                            authKey: pnConfig.authKey,
+                            uuid: user.uuid,
+                            channel: this.channel,
+                            myUUID: ChatEngine.me.uuid,
+                            authData: ChatEngine.me.authData
+                        }
+                    }, (err, httpResponse, body) => {
+
+                        if(err) {
+                            throwError(this, 'trigger', 'auth', new Error('Something went wrong while making a request to authentication server.'), {
+                                err: err
+                            });
+                        }
+
+                        complete();
+                    });
+
+                }
 
             };
 
@@ -549,6 +577,8 @@ const create = function(pnConfig, ceConfig = {}) {
 
                 // make sure channel matches this channel
                 if(this.channel == presenceEvent.channel) {
+
+                    console.log(presenceEvent)
 
                     // someone joins channel
                     if(presenceEvent.action == "join") {
@@ -611,8 +641,7 @@ const create = function(pnConfig, ceConfig = {}) {
                 if(!this.connected) {
 
                     if(!ChatEngine.pubnub) {
-                        // console.log('connecting to pubnub')
-                        ChatEngine.connect();
+                        throwError(this, 'trigger', 'setup', new Error('You must call ChatEngine.connect() and wait for the $.ready event before creating new Chats.'));
                     }
 
                     // listen to all PubNub events for this Chat
@@ -655,17 +684,29 @@ const create = function(pnConfig, ceConfig = {}) {
              */
             this.grant = () => {
 
-                request.post({
-                    url: ceConfig.authUrl + '/chat',
-                    json: {
-                        authKey: pnConfig.authKey,
-                        uuid: pnConfig.uuid,
-                        channel: this.channel,
-                        authData: ChatEngine.me.authData
-                    }
-                }, (err, httpResponse, body) => {
-                    this.onPrep();
-                });
+                if(ceConfig.insecure) {
+                    return this.onPrep();
+                } else {
+                    request.post({
+                        url: ceConfig.authUrl + '/chat',
+                        json: {
+                            authKey: pnConfig.authKey,
+                            uuid: pnConfig.uuid,
+                            channel: this.channel,
+                            authData: ChatEngine.me.authData
+                        }
+                    }, (err, httpResponse, body) => {
+
+                        if(err) {
+                            throwError(this, 'trigger', 'auth', new Error('Something went wrong while making a request to authentication server.'), {
+                                err: err
+                            });
+                        }
+
+                        this.onPrep();
+
+                    });
+                }
 
             }
 
@@ -765,7 +806,7 @@ const create = function(pnConfig, ceConfig = {}) {
         @param {Object} state The user initial state
         @param {Boolean} trigger Force a trigger that this user is online
         */
-        createUser(uuid, state, trigger = false) {
+        createUser(uuid, state) {
 
             // Ensure that this user exists in the global list
             // so we can reference it from here out
@@ -775,7 +816,7 @@ const create = function(pnConfig, ceConfig = {}) {
             ChatEngine.users[uuid].addChat(this, state);
 
             // trigger the join event over this chatroom
-            if(!this.users[uuid] || trigger) {
+            if(!this.users[uuid]) {
 
                 /**
                 * Broadcast that a {@link User} has come online. This is when
@@ -1427,7 +1468,7 @@ const create = function(pnConfig, ceConfig = {}) {
 
             }
 
-            if(!authKey) {
+            if(ceConfig.insecure) {
                 complete();
             } else {
 

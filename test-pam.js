@@ -1,21 +1,21 @@
 const ChatEngineCore = require('./src/index.js');
 
-
-console.log(ChatEngineCore);
-
 const ChatEngine = ChatEngineCore.create({
-  publishKey: 'pub-c-281ab39e-9a34-4e6d-84ac-9bf70e949455',
-  subscribeKey: 'sub-c-1eb17cd8-8148-11e7-bdc2-6e5eeb112503'
+  publishKey: 'pub-c-5f1e0d9d-89e5-485f-8f05-ad92a0fdb083',
+  subscribeKey: 'sub-c-2fc37408-81fd-11e7-b8cd-f652352d4e79'
 });
 
-let me = ChatEngine.connect('ian');
+ChatEngine.connect('ian');
 
-let chat = new ChatEngine.Chat('tutorial-room');
+ChatEngine.on('$.ready', (p) => {
 
-ChatEngine.onAny((event, p) => {
-    console.log(event)
-})
+    let me = p.me;
 
-setInterval(() => {
-  console.log(chat.users.length, chat.users);
-}, 1000);
+    let chat = new ChatEngine.Chat('tutorial-room' + new Date());
+
+    chat.once('$.online.*', (p) => {
+        console.log('online', p.user.uuid, ChatEngine.me.uuid)
+    });
+
+
+});
