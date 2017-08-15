@@ -18,6 +18,7 @@ Global object used to create an instance of {@link ChatEngine}.
 @param ceConfig {Object} A list of chat engine specific config options.
 @param [ceConfig.globalChannel=chat-engine] {String} The root channel. See {@link ChatEngine.global}
 @param [ceConfig.authUrl] {String} The root URL used to manage permissions for private channels.
+@param [ceConfig.throwErrors=true] {Boolean} Throws errors in JS console.
 @return {ChatEngine} Returns an instance of {@link ChatEngine}
 @example
 ChatEngine = ChatEngineCore.create({
@@ -36,6 +37,10 @@ const create = function(pnConfig, ceConfig = {}) {
         ceConfig.globalChannel = ceConfig.globalChannel.toString()
     } else {
         ceConfig.globalChannel = 'chat-engine';
+    }
+
+    if(!ceConfig.throwErrors) {
+        ceConfig.throwErrors = true;
     }
 
     /**
@@ -181,9 +186,15 @@ const create = function(pnConfig, ceConfig = {}) {
                         chat.trigger('$.publish.success');
                     } else {
 
+                        let humanError = 'There was a problem publishing over the PubNub network.';
+                        if(ceConfig.throwErrors) {
+                            throw new Error(humanError);
+                        }
+
                         chat.trigger('$.error.publish', {
-                            text: response && response.errorData.response.text,
-                            error: response
+                            errorText: statusEvent.errorData.response.text,
+                            error: response.errorData,
+                            human: humanError
                         });
 
                     }
@@ -382,8 +393,15 @@ const create = function(pnConfig, ceConfig = {}) {
                     * There was a problem fetching the presence of this chat
                     * @event Chat#$"."error"."presence
                     */
+                    let humanError = 'Getting presence of this Chat. Make sure PubNub presence is enabled for this key.';
+                    if(ceConfig.throwErrors) {
+                        throw new Error(humanError);
+                    }
+
                     this.trigger(['$', 'error', 'presence'].join('.'), {
-                        text: status.errorData.response.text
+                        error: status.errorData,
+                        errorText: status.errorData.response.text,
+                        human: humanError
                     });
 
                 } else {
@@ -436,13 +454,19 @@ const create = function(pnConfig, ceConfig = {}) {
 
                     if(response.error) {
 
+                        let humanError = 'There was a problem fetching the history. Make sure history is enabled for this PubNub key.';
+                        if(ceConfig.throwErrors) {
+                            throw new Error(humanError);
+                        }
+
                         /**
                         * There was a problem fetching the history of this chat
                         * @event Chat#$"."error"."history
                         */
                         this.trigger(['$', 'error', 'history'].join('.'), {
-                            text: statusEvent.errorData.response.text,
-                            error: response.error
+                            errorText: statusEvent.errorData.response.text,
+                            error: response.error,
+                            human: humanError
                         });
 
                     } else {
@@ -586,6 +610,11 @@ const create = function(pnConfig, ceConfig = {}) {
             this.connect = () => {
 
                 if(!this.connected) {
+
+                    if(!ChatEngine.pubnub) {
+                        // console.log('connecting to pubnub')
+                        ChatEngine.connect();
+                    }
 
                     // listen to all PubNub events for this Chat
                     ChatEngine.pubnub.addListener({
@@ -1298,51 +1327,52 @@ const create = function(pnConfig, ceConfig = {}) {
 
                         /**
                         * SDK detected that network is online.
-                        * @event Chat#$"."network"."up"."online
+                        * @event ChatEngine#$"."network"."up"."online
                         */
 
                         /**
                         * SDK detected that network is down.
-                        * @event Chat#$"."network"."down"."offline
+                        * @event ChatEngine#$"."network"."down"."offline
                         */
 
                         /**
                         * A subscribe event experienced an exception when running.
-                        * @event Chat#$"."network"."down"."issue
+                        * @event ChatEngine#$"."network"."down"."issue
                         */
 
                         /**
                         * SDK was able to reconnect to pubnub.
-                        * @event Chat#$"."network"."up"."reconnected
+                        * @event ChatEngine#$"."network"."up"."reconnected
                         */
 
                         /**
                         * SDK subscribed with a new mix of channels.
-                        * @event Chat#$"."network"."up"."connected
+                        * @event ChatEngine#$"."network"."up"."connected
                         */
 
                         /**
                         * JSON parsing crashed.
-                        * @event Chat#$"."network"."down"."malformed
+                        * @event ChatEngine#$"."network"."down"."malformed
                         */
 
                         /**
                         * Server rejected the request.
-                        * @event Chat#$"."network"."down"."badrequest
+                        * @event ChatEngine#$"."network"."down"."badrequest
                         */
 
                         /**
                         * If using decryption strategies and the decryption fails.
-                        * @event Chat#$"."network"."down"."decryption
+                        * @event ChatEngine#$"."network"."down"."decryption
                         */
 
                         /**
-                        * @event Chat#$"."network"."down"."timeout
+                        * Request timed out.
+                        * @event ChatEngine#$"."network"."down"."timeout
                         */
 
                         /**
                         * PAM permission failure.
-                        * @event Chat#$"."network"."down"."denied
+                        * @event ChatEngine#$"."network"."down"."denied
                         */
 
                         // map the pubnub events into chat engine events
@@ -1416,13 +1446,17 @@ const create = function(pnConfig, ceConfig = {}) {
 
                     if (err) {
 
+                        let humanError = 'There was a problem logging into the auth server ('+ceConfig.authUrl+').';
+                        if(ceConfig.throwErrors) {
+                            throw new Error(humanError);
+                        }
                         /**
                         * There was an authentication error
                         * @event ChatEngine#$"."error"."auth
                         */
-                        this.trigger(['$', 'error', 'auth'].join('.'), {
+                        this._emit(['$', 'error', 'auth'].join('.'), {
                             err: err,
-                            text: 'unable to login'
+                            human: humanError
                         });
 
                     } else {

@@ -1,7 +1,7 @@
 
-const assert = require('chai').assert;
-
 const ChatEngineCore = require('./src/index.js');
+
+const assert = require('chai').assert;
 
 describe('import', function() {
 
@@ -43,6 +43,10 @@ describe('connect', function() {
     it('should be identified as new user', function(done) {
 
         ChatEngine.connect('ian', {works: true}, 'ian-authtoken');
+
+        ChatEngine.onAny((name) => {
+            console.log(name)
+        });
 
         ChatEngine.on('$.ready', (data) => {
             assert.isObject(data.me);
@@ -100,6 +104,29 @@ describe('chat', function() {
     });
 
 });
+
+let chat2;
+
+// describe('myself-presence', function() {
+
+//     it('should be created', function(done) {
+
+//         chat2 = new ChatEngine.Chat(new Date() + 'chat');
+
+//         it('should get self as online event', function(done) {
+
+//             chat2.on('$.online.*', (event) => {
+//                 console.log(event);
+//             })
+
+//         });
+
+//         done();
+
+//     });
+
+
+// });
 
 let myChat;
 
