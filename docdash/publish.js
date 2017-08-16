@@ -280,7 +280,7 @@ function attachModuleSymbols(doclets, modules) {
                     symbol = doop(symbol);
 
                     if (symbol.kind === 'class' || symbol.kind === 'function') {
-                        symbol.name = symbol.name.replace('module:', 'require("') + '")';
+                        symbol.name = symbol.name.replace('module:', 'require(\'') + '\')';
                     }
 
                     return symbol;

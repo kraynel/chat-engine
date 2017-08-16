@@ -489,6 +489,7 @@ const create = function(pnConfig, ceConfig = {}) {
                                 * Fired by the {@link Chat#history} call. Emits old events again. Events are prepended with
                                 * ```$.history.``` to distinguish it from the original live events.
                                 * @event Chat#$"."history"."*
+                                * @see {@link Chat#history} for example
                                 */
                                 this.trigger(
                                     ['$', 'history', event].join('.'),
@@ -814,7 +815,7 @@ const create = function(pnConfig, ceConfig = {}) {
                 * by, ```$.join```, or other network events that
                 * notify the framework of a new user.
                 *
-                * @event Chat#$"."online"."
+                * @event Chat#$"."online"."here
                 * @param {Object} data The payload returned by the event
                 * @param {User} data.user The {@link User} that came online
                 * @example
