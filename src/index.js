@@ -441,21 +441,7 @@ const create = function(pnConfig, ceConfig = {}) {
             *
             * @param {String} event The name of the event we're getting history for
             * @param {Object} [config] The PubNub history config for this call
-            * @example
-            *  // when this chat gets a message
-            *  chat.on('message', function(payload) {
-            *      // render it in the DOM
-            *      renderMessage(payload, null);
-            *  });
-            *
-            *  // if this chat receives a message that's not from this sessions
-            *  chat.on('$.history.message', function(payload) {
-            *      // render it in the DOM with a special class
-            *      renderMessage(payload, 'text-muted');
-            *  });
-            *
-            *   // trigger history messages
-            *  chat.history('message');
+            * @tutorial history
             */
             this.history = (event, config = {}) => {
 
@@ -489,7 +475,7 @@ const create = function(pnConfig, ceConfig = {}) {
                                 * Fired by the {@link Chat#history} call. Emits old events again. Events are prepended with
                                 * ```$.history.``` to distinguish it from the original live events.
                                 * @event Chat#$"."history"."*
-                                * @see {@link Chat#history} for example
+                                * @tutorial history
                                 */
                                 this.trigger(
                                     ['$', 'history', event].join('.'),

@@ -22,9 +22,6 @@
              "chats": {
                  "title": "Chats"
              },
-             "globalChat": {
-                 "title": "Global Chat"
-             },
              "events": {
                  "title": "Events"
              },
@@ -34,8 +31,20 @@
              "wildcard": {
                  "title": "Namespaces and Wildcards"
              },
+             "history": {
+                 "title": "History"
+             },
+             "globalChat": {
+                 "title": "Global Chat"
+             },
              "online-list": {
                  "title": "Online List"
+             },
+             "privacy": {
+                 "title": "Privacy"
+             },
+             "errors": {
+                 "title": "Errors"
              },
              "using": {
                  "title": "Plugins"

@@ -107,7 +107,7 @@ function buildItemTypeStrings(item) {
 
     if (item && item.type && item.type.names) {
         item.type.names.forEach(function(name) {
-            types.push( linkto(name, htmlsafe(name)) );
+            types.push(linkto(name, htmlsafe(name)) );
         });
     }
 
