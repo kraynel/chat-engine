@@ -2,6 +2,8 @@
 
 {@link User}s are other browser windows connected to the {@link Chat} via ChatEngine. A User represents a connected client.
 
+## Me
+
 When a client connects to ChatEngine, they create a special {@link User} called {@link Me}. {@link Me} represents "this {@link User} for this instance."
 
 {@link Me} and {@link User} are similar in many ways, with the main difference being that {@link Me} can update state on the network while {@link User} cannot update state.
@@ -69,6 +71,37 @@ customStateChat.on('$.state', (payload) {
 me.update({newState: true}, customStateChat);
 ```
 
-- direct messaging users
-- private chat
-- feed
+## Direct Chat
+
+{@link User#direct} is a {@link Chat} that any {@link User} can {@link Chat#emit} on, but only the user receives events on.
+
+This is helpful for sending messages directly to users, to ping them, or challenge them to a match. This channel is only readable by said user.
+
+```js
+// me
+me.direct.on('game-invite', (payload) -> {
+     console.log(payload.user.uuid, 'sent your a game invite on the map', payload.data.map);
+});
+
+// someone else
+them.direct.emit('game-invite', {map: 'de_dust'});
+```
+
+## Feed Chat
+
+{@link User#feed} is a {@link Chat} that only the {@link User} can {@link Chat#emit} to but everyone can receive events on.
+
+{@link User}s can use this to tell others of their status. This is useful for things like updating a temporary status ("user is typing...") or letting others know you've gone idle.
+
+For a more persistent status update, see the section in this tutorial on "state" and {@link User#state}.
+
+```js
+// me
+me.feed.emit('update.away', 'I may be away from my computer right now');
+
+// another instance
+them.feed.connect();
+them.feed.on('update.away', (payload) => {
+    console.log(payload.user.uuid, 'is away');
+});
+```

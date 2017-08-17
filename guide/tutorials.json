@@ -29,7 +29,7 @@
                  "title": "Event Payload"
              },
              "wildcard": {
-                 "title": "Namespaces and Wildcards"
+                 "title": "Namespaces"
              },
              "history": {
                  "title": "History"
@@ -42,6 +42,9 @@
              },
              "privacy": {
                  "title": "Privacy"
+             },
+             "templating": {
+                 "title": "Templating"
              },
              "errors": {
                  "title": "Errors"
