@@ -1,6 +1,6 @@
 ### Online List
 
-![](/guide/getting-started/assets/README-c71c143b.png)
+![](/getting-started/assets/README-c71c143b.png)
 
 A list of all the clients who have joined the chatroom is available from ```chat.users```.
 

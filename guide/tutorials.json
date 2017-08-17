@@ -25,11 +25,14 @@
              "events": {
                  "title": "Events"
              },
-             "payload": {
-                 "title": "Event Payload"
+             "namespaces": {
+                 "title": "Namespaces"
              },
              "wildcard": {
-                 "title": "Namespaces"
+                 "title": "Wildcards"
+             },
+             "payload": {
+                 "title": "Event Payload"
              },
              "history": {
                  "title": "History"
@@ -58,7 +61,7 @@
          }
      },
      "js": {
-         "title": "Javacsript",
+         "title": "Javascript",
          "children": {
              "chat": {
                  "title": "Chat"
@@ -78,7 +81,7 @@
          "title": "Angular",
          "children": {
              "ng-simple": {
-                 "title": "Simple"
+                 "title": "App"
              },
              "ng-flowtron": {
                  "title": "Flowtron"
