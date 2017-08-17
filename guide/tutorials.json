@@ -1,12 +1,15 @@
  {
      "getting-started": {
-         "title": "Setup",
+         "title": "Get Started",
          "children": {
              "install": {
                  "title": "Install ChatEngine"
              },
              "pubnub": {
                  "title": "Get PubNub Keys"
+             },
+             "quick": {
+                 "title": "Quick Start Guide"
              }
          }
      },
