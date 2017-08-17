@@ -29,11 +29,11 @@ In this demo we'll mock up a user named 'Ian' emitting the 'like' event on a use
 On Ian's page:
 
 ```js
-// connect with UUID 'ian'
-ChatEngine.connect('ian');
+// connect with UUID 'ian' and add a user state
+ChatEngine.connect('ian', {fullName: 'Ian Jennings'});
 
 // emit a 'like' event over global chat
-Chat.global.emit('like', {
+ChatEngine.global.emit('like', {
     who: 'emily'
 });
 ```
@@ -45,7 +45,7 @@ On Emily's page:
 ChatEngine.connect('emily');
 
 // when we received a 'like' event on global chat
-Chat.global.on('like', (payload) => {
+ChatEngine.global.on('like', (payload) => {
 
     // if that event matches 'emily'
     if(payload.data.who == 'emily') {
@@ -53,65 +53,13 @@ Chat.global.on('like', (payload) => {
         // opens an alert that says "ian likes you!""
         alert(payload.user.uuid + ' likes you!');
 
+        // Log 'Ian Jennings' from Ian's state
+        console.log('His full name is', payload.user.state().fullName);
+
+        // Get all the other users in the chat that emitted this event
+        console.log('Other users who saw this are', payload.chat.users);
+
     }
 
 });
-```
-
-## Detailed Example
-
-Using the same concept as our "Simple Example," we can make further use
-of the fully featured ```payload``` object.
-
-We'll add {@link User#state} to the {@link ChatEngine#connect} function.
-
-On Ian's page:
-
-```js
-// connect as 'ian' with a state including fullName
-ChatEngine.connect('ian', {fullName: 'Ian Jennings'});
-
-// emit that we like emily over global channel
-Chat.global.emit('like', {
-    who: 'emily'
-});
-```
-
-On Emily's page:
-
-```js
-// connect as 'emily' with a state including fullName
-ChatEngine.connect('emily', {fullName: 'Emily Smith'});
-
-// wait for ChatEngine to connect and get Me
-ChatEngine.on('$.ready', (data) => {
-
-    let me = data.me;
-
-    // when we get a 'like' event on global chat
-    Chat.global.on('like', (payload) => {
-
-        // if the subject uuid is the same a me.uuid
-        if(payload.data.who == me.uuid) {
-
-            // opens a prompt that says "Ian Jennings likes you, do you like them?" Ok / Cancel
-            // payload.user.state().fullName == "Ian Jennings" because it was set on Ian's page during connection
-            let response = prompt(payload.user.state().fullName + ' likes you! Do you like them?');
-
-            // if the user clicks "OK"
-            if(response) {
-
-                // send a like back! Use payload.chat to ensure it's the same chat, and payload.user.uuid to identify the subject
-                payload.chat.emit('like', {
-                    who: payload.user.uuid
-                });
-
-            }
-
-        }
-
-    });
-
-});
-
 ```

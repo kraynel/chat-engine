@@ -64,16 +64,16 @@
          "title": "Javascript",
          "children": {
              "chat": {
-                 "title": "Chat"
+                 "title": "JS Chat"
              },
              "friends": {
-                 "title": "Friends List"
+                 "title": "JS Friends List"
              },
              "online": {
-                 "title": "Online List"
+                 "title": "JS Online List"
              },
              "facebook": {
-                 "title": "Facebook Auth"
+                 "title": "JS Facebook Auth"
              }
          }
      },
@@ -81,10 +81,10 @@
          "title": "Angular",
          "children": {
              "ng-simple": {
-                 "title": "App"
+                 "title": "Angular Bootstrap"
              },
              "ng-flowtron": {
-                 "title": "Flowtron"
+                 "title": "Angular Desktop Chat"
              }
          }
      },
@@ -92,10 +92,10 @@
          "title": "React",
          "children": {
              "react-simple": {
-                 "title": "Web"
+                 "title": "React Web"
              },
              "react-native": {
-                 "title": "Native"
+                 "title": "React Native"
              }
          }
      },
@@ -103,10 +103,10 @@
          "title": "jQuery",
          "children": {
              "jq-simple": {
-                 "title": "Simple"
+                 "title": "jQuery Chat"
              },
              "jq-kitchen": {
-                 "title": "Kitchen Sink"
+                 "title": "jQuery Kitchen Sink"
              }
          }
      },
@@ -114,7 +114,7 @@
          "title": "NodeJS",
          "children": {
              "chatbot": {
-                 "title": "Chat Bot"
+                 "title": "NodeJS Chat Bot"
              }
          }
      }
