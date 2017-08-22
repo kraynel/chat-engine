@@ -38,8 +38,8 @@
   },
   "dependencies": {
     "async": "^2.1.2",
+    "axios": "^0.16.2",
     "eventemitter2": "^2.2.1",
-    "pubnub": "^4.13.0",
-    "request": "^2.81.0"
+    "pubnub": "^4.13.0"
   }
 }

@@ -8,7 +8,7 @@ const PubNub = require('pubnub');
 const waterfall = require('async/waterfall');
 
 // required to make AJAX calls for auth
-const request = require('request');
+const axios = require('axios');
 
 /**
 Global object used to create an instance of {@link ChatEngine}.
@@ -530,26 +530,23 @@ const create = function(pnConfig, ceConfig = {}) {
                     complete();
                 } else {
 
-                    request.post({
-                        url: ceConfig.authUrl + '/invite',
-                        json: {
-                            authKey: pnConfig.authKey,
-                            uuid: user.uuid,
-                            channel: this.channel,
-                            myUUID: ChatEngine.me.uuid,
-                            authData: ChatEngine.me.authData
-                        }
-                    }, (err, httpResponse, body) => {
-
-                        if(err) {
-                            throwError(this, 'trigger', 'auth', new Error('Something went wrong while making a request to authentication server.'), {
-                                err: err
-                            });
-                        }
-
+                    axios.post(ceConfig.authUrl + '/invite', {
+                        authKey: pnConfig.authKey,
+                        uuid: user.uuid,
+                        channel: this.channel,
+                        myUUID: ChatEngine.me.uuid,
+                        authData: ChatEngine.me.authData
+                    })
+                    .then((response) => {
                         complete();
-                    });
+                    })
+                    .catch((error) => {
 
+                        throwError(this, 'trigger', 'auth', new Error('Something went wrong while making a request to authentication server.'), {
+                            error: error
+                        });
+
+                    });
                 }
 
             };
@@ -664,25 +661,24 @@ const create = function(pnConfig, ceConfig = {}) {
                 if(ceConfig.insecure) {
                     return this.onPrep();
                 } else {
-                    request.post({
-                        url: ceConfig.authUrl + '/chat',
-                        json: {
-                            authKey: pnConfig.authKey,
-                            uuid: pnConfig.uuid,
-                            channel: this.channel,
-                            authData: ChatEngine.me.authData
-                        }
-                    }, (err, httpResponse, body) => {
 
-                        if(err) {
-                            throwError(this, 'trigger', 'auth', new Error('Something went wrong while making a request to authentication server.'), {
-                                err: err
-                            });
-                        }
-
+                    axios.post(ceConfig.authUrl + '/chat', {
+                        authKey: pnConfig.authKey,
+                        uuid: pnConfig.uuid,
+                        channel: this.channel,
+                        authData: ChatEngine.me.authData
+                    })
+                    .then((response) => {
                         this.onPrep();
+                    })
+                    .catch((error) => {
+
+                        throwError(this, 'trigger', 'auth', new Error('Something went wrong while making a request to authentication server.'), {
+                            error: error
+                        });
 
                     });
+
                 }
 
             }
@@ -1004,7 +1000,7 @@ const create = function(pnConfig, ceConfig = {}) {
                     state: state,
                     channels: [this.channel]
                 },
-                function (status, response) {
+                (status, response) => {
                     // handle status, response
                 }
             );
@@ -1459,47 +1455,27 @@ const create = function(pnConfig, ceConfig = {}) {
 
                 pnConfig.authKey = authKey;
 
-                request.post({
-                    url: ceConfig.authUrl + '/auth',
-                    json: {
-                        authKey: pnConfig.authKey,
-                        uuid: pnConfig.uuid,
-                        channel: ceConfig.globalChannel,
-                        authData: this.me.authData
-                    }
-                }, (err, httpResponse, body) => {
 
-                    if (err) {
 
-                        /**
-                        * There was an authentication error
-                        * @event ChatEngine#$"."error"."auth
-                        */
-                        throwError(this, '_emit', 'auth', new Error('There was a problem logging into the auth server ('+ceConfig.authUrl+').'), {
-                            err: err
-                        });
+                axios.post(ceConfig.authUrl + '/auth', {
+                    uuid: pnConfig.uuid,
+                    channel: ceConfig.globalChannel,
+                    authData: this.me.authData
+                })
+                .then((response) => {
 
-                    } else {
+                    complete();
 
-                        /**
-                        * There was an authentication success
-                        * @event ChatEngine#$"."auth
-                        */
-                        this._emit('$.auth', {
-                            me: this.me,
-                            httpResponse: httpResponse
-                        });
+                })
+                .catch((error) => {
 
-                        complete();
-
-                    }
+                    throwError(this, '_emit', 'auth', new Error('There was a problem logging into the auth server ('+ceConfig.authUrl+').'), {
+                        error: error
+                    });
 
                 });
 
-
             }
-
-
 
         };
 
