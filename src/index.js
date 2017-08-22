@@ -1479,6 +1479,10 @@ const create = function(pnConfig, ceConfig = {}) {
                 })
                 .catch((error) => {
 
+                    /**
+                    * There was a problem logging in
+                    * @event ChatEngine#$"."error"."auth
+                    */
                     throwError(this, '_emit', 'auth', new Error('There was a problem logging into the auth server ('+ceConfig.authUrl+').'), {
                         error: error
                     });
