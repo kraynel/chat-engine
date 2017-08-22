@@ -48,17 +48,17 @@ let globalGrant = function(gChan, myUUID, myAuthKey, next) {
     let chanMeRW = [
         gChan,
         gChan + '-pnpres',
-        gChan + ':chat:public.*',
-        gChan + ':user:' + myUUID + ':read.*',
-        gChan + ':user:' + myUUID + ':write.*'
+        gChan + '#chat#public.*',
+        gChan + '#user#' + myUUID + '#read.*',
+        gChan + '#user#' + myUUID + '#write.*'
     ];
 
     let chanEverybodyR = [
-        gChan + ':user:' + myUUID + ':read.*'
+        gChan + '#user:' + myUUID + '#read.*'
     ];
 
     let chanEverybodyW = [
-        gChan + ':user:' + myUUID + ':write.*'
+        gChan + '#user:' + myUUID + '#write.*'
     ];
 
     pubnub.grant({

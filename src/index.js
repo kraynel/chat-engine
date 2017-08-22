@@ -378,7 +378,7 @@ const create = function(pnConfig, ceConfig = {}) {
             }
 
             if(this.channel.indexOf(ceConfig.globalChannel) == -1) {
-                this.channel = [ceConfig.globalChannel, 'chat', chanPrivString, channel].join(':');
+                this.channel = [ceConfig.globalChannel, 'chat', chanPrivString, channel].join('#');
             }
 
             /**
@@ -1101,7 +1101,7 @@ const create = function(pnConfig, ceConfig = {}) {
 
             // grants for these chats are done on auth. Even though they're marked private, they are locked down via the server
             this.feed = new Chat(
-                [ChatEngine.global.channel, 'user', uuid, 'read.', 'feed'].join(':'), false, this.constructor.name == "Me");
+                [ChatEngine.global.channel, 'user', uuid, 'read.', 'feed'].join('#'), false, this.constructor.name == "Me");
 
             /**
             * Direct is a private channel that anybody can publish to but only
@@ -1123,7 +1123,7 @@ const create = function(pnConfig, ceConfig = {}) {
             * them.direct.emit('private-message', {secret: 42});
             */
             this.direct = new Chat(
-                [ChatEngine.global.channel, 'user', uuid, 'write.', 'direct'].join(':'), false, this.constructor.name == "Me");
+                [ChatEngine.global.channel, 'user', uuid, 'write.', 'direct'].join('#'), false, this.constructor.name == "Me");
 
             // if the user does not exist at all and we get enough
             // information to build the user
