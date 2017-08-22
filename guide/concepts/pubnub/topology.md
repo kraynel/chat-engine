@@ -72,33 +72,3 @@ let joe = new ChatEngine.User('joe');
 console.log(joe.direct.channel);
 // joe.direct.channel == "chat-engine#user#joe#write#direct"
 ```
-
-
-
-It's possible to use awesome PubNub Functions with ChatEngine. Simply
-
-```Before Publish or Fire```
-
-
-```
-chat-engine-jquery-kitchen-sink#chat#private.*
-```
-
-```
-chat-engine-jquery-kitchen-sink#chat#private.*
-```
-
-```js
-export default (request) => {
-    const kvstore = require('kvstore');
-    const xhr = require('xhr');
-
-    console.log('request',request); // Log the request envelope passed
-
-    if(request.message.event == "message") {
-        request.message.data = "Ahoy there matey!"
-    }
-
-    return request.ok(); // Return a promise when you're done
-}
-```
