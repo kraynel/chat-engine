@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JS Chat - Documentation</title>
+    <title>Private Chats - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -27,7 +27,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">JS Chat</h1>
+    <h1 class="page-title">Private Chats</h1>
     
 
     <section>
@@ -35,13 +35,24 @@
 <header>
     
 
-    <!-- <h2>JS Chat</h2> -->
+    <!-- <h2>Private Chats</h2> -->
 </header>
 
 <article>
-    <h1>Chat Example</h1><iframe src="https://chat-engine-examples.surge.sh/javascript/chat.html" width="100%" height="400px"></iframe>
-
-<script src="//gist-it.appspot.com/github/pubnub/chat-engine-examples/blob/master/javascript/chat.html?footer=0"></script>
+    <h2>Private Chats</h2><p>A user may want to make a private chat no other users can access. To do this,
+create a new chat with the syntax:</p>
+<pre class="prettyprint source"><code>let privChat = new Chat('private', true);</code></pre><p>The second parameter tells ChatEngine to hit the <code>/chat</code> endpoint which
+authorizes the user within that chat channel. Typically this endpoint will
+label this user as the owner and prevent other users from creating a chat
+with the same channel.</p>
+<h2>Inviting to Private Chats</h2><p>In order to securely invite other users to the chat, the client can call
+the <code>invite</code> method.</p>
+<pre class="prettyprint source lang-js"><code>otherUser = ChatEngine.global.users['ian'];
+privChat.invite(otherUser);</code></pre><p>This will send <code>otherUser</code> a secure invite to the <a href="Chat.html">Chat</a> via <a href="User.html#direct">User#direct</a>.</p>
+<h2>Receiving invites to Private Chats</h2><p>You can get notified of invites by subscribing to the <code>'$.invite</code> event.</p>
+<pre class="prettyprint source lang-js"><code>me.direct.on('$.invite', (payload) => {
+    let privChat = new ChatEngine.Chat(payload.data.channel));
+});</code></pre>
 </article>
 
 </section>

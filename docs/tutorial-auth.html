@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JS Chat - Documentation</title>
+    <title>Authentication - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -27,7 +27,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">JS Chat</h1>
+    <h1 class="page-title">Authentication</h1>
     
 
     <section>
@@ -35,13 +35,31 @@
 <header>
     
 
-    <!-- <h2>JS Chat</h2> -->
+    <!-- <h2>Authentication</h2> -->
 </header>
 
 <article>
-    <h1>Chat Example</h1><iframe src="https://chat-engine-examples.surge.sh/javascript/chat.html" width="100%" height="400px"></iframe>
-
-<script src="//gist-it.appspot.com/github/pubnub/chat-engine-examples/blob/master/javascript/chat.html?footer=0"></script>
+    <p>ChatEngine supports full permissions based management supported by PubNub PAM.</p>
+<h2>Fresh</h2><p>When you first set up your PubNub keys, all PubNub channels are locked down and
+nobody can read or write anything.</p>
+<h2>Setup</h2><p>When we first set up ChatEngine, we supply an <code>authUrl</code>.</p>
+<p>const ChatEngine = ChatEngineCore.create({
+    publishKey: 'pub-c-c6303bb2-8bf8-4417-aac7-e83b52237ea6',
+    subscribeKey: 'sub-c-67db0e7a-50be-11e7-bf50-02ee2ddab7fe'
+}, {
+    authUrl: 'http://localhost:3000/insecure'
+});</p>
+<p>The supplied <code>authUrl</code> is responsible for validating authentication information
+and authorizing the user on appropriate namespaces. See <a href="tutorial-topology.html">PubNub Channel Topology</a>.</p>
+<h2>Authorize <a href="Me.html">Me</a></h2><p>In order to gain access to the locked channels, we call ChatEngine#create.
+This will hit the server at <code>authUrl + '/auth'</code>. This endpoint grants PubNub
+PAM permissions on all read and write channels. See <a href="tutorial-topology.html">PubNub Channel Topology</a>.</p>
+<pre class="prettyprint source lang-js"><code>ChatEngine.connect(username, {}, 'auth-key');</code></pre><p>When the endpoint responds and ChatEngine successfully connects to PubNub, <a href="ChatEngine.html">ChatEngine</a>
+emits the <code>$.ready</code> event.</p>
+<p>If the call to <code>/auth</code> fails, <a href="ChatEngine.html">ChatEngine</a> emits <code>$.error.auth</code>.</p>
+<p>If the call is successful but <a href="ChatEngine.html">ChatEngine</a> can not connect to PubNub,
+<a href="ChatEngine.html">ChatEngine</a> will emit a <code>$.network.down.*</code> event.</p>
+<p>See <a href="tutorial-private.html">Private Chats</a> for more information about how to utilize secure private chats.</p>
 </article>
 
 </section>

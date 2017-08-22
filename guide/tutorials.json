@@ -46,8 +46,14 @@
              "online-list": {
                  "title": "Online List"
              },
+             "auth": {
+                 "title": "Authentication"
+             },
              "privacy": {
                  "title": "Privacy"
+             },
+             "private": {
+                 "title": "Private Chats"
              },
              "templating": {
                  "title": "Templating"
@@ -60,6 +66,12 @@
              },
              "build": {
                  "title": "Build a Plugin"
+             },
+             "functions": {
+                 "title": "PubNub Functions"
+             },
+             "topology": {
+                 "title": "PubNub Channel Topology"
              }
          }
      },

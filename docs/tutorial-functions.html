@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JS Chat - Documentation</title>
+    <title>PubNub Functions - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -27,7 +27,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">JS Chat</h1>
+    <h1 class="page-title">PubNub Functions</h1>
     
 
     <section>
@@ -35,13 +35,35 @@
 <header>
     
 
-    <!-- <h2>JS Chat</h2> -->
+    <!-- <h2>PubNub Functions</h2> -->
 </header>
 
 <article>
-    <h1>Chat Example</h1><iframe src="https://chat-engine-examples.surge.sh/javascript/chat.html" width="100%" height="400px"></iframe>
+    <p>It's possible to use awesome PubNub Functions with ChatEngine.</p>
+<h2>Event Type</h2><p>Create a new PubNub function. Select <code>Before Publish or Fire</code> as the
+function event type.</p>
+<h2>Channel</h2><p>In the channel, enter in the chat channel you'd like to trigger the Function.
+Wildcard <code>*</code> selection is allowed.</p>
+<p>To run a function on all public chats (most popular), enter
+<code>chat-engine#chat#public.*</code> in the &quot;channel&quot; field of PubNub Functions. See
+the tutorial on <a href="tutorial-topology.html">PubNub Channel Topology</a> for more information on ChatEngine channel names.</p>
+<p>You may wish to create an additional Function targeting private chats:</p>
+<pre class="prettyprint source"><code>chat-engine#chat#private.*</code></pre><h2>Code</h2><p>You can access the ChatEngine Event type via <code>request.messate.event</code> and the
+event payload via <code>request.message.data</code>.</p>
+<p>For example, to build a simple PubNub function that replaces all sent 'message's with
+pirate speak:</p>
+<pre class="prettyprint source lang-js"><code>export default (request) => {
+    const kvstore = require('kvstore');
+    const xhr = require('xhr');
 
-<script src="//gist-it.appspot.com/github/pubnub/chat-engine-examples/blob/master/javascript/chat.html?footer=0"></script>
+    console.log('request',request); // Log the request envelope passed
+
+    if(request.message.event == &quot;message&quot;) {
+        request.message.data = &quot;Ahoy there matey!&quot;
+    }
+
+    return request.ok(); // Return a promise when you're done
+}</code></pre>
 </article>
 
 </section>
