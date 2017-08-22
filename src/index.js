@@ -511,6 +511,16 @@ const create = function(pnConfig, ceConfig = {}) {
 
                     let send = () => {
 
+                        /**
+                        * Notifies {@link Me} that they've been invited to a new private {@link Chat}.
+                        * Fired by the {@link Chat#invite} method.
+                        * @event Me#$"."invite
+                        * @tutorial private
+                        * @example
+                        * me.direct.on('$.invite', (payload) => {
+                        *    let privChat = new ChatEngine.Chat(payload.data.channel));
+                        * });
+                        */
                         user.direct.emit('$.invite', {
                             channel: this.channel
                         });
