@@ -1,9 +1,9 @@
 {
   "author": "Ian Jennings",
   "name": "chat-engine",
-  "version": "0.4.2",
+  "version": "0.4.3",
   "description": "Open Chat Framework",
-  "main": "src/index.js",
+  "main": "dist/latest/chat-engine.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "deploy": "gulp; npm publish;",
@@ -25,6 +25,9 @@
   },
   "homepage": "https://github.com/pubnub/chat-engine#readme",
   "devDependencies": {
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-react": "^6.24.1",
+    "babelify": "^7.3.0",
     "body-parser": "^1.17.2",
     "browserify": "^13.1.0",
     "chai": "^3.5.0",

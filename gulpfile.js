@@ -7,9 +7,10 @@ const package = require('./package.json');
 gulp.task('compile', function () {
 
     browserify({
-        entries: ['./src/window.js'],
+        entries: ['./src/index.js'],
         debug: true
     })
+    .transform('babelify', , {presets: ['es2015', 'react']})
     .bundle()
     .pipe(source('chat-engine.js'))
     .pipe(gulp.dest('./dist/latest/'))
