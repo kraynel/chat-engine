@@ -7,6 +7,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "deploy": "gulp; npm publish;",
+    "build": "babel src/index.js --out-file dist/latest/chat-engine.js --presets=es2015,react",
     "docs": "jsdoc src/index.js -c jsdoc.json"
   },
   "repository": {
@@ -25,6 +26,7 @@
   },
   "homepage": "https://github.com/pubnub/chat-engine#readme",
   "devDependencies": {
+    "babel-cli": "^6.26.0",
     "babel-preset-es2015": "^6.24.1",
     "babel-preset-react": "^6.24.1",
     "babelify": "^7.3.0",
